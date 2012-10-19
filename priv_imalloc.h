@@ -1,6 +1,5 @@
 #ifndef __priv_malloc_h
 #define __priv_malloc_h
-// hejsan
 /*
  * priv_imalloc.h
  *
