@@ -33,7 +33,9 @@ struct private_managed {
   managed functions;
 };
 
-/* Frees a object. */
+/* 
+ * Frees an object. 
+ */
 void ifree(void *object);
 
 /* 
