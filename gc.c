@@ -1,10 +1,12 @@
-#include <gc.h>
+#include "gc.h"
+
+
 /*
  *
  *
  *
  */
 
- chunk collect (style mem){
-  
- }
+chunk collect (style mem){
+
+}
