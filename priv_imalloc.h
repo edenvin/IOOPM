@@ -3,7 +3,7 @@
 
 #include "imalloc.h"
 #include "format.h"
-#include "mem.h"
+#include "memory.h"
 #include "gc.h"
 #include "refcount.h"
 #include "utilities.h"
@@ -33,14 +33,31 @@ struct private_managed {
   managed functions;
 };
 
+/* Frees a object. */
 void ifree(void *object);
 
+/* 
+ * Allocates memory for the given chunk size 
+ * and returns a pointer for the allocated memory 
+ */
 void* ialloc(chunk_size size);
 
+/* 
+ * Allocates memory for the given chunk size 
+ * and returns a pointer for the allocated memory 
+ */
 void* manual_alloc(chunk_size size);
 
+/*
+ * Allocates memory for the given chunk size 
+ * and returns a pointer for the allocated memory 
+ */
 void* managed_alloc(chunk_size size);
 
-void* typed_alloc(chunk_size size);
+/*
+ * Allocates memory for the given chunk size as a string
+ * and returns a pointer for the allocated memory 
+ */
+void* typed_alloc(format_string size);
 
 #endif
