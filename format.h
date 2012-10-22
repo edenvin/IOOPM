@@ -14,6 +14,6 @@ typedef char* format_string;
 /* 
  * Returns the size needed equivalent to store the arguments in str, e.g. if str = d then return the size of an int
  */
-chunk_size format_string_to_size (foŕmat_string str);
+chunk_size format_string_to_size (format_string str);
 
  #endif
