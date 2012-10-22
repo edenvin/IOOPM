@@ -72,3 +72,5 @@ void split_memory(Chunk chunk, chunk_size size);
  * Combines two chunks into one larger chunk.
  */
 void combine_memory(Chunk first, Chunk last);
+
+#endif
