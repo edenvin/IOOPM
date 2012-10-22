@@ -44,7 +44,7 @@ void ifree(void *object);
  */
 void* ialloc(chunk_size size);
 
-/* 
+/*
  * Allocates memory for the given chunk size 
  * and returns a pointer for the allocated memory 
  */
