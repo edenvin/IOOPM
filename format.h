@@ -8,10 +8,11 @@
  *
  */
 #include <imalloc.h>
+typedef char* formatstring;
 
 /* 
-Returns the size needed equivalent to the flag, e.g. flag d returns the size of an int
-*/
+ *Returns the size needed equivalent to the flag, e.g. flag d returns the size of an int
+ */
 chunk_size flag_to_size (char *flag);
 
  #endif
