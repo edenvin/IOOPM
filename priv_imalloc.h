@@ -1,5 +1,13 @@
 #ifndef __priv_malloc_h
 #define __priv_malloc_h
+
+#include "imalloc.h"
+#include "format.h"
+#include "mem.h"
+#include "gc.h"
+#include "refcount.h"
+#include "utilities.h"
+
 /*
  * priv_imalloc.h
  *
@@ -24,5 +32,15 @@ struct private_managed {
   void   *data; 
   managed functions;
 };
+
+void ifree(void *object);
+
+void* ialloc(chunk_size size);
+
+void* manual_alloc(chunk_size size);
+
+void* managed_alloc(chunk_size size);
+
+void* typed_alloc(chunk_size size);
 
 #endif
