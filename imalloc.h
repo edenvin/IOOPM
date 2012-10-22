@@ -66,14 +66,14 @@ typedef struct {
 typedef struct {
   RawAllocator alloc;
   Global       avail;
-  Manipulator  free; 
+  Manipulator  free;
 } manual, *Manual; 
 
-/* Functions for the manual memory manager */
+/* Functions for the managed memory manager */
 typedef struct {
   RawAllocator alloc;
-  Refcount     rc; 
-  GC           gc; 
+  Refcount     rc;
+  GC           gc;
 } managed, *Managed;
 
 /* Return type specification for iMalloc */
