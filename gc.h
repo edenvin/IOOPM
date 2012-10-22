@@ -1,6 +1,6 @@
 #ifndef __gc_h
 #define __gc_h
-#include <imalloc.h>
+#include "imalloc.h"
 /*
  * gc.h
  * This file contains the public specifications for using the

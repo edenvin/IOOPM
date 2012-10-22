@@ -9,8 +9,8 @@
  *
  */
 
- #include <imalloc.h>
- #include <priv_imalloc.h>
+ #include "imalloc.h"
+ #include "priv_imalloc.h"
 
 /*
  * Increment adress's refcount by 1
