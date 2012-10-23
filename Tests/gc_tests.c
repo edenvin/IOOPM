@@ -1,15 +1,83 @@
 #include "gc_tests.h"
 
-void test_collect(void) {
+
+/*
+ * Test when there is no garbage to collect.
+ */
+ void test_collect_1(void) {
   managed mem = (managed) iMalloc(sizeOf(int)*4, GC + ASCENDING_SIZE);
-  
-  CU_ASSERT(collect (6) == 1);
+  int *p0 = mem->alloc(mem, sizeOf(int));
+  int *p1 = mem->alloc(mem, sizeOf(int));
+  int *p2 = mem->alloc(mem, sizeOf(int));
+  int *p3 = mem->alloc(mem, sizeOf(int));
+  *p0 = 0;
+  *p1 = 1;
+  *p2 = 2;
+  *p3 = 3;
+  CU_ASSERT(collect(mem) == 0);
+  free_mem(mem); //not made yet
 }
+
+
+/*
+ * Test when there is garbage to collect.
+ */
+ void test_collect_2(void) {
+  managed mem = (managed) iMalloc(sizeOf(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(mem, sizeOf(int));
+  int *p1 = mem->alloc(mem, sizeOf(int));
+  int *p2 = mem->alloc(mem, sizeOf(int));
+  int *p3 = mem->alloc(mem, sizeOf(int));
+  *p0 = 0;
+  *p1 = 1;
+  *p2 = 2;
+   p3 = NULL;
+  CU_ASSERT(collect(mem) == 1);
+  free_mem(mem); //not made yet
+}
+
+/*
+ * Test when there is no garbage to collect but we cant reach all posts from  * the stack.
+ */
+ void test_collect_3(void) {
+  managed mem = (managed) iMalloc(sizeOf(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(mem, sizeOf(int));
+  int *p1 = mem->alloc(mem, sizeOf(int));
+  int *p2 = mem->alloc(mem, sizeOf(int));
+  int *p3 = mem->alloc(mem, sizeOf(int));
+  *p0 = 0;
+  *p1 = 1;
+  *p3 = 3;
+  *p2 = p3;
+   p3 = NULL;
+  CU_ASSERT(collect(mem) == 0);
+  free_mem(mem); //not made yet
+}
+
+/*
+ * Test when we have garbage but it can't be reached without traversing the    * heap. 
+ */
+ void test_collect_4(void) {
+  managed mem = (managed) iMalloc(sizeOf(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(mem, sizeOf(int));
+  int *p1 = mem->alloc(mem, sizeOf(int));
+  int *p2 = mem->alloc(mem, sizeOf(int));
+  int *p3 = mem->alloc(mem, sizeOf(int));
+  *p0 = 0;
+  *p1 = 1;
+  *p2 = 2;
+  *p3 = 3;
+   p2 = NULL;
+   p3 = NULL;
+  CU_ASSERT(collect(mem) == 1);
+  free_mem(mem); //not made yet
+}
+
 
 /*
  * Add tests to suites.
  */
-int memory_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
+int gc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   // Add suites
   CU_pSuite gc_suite = CU_add_suite("gc Suite", init_suite, clean_suite);
   if (NULL == gc_suite) {
@@ -19,7 +87,10 @@ int memory_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   
   // Add tests
   if (
-    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect)) ||
+    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect_1)) ||
+    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect_2)) ||
+    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect_3)) ||
+    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect_4))
   ) {
     CU_cleanup_registry();
     return CU_get_error();
