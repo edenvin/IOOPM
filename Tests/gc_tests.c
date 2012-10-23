@@ -1,14 +1,10 @@
 #include "gc_tests.h"
 
-void testTEST_gc(void) {
-  CU_ASSERT(1);
+void test_collect(void) {
+  managed mem = (managed) iMalloc(sizeOf(int)*4, GC + ASCENDING_SIZE);
+  
+  CU_ASSERT(collect (6) == 1);
 }
-
-void testMORETEST_gc(void) {
-  CU_ASSERT(/*ÄR UTTRYCKET SANT*/)
-  CU_FAIL("HAHA YOU SUCK!");
-}
-
 
 /*
  * Add tests to suites.
@@ -23,8 +19,7 @@ int memory_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   
   // Add tests
   if (
-    (NULL == CU_add_test(gc_suite, "test of test()", testTEST_gc)) ||
-    (NULL == CU_add_test(gc_suite, "test of more_tests()", testMORETEST_gc))
+    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect)) ||
   ) {
     CU_cleanup_registry();
     return CU_get_error();

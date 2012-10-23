@@ -6,7 +6,6 @@
  *
  */
 
-
 unsigned int collect (style mem){
-
+  
 }
