@@ -13,7 +13,6 @@ void test_new_chunklist(void) {
   CU_ASSERT(chunk->size == 24 Kb);
   CU_ASSERT(chunk->next == NULL);
   CU_ASSERT(chunk->mark == FALSE);
-  CU_ASSERT(chunk->refcount == 0);
 }
 
 void test_memory_size(void) {
