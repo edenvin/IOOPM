@@ -17,7 +17,6 @@ typedef struct _chunk {
   chunk_size size;
   struct _chunk *next;
   Boolean mark;
-  unsigned short refcount;
 } *Chunk;
 
 

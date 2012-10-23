@@ -13,7 +13,6 @@ Chunk new_chunk(void *start, chunk_size size, Chunk next, unsigned short refcoun
   chunk->start = start;
   chunk->size = size;
   chunk->next = next;
-  chunk->refcount = refcount;
   chunk->mark = FALSE;
   
   return chunk;
