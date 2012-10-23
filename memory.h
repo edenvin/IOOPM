@@ -32,6 +32,11 @@ Boolean memory_is_marked(Chunk chunk);
 Boolean set_memory_status(Chunk chunk, Boolean free);
 
 /*
+ * Returns the size of the chunk.
+ */
+chunk_size memory_size(Chunk chunk);
+
+/*
  * Returns the refcount for the chunk.
  */
 unsigned short memory_refcount(Chunk chunk);
