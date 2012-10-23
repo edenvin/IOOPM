@@ -8,8 +8,7 @@
  *
  */
 
-#include "imalloc.h"
-#include "utilities.h"
+#include "priv_imalloc.h"
 
 typedef struct chunk {
   void *start;
