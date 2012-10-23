@@ -6,6 +6,6 @@
  *
  */
 
-chunk collect (style mem){
+unsigned int collect (style mem){
 
 }
