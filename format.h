@@ -7,7 +7,7 @@
  * used as a course project for the 2012 IOOP/M course.
  *
  */
-#include "imalloc.h"
+#include "priv_imalloc.h"
 
 typedef char* format_string;
 
