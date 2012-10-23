@@ -4,6 +4,7 @@
 #include "imalloc.h"
 #include "CUnit/Basic.h"
 #include "Tests/memory_tests.h"
+#include "Tests/format_tests.h"
 
 int init_suite(void)
 {
@@ -24,6 +25,9 @@ int main()
   /* add the tests to the suite */
   int error;
   error = memory_tests(&init_suite, &clean_suite);
+  if (error)
+    return error;
+  error = format_tests(&init_suite, &clean_suite);
   if (error)
     return error;
   
