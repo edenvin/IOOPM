@@ -1,0 +1,18 @@
+#ifndef __refcount_tests_h
+#define __refcount_tests_h
+/*
+ * refcount_tests.h
+ *
+ * This file contains unit tests for the memory part of the imalloc allocator.
+ *
+ */
+
+#include "CUnit/Basic.h"
+#include "../refcount.h"
+
+/*
+ * Add tests.
+ */
+int refcount_tests(int (*init_suite)(void), int (*clean_suite)(void));
+
+#endif
