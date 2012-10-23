@@ -14,7 +14,7 @@ clean:
 TEST_FILES = Tests/memory_tests.c Tests/format_tests.c
 
 # Ordinary files
-FILES = memory.c
+FILES = format.c
 
 test: unittests.c
 	$(C_COMPILER) $(C_OPTIONS) unittests.c $(TEST_FILES) $(FILES) -o unittests -lcunit

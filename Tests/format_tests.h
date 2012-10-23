@@ -8,7 +8,7 @@
  */
 
 #include "CUnit/Basic.h"
-#include "../priv_imalloc.h"
+#include "../format.h"
 
 /*
  * Add tests.
