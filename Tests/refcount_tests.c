@@ -10,23 +10,35 @@ void test_retain(void) {
 }
 
 void test_release(void) {
+  // PLACEHOLDER
+  Memory test = malloc(10);
+  // PLACEHOLDER
   char *t = OBJECT(malloc(10 * sizeof(char)+ sizeof(int)));
   strcpy(t,"Jultomte");
   *REFCOUNT(t) = 3;
-  CU_ASSERT(release(t) == 2);
-  CU_ASSERT(release(t) == 1);
-  CU_ASSERT(release(t) == 0);
+  CU_ASSERT(release(test, t) == 2);
+  CU_ASSERT(release(test, t) == 1);
+  CU_ASSERT(release(test, t) == 0);
   CU_ASSERT(t == NULL);
+  // PLACERHOLDER
+  free(test);
+  // PLACEHOLDER
 }
 
 void test_count(void) {
+  // PLACEHOLDER
+  Memory test = malloc(10);
+  // PLACEHOLDER
   char *t = OBJECT(malloc(10 * sizeof(char)+ sizeof(int)));
   strcpy(t,"tjenixen");
   *REFCOUNT(t) = 3;
   CU_ASSERT(count(t) == 3);
   retain(t);
-  release(t);
+  release(test, t);
   CU_ASSERT(count(t) == 3);
+  // PLACEHOLDER
+  free(test);
+  // PLACEHOLDER
 }
 
 /*

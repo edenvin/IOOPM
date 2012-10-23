@@ -5,7 +5,7 @@
 #include "CUnit/Basic.h"
 #include "Tests/memory_tests.h"
 #include "Tests/format_tests.h"
-
+#include "Tests/refcount_tests.h"
 int init_suite(void)
 {
   return 0;
@@ -30,7 +30,7 @@ int main()
   error = format_tests(&init_suite, &clean_suite);
   if (error)
     return error;
-    error = refcount_tests(&init_suite, &clean_suite);
+  error = refcount_tests(&init_suite, &clean_suite);
   if (error)
     return error;
   
