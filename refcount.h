@@ -15,17 +15,17 @@
 /*
  * Increment adress's refcount by 1
  */
-void retain(void *block);
+void retain(void *object);
 
 /*
  * Decrement adress's refcount by 1
  */
-void release(void *block);
+void release(Memory mem, void *object);
 
 /*
  * Return adress's refcount
  */
-unsigned int count(void *block);
+unsigned int count(void *object);
 
 
  #endif
