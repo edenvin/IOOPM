@@ -7,7 +7,7 @@
  * Managed, automatic garbage collection allocation.
  */
 
-#include "priv_imalloc.h"
+#include "imalloc.h"
 
 /* 
  * Performs a garbage collection according to the mark and sweep algorithm.
