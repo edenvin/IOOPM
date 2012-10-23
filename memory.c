@@ -51,7 +51,32 @@ Chunk new_chunklist(void *start, chunk_size size) {
   return new_chunk(start, size, NULL, 0);
 }
 
+/*
+ * Returns the first chunk in free_list
+ */
+Chunk first_free_chunk(style mem) {
+  if (mem == NULL)
+    return NULL;
+  return STYLE_TO_FREE(mem);
+}
 
+/*
+ * Returns the first chunk in alloc_list
+ */
+Chunk first_alloc_chunk(style mem) {
+  if (mem == NULL)
+    return NULL;
+  return STYLE_TO_ALLOC(mem);
+}
+
+/*
+ * Returns the next chunk after chunk
+ */
+Chunk next_chunk(Chunk chunk) {
+  if (chunk == NULL)
+    return NULL;
+  return chunk->next;
+}
 
 /*
  * Splits a chunk into two smaller chunks, with the first chunk having the given size,
