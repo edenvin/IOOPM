@@ -1,13 +1,21 @@
 #include "refcount.h"
 
-void retain(void* object) {
-
+unsigned int retain(void* object) {
+	unsigned int t = REFCOUNT(object);
+	*t = *t + 1;
+	return *t
 }
 
-void release(Memory mem, void* object) {
-
+unsigned int release(Memory mem, void* object) {
+	unsigned int t = REFCOUNT(object);
+	*t = *t - 1;
+  if (*t == 0) {
+    free(object);
+    return 0;
+  } 
+  return *t;
 }
 
 unsigned int count(void* object) {
-  return 0;
+  return *REFCOUNT(object);
 }

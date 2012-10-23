@@ -30,6 +30,9 @@ int main()
   error = format_tests(&init_suite, &clean_suite);
   if (error)
     return error;
+    error = refcount_tests(&init_suite, &clean_suite);
+  if (error)
+    return error;
   
   /* Run all tests using the CUnit Basic interface */
   CU_basic_set_mode(CU_BRM_VERBOSE);
