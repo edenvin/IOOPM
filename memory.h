@@ -8,22 +8,23 @@
  *
  */
 
+#include <stdlib.h>
 #include "imalloc.h"
- #include "utilities.h"
+#include "utilities.h"
 
-typedef struct chunk {
+typedef struct _chunk {
   void *start;
   chunk_size size;
-  struct chunk *next;
-  Boolean free;
+  struct _chunk *next;
+  Boolean mark;
   unsigned short refcount;
 } *Chunk;
 
 
 /*
- * Returns TRUE if the chunk is free, FALSE if not.
+ * Returns TRUE if the chunk is marked, FALSE if not.
  */
-Boolean memory_is_free(Chunk chunk);
+Boolean memory_is_marked(Chunk chunk);
 
 /*
  * Marks a chunk as free or taken.
@@ -60,18 +61,10 @@ Chunk claim_memory(chunk_size size);
  */
 void free_memory(Chunk chunk);
 
-
-/* PRIVATE FUNCTIONS. MOVE INTO .C */
-
 /*
- * Splits a chunk into two smaller chunks, with the first chunk having the given size,
- * and the second chunk having any remaining space.
+ * Creates a new chunklist with a first chunk of given size and start at given pointer.
+ * The chunk will have a refcount of 0.
  */
-void split_memory(Chunk chunk, chunk_size size);
-
-/*
- * Combines two chunks into one larger chunk.
- */
-void combine_memory(Chunk first, Chunk last);
+Chunk new_chunklist(void *start, chunk_size size);
 
 #endif
