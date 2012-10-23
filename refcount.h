@@ -20,7 +20,7 @@ void retain(void *object);
 /*
  * Decrement adress's refcount by 1
  */
-void release(void *object);
+void release(Memory mem, void *object);
 
 /*
  * Return adress's refcount
