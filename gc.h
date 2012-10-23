@@ -8,7 +8,6 @@
  */
 
 #include "imalloc.h"
-#include "memory.h"
 
 /* 
  * Performs a garbage collection according to the mark and sweep algorithm.

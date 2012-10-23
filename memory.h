@@ -8,26 +8,33 @@
  *
  */
 
+#include <stdlib.h>
 #include "imalloc.h"
+#include "utilities.h"
 
-typedef struct chunk *Chunk;
-struct chunk {
-  void* start;
+typedef struct _chunk {
+  void *start;
   chunk_size size;
-  Chunk next;
-  Boolean free;
+  struct _chunk *next;
+  Boolean mark;
   unsigned short refcount;
-}
+} *Chunk;
+
 
 /*
- * Returns TRUE if the chunk is free, FALSE if not.
+ * Returns TRUE if the chunk is marked, FALSE if not.
  */
-Boolean memory_is_free(Chunk chunk);
+Boolean memory_is_marked(Chunk chunk);
 
 /*
  * Marks a chunk as free or taken.
  */
 Boolean set_memory_status(Chunk chunk, Boolean free);
+
+/*
+ * Returns the size of the chunk.
+ */
+chunk_size memory_size(Chunk chunk);
 
 /*
  * Returns the refcount for the chunk.
@@ -37,8 +44,8 @@ unsigned short memory_refcount(Chunk chunk);
 /*
  * Increase or decrease the refcount.
  */
-unsigned short increase_memory_refcount(Chunk cunk);
-unsigned short decrease_memory_refcount(Chunk cunk);
+unsigned short increase_memory_refcount(Chunk chunk);
+unsigned short decrease_memory_refcount(Chunk chunk);
 
 /*
  * Searches for a chunk in the memory.
@@ -50,7 +57,7 @@ Chunk search_memory(void *needle, Chunk stack);
  * splits it if neccessary and pushes the chunk on to the allocated-list.
  * Keeps the free-list sorted.
  */
-Chunk claim_memory(chunks_size size);
+Chunk claim_memory(chunk_size size);
 
 /*
  * Removes the chunk from the allocated-list and adds it to the free-list.
@@ -59,18 +66,10 @@ Chunk claim_memory(chunks_size size);
  */
 void free_memory(Chunk chunk);
 
-
-/* PRIVATE FUNCTIONS. MOVE INTO .C */
-
 /*
- * Splits a chunk into two smaller chunks, with the first chunk having the given size,
- * and the second chunk having any remaining space.
+ * Creates a new chunklist with a first chunk of given size and start at given pointer.
+ * The chunk will have a refcount of 0.
  */
-void split_memory(Chunk chunk, chunk_size size);
-
-/*
- * Combines two chunks into one larger chunk.
- */
-void combine_memory(Chunk first, Chunk last);
+Chunk new_chunklist(void *start, chunk_size size);
 
 #endif

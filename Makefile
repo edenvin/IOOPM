@@ -13,6 +13,9 @@ clean:
 # Tests to load
 TEST_FILES = Tests/memory_tests.c
 
+# Ordinary files
+FILES = memory.c
+
 test: unittests.c
-	$(C_COMPILER) $(C_OPTIONS) unittests.c $(TEST_FILES) -o unittests -lcunit
+	$(C_COMPILER) $(C_OPTIONS) unittests.c $(TEST_FILES) $(FILES) -o unittests -lcunit
 	./unittests
