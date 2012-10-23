@@ -9,15 +9,16 @@
  */
 
 #include "imalloc.h"
+#include "utilities.h"
 
-typedef struct chunk *Chunk;
-struct chunk {
-  void* start;
+typedef struct chunk {
+  void *start;
   chunk_size size;
-  Chunk next;
+  struct chunk *next;
   Boolean free;
   unsigned short refcount;
-}
+} *Chunk;
+
 
 /*
  * Returns TRUE if the chunk is free, FALSE if not.
@@ -37,8 +38,8 @@ unsigned short memory_refcount(Chunk chunk);
 /*
  * Increase or decrease the refcount.
  */
-unsigned short increase_memory_refcount(Chunk cunk);
-unsigned short decrease_memory_refcount(Chunk cunk);
+unsigned short increase_memory_refcount(Chunk chunk);
+unsigned short decrease_memory_refcount(Chunk chunk);
 
 /*
  * Searches for a chunk in the memory.
@@ -50,7 +51,7 @@ Chunk search_memory(void *needle, Chunk stack);
  * splits it if neccessary and pushes the chunk on to the allocated-list.
  * Keeps the free-list sorted.
  */
-Chunk claim_memory(chunks_size size);
+Chunk claim_memory(chunk_size size);
 
 /*
  * Removes the chunk from the allocated-list and adds it to the free-list.
