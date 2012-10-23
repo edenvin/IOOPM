@@ -7,6 +7,6 @@
  * used as a course project for the 2012 IOOP/M course.
  */
 
-typedef enum { FALSE = 0, TRUE = 1 } Boolean;
+typedef enum { FALSE, TRUE } Boolean;
 
 #endif
