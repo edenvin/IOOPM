@@ -16,6 +16,33 @@ void test_new_chunklist(void) {
   CU_ASSERT(chunk->refcount == 0);
 }
 
+void test_memory_size(void) {
+  Chunk chunk = new_chunklist(NULL, 2 Kb);
+  
+  CU_ASSERT(memory_size(chunk) == 2*1024);
+}
+
+void test_memory_refcount(void) {
+  Chunk chunk = new_chunklist(NULL, 2 Kb);
+  // not finished
+  // -----
+  CU_ASSERT(memory_refcount(chunk) == 2);
+}
+
+void test_set_memory_mark(void) {
+  Chunk chunk = NULL;
+  CU_ASSERT(memory_is_marked(chunk) == FALSE);
+  
+  chunk = new_chunklist(NULL, 10);
+  CU_ASSERT(!memory_is_marked(chunk));
+  
+  set_memory_mark(chunk, FALSE);
+  CU_ASSERT(!memory_is_marked(chunk));
+  
+  set_memory_mark(chunk, TRUE);
+  CU_ASSERT(memory_is_marked(chunk));
+}
+
 /*
  * Add tests to suites.
  */
@@ -30,7 +57,9 @@ int memory_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   // Add tests
   if (
     (NULL == CU_add_test(memory_suite, "test of memory_is_marked()", test_memory_is_marked)) ||
-    (NULL == CU_add_test(memory_suite, "test of new_chunklist()", test_new_chunklist))
+    (NULL == CU_add_test(memory_suite, "test of new_chunklist()", test_new_chunklist)) ||
+    (NULL == CU_add_test(memory_suite, "test of memory_size()", test_memory_size)) ||
+    (NULL == CU_add_test(memory_suite, "test of set_memory_mark()", test_set_memory_mark))
   ) {
     CU_cleanup_registry();
     return CU_get_error();

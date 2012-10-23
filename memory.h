@@ -27,9 +27,9 @@ typedef struct _chunk {
 Boolean memory_is_marked(Chunk chunk);
 
 /*
- * Marks a chunk as free or taken.
+ * Marks a chunk as marked or not marked
  */
-Boolean set_memory_status(Chunk chunk, Boolean free);
+Boolean set_memory_mark(Chunk chunk, Boolean mark);
 
 /*
  * Returns the size of the chunk.

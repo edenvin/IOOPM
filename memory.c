@@ -22,10 +22,30 @@ Chunk new_chunk(void *start, chunk_size size, Chunk next, unsigned short refcoun
 /* PUBLIC FUNCTIONS */
 
 /*
+ * Marks a chunk as marked or not marked
+ */
+Boolean set_memory_mark(Chunk chunk, Boolean mark) {
+  if (chunk == NULL)
+    return FALSE;
+  
+  chunk->mark = mark;
+  return memory_is_marked(chunk);
+}
+
+/*
  * Returns TRUE if the chunk is free, FALSE if not.
  */
 Boolean memory_is_marked(Chunk chunk) {
-  return chunk->mark;
+  return (chunk && chunk->mark);
+}
+
+/*
+ * Returns the size of the chunk.
+ */
+chunk_size memory_size(Chunk chunk) {
+  if (chunk == NULL)
+    return 0;
+  return chunk->size;
 }
 
 Chunk new_chunklist(void *start, chunk_size size) {
