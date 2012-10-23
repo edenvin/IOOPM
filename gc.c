@@ -1,10 +1,6 @@
 #include "gc.h"
 
-/*
- *
- * Performs a garbage collection according to the mark and sweep algorithm.
- *
- */
+
 /*
  * Typedefs from the specification
  */
@@ -18,8 +14,8 @@ typedef void (*MarkFun)(void *ptr, void *data);
 
 traverse_stack (adress_space h, mark_fun f, void *p);
 
-void print_ptr(void *ptr, void *ignore) {
-  printf("%p\n", ptr);
+void ptr_mark(void *ptr, void *ignore, style mem) {
+  set_memory_status(memory_search(*ptr, mem), true);
 }
 
 
@@ -30,12 +26,16 @@ void stage_one (style mem){
   } 
 }
 
-
+/*
+ *
+ * Performs a garbage collection according to the mark and sweep algorithm.
+ *
+ */
 unsigned int collect (style mem){
   stage_one (mem);
   *addressspace as;
   as->start = //första objektet i adressrymden
   as->end = //sista objektet i adressrymden
-  traverse_stack (&as, print_ptr, NULL);
+  traverse_stack (&as, ptr_mark (*ptr, *ignore, mem), NULL);
   
 }
