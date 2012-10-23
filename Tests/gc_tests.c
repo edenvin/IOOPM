@@ -5,11 +5,11 @@
  * Test when there is no garbage to collect.
  */
  void test_collect_1(void) {
-  managed mem = (managed) iMalloc(sizeOf(int)*4, GC + ASCENDING_SIZE);
-  int *p0 = mem->alloc(mem, sizeOf(int));
-  int *p1 = mem->alloc(mem, sizeOf(int));
-  int *p2 = mem->alloc(mem, sizeOf(int));
-  int *p3 = mem->alloc(mem, sizeOf(int));
+  managed mem = (managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(mem, sizeof(int));
+  int *p1 = mem->alloc(mem, sizeof(int));
+  int *p2 = mem->alloc(mem, sizeof(int));
+  int *p3 = mem->alloc(mem, sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
@@ -23,11 +23,11 @@
  * Test when there is garbage to collect.
  */
  void test_collect_2(void) {
-  managed mem = (managed) iMalloc(sizeOf(int)*4, GC + ASCENDING_SIZE);
-  int *p0 = mem->alloc(mem, sizeOf(int));
-  int *p1 = mem->alloc(mem, sizeOf(int));
-  int *p2 = mem->alloc(mem, sizeOf(int));
-  int *p3 = mem->alloc(mem, sizeOf(int));
+  managed mem = (managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(mem, sizeof(int));
+  int *p1 = mem->alloc(mem, sizeof(int));
+  int *p2 = mem->alloc(mem, sizeof(int));
+  int *p3 = mem->alloc(mem, sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
@@ -40,11 +40,11 @@
  * Test when there is no garbage to collect but we cant reach all posts from  * the stack.
  */
  void test_collect_3(void) {
-  managed mem = (managed) iMalloc(sizeOf(int)*4, GC + ASCENDING_SIZE);
-  int *p0 = mem->alloc(mem, sizeOf(int));
-  int *p1 = mem->alloc(mem, sizeOf(int));
-  int *p2 = mem->alloc(mem, sizeOf(int));
-  int *p3 = mem->alloc(mem, sizeOf(int));
+  managed mem = (managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(mem, sizeof(int));
+  int *p1 = mem->alloc(mem, sizeof(int));
+  int *p2 = mem->alloc(mem, sizeof(int));
+  int *p3 = mem->alloc(mem, sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p3 = 3;
@@ -58,11 +58,11 @@
  * Test when we have garbage but it can't be reached without traversing the    * heap. 
  */
  void test_collect_4(void) {
-  managed mem = (managed) iMalloc(sizeOf(int)*4, GC + ASCENDING_SIZE);
-  int *p0 = mem->alloc(mem, sizeOf(int));
-  int *p1 = mem->alloc(mem, sizeOf(int));
-  int *p2 = mem->alloc(mem, sizeOf(int));
-  int *p3 = mem->alloc(mem, sizeOf(int));
+  managed mem = (managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(mem, sizeof(int));
+  int *p1 = mem->alloc(mem, sizeof(int));
+  int *p2 = mem->alloc(mem, sizeof(int));
+  int *p3 = mem->alloc(mem, sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
