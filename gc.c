@@ -20,31 +20,25 @@ void traverse_stack (adress_space h, mark_fun f, void *p);
  * Returns true if pointer ptr is within the addresspace of the heap that was allocated using iMalloc
  */
 Boolean in_address_space (void *ptr, adress_space h) {
-  if (ptr < h->end && ptr > h->start) {
+  if (ptr < h->end && ptr > h->start)
     return TRUE;
-  }
-  else {
+  else
     return FALSE;
-  }
 }
 
 /*
  *
  */
 void traverse_heap (void *ptr, style mem, address_space h) {
-  Boolean ptr_in_adr_spc = in_address_space (ptr, h);
-  if (ptr_in_adr_spc == TRUE) {                 // if the pointer is within the address space (should be, but it depends on traverse_stack)
-    *ptr = potential_ptr; // bit unsure about the loop-part
-    while (potential_ptr < h->end) {
-      if (in_address_space (potential_ptr,address_space) == TRUE) {
-        ptr_mark(potential_ptr, mem);
-      }
-      else {
-        return;
-      }
-    potential_ptr = *potential_ptr;
+  if (in_address_space (ptr, h) == TRUE) {// if the pointer is within the address space (should be, but it depends on traverse_stack)
+    void *potential_ptr = *ptr; // bit unsure about the loop-part
+    while (in_address_space(potential_ptr,h) == TRUE) {
+      ptr_mark(potential_ptr, mem);
+      potential_ptr = *potential_ptr;
     }
   }
+  else
+    return;
 }
 
 /*
