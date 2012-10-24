@@ -22,20 +22,13 @@
  */
 
 /* Actual return type specifications for iMalloc */
-struct private_manual {
+ 
+struct priv_mem {
   void* start;
   void* end;
   Chunk freelist;
   Chunk alloclist;
-  manual functions;
-};
-
-struct private_managed {
-  void* start;
-  void* end;
-  Chunk freelist;
-  Chunk alloclist;
-  managed functions;
+  style functions;
 };
 
 /* 
