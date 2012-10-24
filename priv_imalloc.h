@@ -6,7 +6,6 @@
 #include "memory.h"
 #include "gc.h"
 #include "refcount.h"
-#include "utilities.h"
 
 /*
  * priv_imalloc.h
@@ -23,14 +22,13 @@
  */
 
 /* Actual return type specifications for iMalloc */
-struct private_manual {
-  void  *data; 
-  manual functions;
-};
-
-struct private_managed {
-  void   *data; 
-  managed functions;
+ 
+struct priv_mem {
+  void* start;
+  void* end;
+  Chunk freelist;
+  Chunk alloclist;
+  style functions;
 };
 
 /* 

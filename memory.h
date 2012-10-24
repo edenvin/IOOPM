@@ -17,7 +17,6 @@ typedef struct _chunk {
   chunk_size size;
   struct _chunk *next;
   Boolean mark;
-  unsigned short refcount;
 } *Chunk;
 
 
@@ -27,9 +26,9 @@ typedef struct _chunk {
 Boolean memory_is_marked(Chunk chunk);
 
 /*
- * Marks a chunk as free or taken.
+ * Marks a chunk as marked or not marked
  */
-Boolean set_memory_status(Chunk chunk, Boolean free);
+Boolean set_memory_mark(Chunk chunk, Boolean mark);
 
 /*
  * Returns the size of the chunk.
@@ -37,27 +36,16 @@ Boolean set_memory_status(Chunk chunk, Boolean free);
 chunk_size memory_size(Chunk chunk);
 
 /*
- * Returns the refcount for the chunk.
- */
-unsigned short memory_refcount(Chunk chunk);
-
-/*
- * Increase or decrease the refcount.
- */
-unsigned short increase_memory_refcount(Chunk chunk);
-unsigned short decrease_memory_refcount(Chunk chunk);
-
-/*
  * Searches for a chunk in the memory.
  */
-Chunk search_memory(void *needle, Chunk stack);
+Chunk search_memory(void *needle, Chunk haystack);
 
 /*
  * Claims a part of the memory. Finds a suitable chunk in the free-list,
  * splits it if neccessary and pushes the chunk on to the allocated-list.
  * Keeps the free-list sorted.
  */
-Chunk claim_memory(chunk_size size);
+Chunk claim_memory(chunk_size size, Chunk free_list, Chunk alloc_list);
 
 /*
  * Removes the chunk from the allocated-list and adds it to the free-list.
@@ -68,8 +56,12 @@ void free_memory(Chunk chunk);
 
 /*
  * Creates a new chunklist with a first chunk of given size and start at given pointer.
- * The chunk will have a refcount of 0.
  */
 Chunk new_chunklist(void *start, chunk_size size);
+
+/*
+ * Returns the next chunk after chunk
+ */
+Chunk next_chunk(Chunk chunk);
 
 #endif
