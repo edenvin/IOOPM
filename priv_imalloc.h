@@ -32,6 +32,12 @@ struct priv_mem {
 };
 typedef struct priv_mem priv_mem;
 
+/* Initiates the malloc library to be used. memsiz defines the
+ * maximum amount of memory that can be used. flags specifies kind
+ * of memory manager and allows fine-tunes some options.
+ */
+struct style *priv_imalloc(chunk_size memsiz, unsigned int flags);
+
 /* 
  * Frees an object. 
  */
