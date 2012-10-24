@@ -36,17 +36,6 @@ Boolean set_memory_mark(Chunk chunk, Boolean mark);
 chunk_size memory_size(Chunk chunk);
 
 /*
- * Returns the refcount for the chunk.
- */
-unsigned short memory_refcount(Chunk chunk);
-
-/*
- * Increase or decrease the refcount.
- */
-unsigned short increase_memory_refcount(Chunk chunk);
-unsigned short decrease_memory_refcount(Chunk chunk);
-
-/*
  * Searches for a chunk in the memory.
  */
 Chunk search_memory(void *needle, Chunk stack);
@@ -67,7 +56,6 @@ void free_memory(Chunk chunk);
 
 /*
  * Creates a new chunklist with a first chunk of given size and start at given pointer.
- * The chunk will have a refcount of 0.
  */
 Chunk new_chunklist(void *start, chunk_size size);
 

@@ -21,13 +21,6 @@ void test_memory_size(void) {
   CU_ASSERT(memory_size(chunk) == 2*1024);
 }
 
-void test_memory_refcount(void) {
-  Chunk chunk = new_chunklist(NULL, 2 Kb);
-  // not finished
-  // -----
-  CU_ASSERT(memory_refcount(chunk) == 2);
-}
-
 void test_set_memory_mark(void) {
   Chunk chunk = NULL;
   CU_ASSERT(memory_is_marked(chunk) == FALSE);

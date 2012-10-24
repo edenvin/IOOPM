@@ -4,9 +4,9 @@
 
 /*
  * Creates a new chunk with given size and start at given pointer.
- * The chunk will be set as free, and it's refcount will be 0.
+ * The chunk will not be marked.
  */
-Chunk new_chunk(void *start, chunk_size size, Chunk next, unsigned short refcount) {
+Chunk new_chunk(void *start, chunk_size size, Chunk next) {
   // Allocate memory for a new chunk.
   Chunk chunk = malloc(sizeof(Chunk));
   
@@ -47,8 +47,11 @@ chunk_size memory_size(Chunk chunk) {
   return chunk->size;
 }
 
+/*
+ * Creates a new chunklist with a first chunk of given size and start at given pointer.
+ */
 Chunk new_chunklist(void *start, chunk_size size) {
-  return new_chunk(start, size, NULL, 0);
+  return new_chunk(start, size, NULL);
 }
 
 /*
