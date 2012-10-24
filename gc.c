@@ -43,10 +43,14 @@ Boolean in_address_space (void *ptr, address_space h) {
 void *find_pointers(void *ptr, address_space h, style mem){
   chunk_size size = 0;
   while(size < memory_size(ptr)){
+    /* If the first intpointer points to something within our adress space,
+     * mark the current chunk as used and find pointers from the new chunk. 
+     */
     if(in_address_space((int)*ptr + size, h) == TRUE)
       find_pointers((int)*ptr + size), h, mem);
-      set_memory_mark(((int)*ptr + size), free)
+      set_memory_mark(((int)*ptr + size), TRUE);
       size = size+sizeof(int);
+    // When no pointer was found, continue to read the rest of the chunk as int pointers
     else
       size = size+sizeof(int);
   }
