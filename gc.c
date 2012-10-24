@@ -37,14 +37,16 @@ Boolean in_address_space (void *ptr, address_space h) {
 
 /*
  * Goes through every sizeof(int) in the destination on the heap of *ptr and 
- * tries to read it as a pointer to see if it points to anything else within
+ * tries to read it as a pointer to see if there is any pointers to anything else within
  * the adress space.
  */
-void *is_pointer(void *ptr, address_space h, style mem){
+void *find_pointers(void *ptr, address_space h, style mem){
   chunk_size size = 0;
-  while(size < memory_size(mem)){
+  while(size < memory_size(ptr)){
     if(in_address_space((int)*ptr + size, h) == TRUE)
-      return (int)*ptr + size;
+      find_pointers((int)*ptr + size), h, mem);
+      set_memory_mark(((int)*ptr + size), free)
+      size = size+sizeof(int);
     else
       size = size+sizeof(int);
   }
@@ -57,6 +59,7 @@ void *is_pointer(void *ptr, address_space h, style mem){
  */
 void traverse_heap (void *ptr, style mem, address_space h) {
   if (in_address_space (ptr, h) == TRUE) {// if the pointer is within the address space (should be, but it depends on traverse_stack)
+
     void *potential_ptr = *ptr; // bit unsure about the loop-part
     while (in_address_space(potential_ptr,h) == TRUE) {
       ptr_mark(potential_ptr, mem);
@@ -74,8 +77,8 @@ void traverse_heap (void *ptr, style mem, address_space h) {
   * Traverses the alloclist and sets all mark_bits to false.
   */
 void stage_one (style mem) {
-  while (!next_chunk) {           // be om next_chunk
-    set_memory_status (chunk,false);
+  while (current_chunk) {           // be om next_chunk
+    set_memory_status (current_chunk ,false);
     current_chunk = next_chunk;       
   } 
 }
