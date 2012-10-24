@@ -12,14 +12,23 @@ RawPtr end;
 typedef void (*MarkFun)(void *ptr, void *data);
 
 
-void traverse_stack (adress_space h, mark_fun f, void *p);
+void traverse_stack (address_space h, mark_fun f, void *p);
 /*
  * Our functions
  */
+
+ /*
+ * Funciton to mark all the chunk's whose corresponding object were found with pointers from the stack as alive.
+ * Also marks a chunk as alive if you can "backtrace" a number of pointer from an object back to the stack.
+ * Objects on the heap must be "connected" to the stack via one (or more) pointers to be considered alive.
+ */
+void ptr_mark(void *ptr,/* void *ignore,*/ style mem) {
+  set_memory_status(memory_search(*ptr, mem), true);
+}
 /*
  * Returns true if pointer ptr is within the addresspace of the heap that was allocated using iMalloc
  */
-Boolean in_address_space (void *ptr, adress_space h) {
+Boolean in_address_space (void *ptr, address_space h) {
   if (ptr < h->end && ptr > h->start)
     return TRUE;
   else
@@ -27,7 +36,24 @@ Boolean in_address_space (void *ptr, adress_space h) {
 }
 
 /*
- *
+ * Goes through every sizeof(int) in the destination on the heap of *ptr and 
+ * tries to read it as a pointer to see if it points to anything else within
+ * the adress space.
+ */
+void *is_pointer(void *ptr, address_space h, style mem){
+  chunk_size size = 0;
+  while(size < memory_size(mem)){
+    if(in_address_space((int)*ptr + size, h) == TRUE)
+      return (int)*ptr + size;
+    else
+      size = size+sizeof(int);
+  }
+  return NULL;
+}
+
+/*
+ * Function to traverse the heap and mark items that are linked within
+ * the adress space as used.
  */
 void traverse_heap (void *ptr, style mem, address_space h) {
   if (in_address_space (ptr, h) == TRUE) {// if the pointer is within the address space (should be, but it depends on traverse_stack)
@@ -41,14 +67,7 @@ void traverse_heap (void *ptr, style mem, address_space h) {
     return;
 }
 
-/*
- * Funciton to mark all the chunk's whose corresponding object were found with pointers from the stack as alive.
- * Also marks a chunk as alive if you can "backtrace" a number of pointer from an object back to the stack.
- * Objects on the heap must be "connected" to the stack via one (or more) pointers to be considered alive.
- */
-void ptr_mark(void *ptr,/* void *ignore,*/ style mem) {
-  set_memory_status(memory_search(*ptr, mem), true);
-}
+
 
  /*
   * The first stage of the mark & sweep algorithm.
