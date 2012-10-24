@@ -55,14 +55,14 @@ Chunk new_chunklist(void *start, chunk_size size) {
  * Returns the first chunk in free_list
  */
 Chunk first_free_chunk(style mem) {
-  return STYLE_TO_FREE(mem);
+  return STYLE_TO_FREE(&mem);
 }
 
 /*
  * Returns the first chunk in alloc_list
  */
 Chunk first_alloc_chunk(style mem) {
-  return STYLE_TO_ALLOC(mem);
+  return STYLE_TO_ALLOC(&mem);
 }
 
 /*
