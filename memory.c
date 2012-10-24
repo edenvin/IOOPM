@@ -21,17 +21,6 @@ Chunk new_chunk(void *start, chunk_size size, Chunk next) {
 /* PUBLIC FUNCTIONS */
 
 /*
- * Marks a chunk as marked or not marked
- */
-Boolean set_memory_mark(Chunk chunk, Boolean mark) {
-  if (chunk == NULL)
-    return FALSE;
-  
-  chunk->mark = mark;
-  return memory_is_marked(chunk);
-}
-
-/*
  * Returns TRUE if the chunk is free, FALSE if not.
  */
 Boolean memory_is_marked(Chunk chunk) {
@@ -39,13 +28,43 @@ Boolean memory_is_marked(Chunk chunk) {
 }
 
 /*
+ * Marks a chunk as marked or not marked
+ */
+ Boolean set_memory_mark(Chunk chunk, Boolean mark) {
+   if (chunk == NULL)
+     return FALSE;
+
+   chunk->mark = mark;
+   return memory_is_marked(chunk);
+ }
+
+/*
  * Returns the size of the chunk.
  */
-chunk_size memory_size(Chunk chunk) {
-  if (chunk == NULL)
-    return 0;
-  return chunk->size;
-}
+ chunk_size memory_size(Chunk chunk) {
+   if (chunk == NULL)
+     return 0;
+   return chunk->size;
+ }
+ 
+/*
+ * Searches for a chunk in the memory.
+ */
+Chunk search_memory(void *needle, Chunk haystack) { return NULL; }
+
+/*
+ * Claims a part of the memory. Finds a suitable chunk in the free-list,
+ * splits it if neccessary and pushes the chunk on to the allocated-list.
+ * Keeps the free-list sorted.
+ */
+Chunk claim_memory(chunk_size size, Chunk free_list, Chunk alloc_list) { return NULL; }
+
+/*
+ * Removes the chunk from the allocated-list and adds it to the free-list.
+ * Combines the new chunk on the free-list with surrounding chunks if possible.
+ * Keeps the free-list sorted.
+ */
+void free_memory(Chunk chunk) {}
 
 /*
  * Creates a new chunklist with a first chunk of given size and start at given pointer.
@@ -55,35 +74,11 @@ Chunk new_chunklist(void *start, chunk_size size) {
 }
 
 /*
- * Returns the first chunk in free_list
- */
-Chunk first_free_chunk(style mem) {
-  return STYLE_TO_FREE(&mem);
-}
-
-/*
- * Returns the first chunk in alloc_list
- */
-Chunk first_alloc_chunk(style mem) {
-  return STYLE_TO_ALLOC(&mem);
-}
-
-/*
  * Returns the next chunk after chunk
  */
+ 
 Chunk next_chunk(Chunk chunk) {
   if (chunk == NULL)
     return NULL;
   return chunk->next;
 }
-
-/*
- * Splits a chunk into two smaller chunks, with the first chunk having the given size,
- * and the second chunk having any remaining space.
- */
-void split_memory(Chunk chunk, chunk_size size) {}
-
-/*
- * Combines two chunks into one larger chunk.
- */
-void combine_memory(Chunk first, Chunk last) {}
