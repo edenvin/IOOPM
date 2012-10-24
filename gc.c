@@ -11,18 +11,21 @@ RawPtr end;
 
 typedef void (*MarkFun)(void *ptr, void *data);
 
+
 void traverse_stack (adress_space h, mark_fun f, void *p);
 /*
  * Our functions
  */
-
+/*
+ * Returns true if pointer ptr is within the addresspace of the heap that was allocated using iMalloc
+ */
 Boolean in_address_space (void *ptr, adress_space h) {
   if (ptr < h->end && ptr > h->start) {
     return TRUE;
   }
-    else {
-      return FALSE;
-    }
+  else {
+    return FALSE;
+  }
 }
 
 /*
