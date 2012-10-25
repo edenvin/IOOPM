@@ -21,8 +21,10 @@ void traverse_stack (address_space h, MarkFun f, void *p);
 /*
  * Returns true if pointer ptr is within the addresspace on the heap that was allocated using iMalloc
  */
-Boolean in_address_space(void *ptr, address_space h) {
-  if (ptr < h.end && ptr > h.start){
+Boolean in_address_space(void *ptr, priv_mem *mem) {
+  int *start = as_start(mem);
+  int *end = as_end(mem);
+  if (ptr < end && ptr > start){
     return TRUE;
   }
   else{
@@ -38,15 +40,15 @@ Boolean in_address_space(void *ptr, address_space h) {
  * Objects on the heap must be "connected" to the stack via
  * one (or more) pointers to be considered alive.
  */
-void traverse_heap(void *ptr, address_space h, priv_mem *mem){
+void traverse_heap(void *ptr, /*address_space h*/ priv_mem *mem){
   chunk_size size = 0;
   Chunk chunk = alloclist (mem);
   while (size < memory_size(search_memory(ptr,chunk))){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
      */
-     if (in_address_space((int)*ptr + size, h) == TRUE){
-      traverse_heap(((int)*ptr + size), h, mem);
+     if (in_address_space((int)*ptr + size, mem) == TRUE){
+      traverse_heap(((int)*ptr + size), mem);
       set_memory_mark(((int)*ptr + size), TRUE);
       size = size+sizeof(int);
     }
@@ -55,7 +57,7 @@ void traverse_heap(void *ptr, address_space h, priv_mem *mem){
       size = size+sizeof(int);
     }
   }
-  return NULL;
+  return;
 }
  /*
   * The first stage of the mark & sweep algorithm.
@@ -101,7 +103,7 @@ unsigned int collect(Memory mem){
   address_space as;
   as.start = as_start(memory_private);
   as.end = as_end(memory_private);
-  traverse_stack(as, traverse_heap(*ptr, as, memory_private), NULL);
+  traverse_stack(as, traverse_heap(*ptr, memory_private), NULL);
   unsigned int i = sweep(memory_private);
   return i;
 }
