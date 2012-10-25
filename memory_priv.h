@@ -20,5 +20,9 @@ void free_chunk(Chunk chunk);
  */
 void free_lists(Lists lists);
 
+/*
+ * Inserts chunk into the freelist in lists.
+ */
+void insert_chunk_to_freelist(Lists lists, Chunk chunk);
 
 #endif

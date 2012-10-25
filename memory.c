@@ -1,41 +1,6 @@
 #include "memory.h"
 #include "memory_priv.h"
 
-/* PRIVATE FUNCITONS */
-
-/*
- * Creates a new chunk with given size and start at given pointer.
- * The chunk will not be marked.
- */
-Chunk new_chunk(void *start, chunk_size size, Chunk next) {
-  // Allocate memory for a new chunk.
-  Chunk chunk = malloc(sizeof(struct _chunk));
-  
-  chunk->start = start;
-  chunk->size = size;
-  chunk->next = next;
-  chunk->mark = FALSE;
-  
-  return chunk;
-}
-
-/*
- * Frees a chunk struct from memory.
- */
-void free_chunk(Chunk chunk) {
-  free(chunk);
-}
-
-/*
- * Frees a whole lists struct.
- */
-void free_lists(Lists lists) {
-  free_chunklist(lists->freelist);
-  free_chunklist(lists->alloclist);
-  free(lists);
-}
-
-
 /* PUBLIC FUNCTIONS */
 
 /*
@@ -88,11 +53,34 @@ Chunk search_memory(void *needle, Chunk haystack, Boolean strict) {
  * Keeps the free-list sorted.
  */
 Chunk claim_memory(chunk_size size, Lists lists) {
-  // Traverse free-list until we find a large enough chunk.
-  // Split that chunk into two parts.
-  // Move one of them to the end of the alloc_list.
+  Chunk chunk = memory_freelist(lists);
+  Chunk prev = NULL;
   
-  // If no splittable chunk was found, return null.
+  while (chunk) {
+    if (chunk->size >= size) {
+      // We found a chunk large enough! Extract it.
+      if (prev == NULL)
+        lists->freelist = chunk->next;
+      else
+        prev->next = chunk->next;
+      
+      // Create two new chunks with smaller size.
+      Chunk alloc = new_chunk(chunk->start, size, memory_alloclist(lists));
+      lists->alloclist = alloc;
+      
+      chunk_size remaining = chunk->size - size;
+      void *start = chunk->start+size;
+      Chunk new = new_chunk(start, remaining, NULL);
+      
+      // Insert chunk to freelist
+      insert_chunk_to_freelist(lists, new);
+      return alloc;
+    }
+    prev = chunk;
+    chunk = chunk->next;
+  }
+  
+  return NULL;
 }
 
 /*
@@ -148,4 +136,61 @@ Chunk memory_freelist(Lists lists) {
  */
 Chunk memory_alloclist(Lists lists) {
   return lists->alloclist;
+}
+
+
+/* PRIVATE FUNCITONS */
+
+/*
+ * Creates a new chunk with given size and start at given pointer.
+ * The chunk will not be marked.
+ */
+Chunk new_chunk(void *start, chunk_size size, Chunk next) {
+  // Allocate memory for a new chunk.
+  Chunk chunk = malloc(sizeof(struct _chunk));
+  
+  chunk->start = start;
+  chunk->size = size;
+  chunk->next = next;
+  chunk->mark = FALSE;
+  
+  return chunk;
+}
+
+/*
+ * Frees a chunk struct from memory.
+ */
+void free_chunk(Chunk chunk) {
+  free(chunk);
+}
+
+/*
+ * Frees a whole lists struct.
+ */
+void free_lists(Lists lists) {
+  free_chunklist(lists->freelist);
+  free_chunklist(lists->alloclist);
+  free(lists);
+}
+
+/*
+ * Inserts chunk into the freelist in lists.
+ */
+void insert_chunk_to_freelist(Lists lists, Chunk chunk) {
+  Chunk cursor = lists->freelist;
+  while (cursor) {
+    
+    if (cursor->next == NULL) {
+      cursor->next = chunk;
+      break;
+    }
+    else if ((lists->sort_style == ASCENDING_SIZE && chunk->size >= cursor->size && chunk->size < cursor->next->size) ||
+        (lists->sort_style == DESCENDING_SIZE && chunk->size <= cursor->size && chunk->size > cursor->next->size) ||
+        (lists->sort_style == ADDRESS && chunk->start > cursor->start && chunk->start < cursor->next->start)) {
+      chunk->next = cursor->next;
+      cursor->next = chunk;
+    }
+    
+    cursor = cursor->next;
+  }
 }
