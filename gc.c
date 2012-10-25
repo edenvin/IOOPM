@@ -17,14 +17,7 @@ void traverse_stack (address_space h, mark_fun f, void *p);
  * Our functions
  */
 
- /*
- * Funciton to mark all the chunk's whose corresponding object were found with pointers from the stack as alive.
- * Also marks a chunk as alive if you can "backtrace" a number of pointer from an object back to the stack.
- * Objects on the heap must be "connected" to the stack via one (or more) pointers to be considered alive.
- */
-void ptr_mark(void *ptr,/* void *ignore,*/ style mem) {
-  set_memory_status(memory_search(*ptr, mem), true);
-}
+
 /*
  * Returns true if pointer ptr is within the addresspace of the heap that was allocated using iMalloc
  */
@@ -36,44 +29,26 @@ Boolean in_address_space (void *ptr, address_space h) {
 }
 
 /*
- * Goes through every sizeof(int) in the destination on the heap of *ptr and 
- * tries to read it as a pointer to see if there is any pointers to anything else within
- * the adress space.
+ * Function to traverse the heap and mark items that are linked within
+ * the adress space as used.
  */
-void *find_pointers(void *ptr, address_space h, style mem){
+void traverse_heap(void *ptr, style mem, address_space h){
   chunk_size size = 0;
   while(size < memory_size(ptr)){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
      */
-    if(in_address_space((int)*ptr + size, h) == TRUE)
-      find_pointers((int)*ptr + size), h, mem);
+    if(in_address_space((int)*ptr + size, h) == TRUE){
+      traverse_heap((int)*ptr + size), h, mem);
       set_memory_mark(((int)*ptr + size), TRUE);
       size = size+sizeof(int);
+    }
     // When no pointer was found, continue to read the rest of the chunk as int pointers
     else
       size = size+sizeof(int);
   }
   return NULL;
 }
-
-/*
- * Function to traverse the heap and mark items that are linked within
- * the adress space as used.
- */
-void traverse_heap (void *ptr, style mem, address_space h) {
-  if (in_address_space (ptr, h) == TRUE) {// if the pointer is within the address space (should be, but it depends on traverse_stack)
-
-    void *potential_ptr = *ptr; // bit unsure about the loop-part
-    while (in_address_space(potential_ptr,h) == TRUE) {
-      ptr_mark(potential_ptr, mem);
-      potential_ptr = *potential_ptr;
-    }
-  }
-  else
-    return;
-}
-
 
 
  /*
@@ -115,6 +90,6 @@ unsigned int collect (style mem) {
   address_space as;
   as->start = //first object in the heap's addresspace
   as->end = //last object in the heap's addresspace
-  traverse_stack (&as, ptr_mark (*ptr, *ignore, mem), NULL);
+  traverse_stack (&as, traverse_heap(*ptr, as, mem), NULL);
   return sweep (mem);
 }
