@@ -69,6 +69,11 @@ void* managed_alloc(chunk_size size);
 void* typed_alloc(format_string size);
 
 /*
+ * Returns the total size of the free space in the address space.
+ */
+unsigned int avail(Memory mem);
+
+/*
  * Converts a priv_mem pointer to a style pointer.
  */
 style* priv_to_style(priv_mem* mem);
