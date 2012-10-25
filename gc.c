@@ -9,7 +9,7 @@ RawPtr start;
 RawPtr end;
 } address_space;
 
-typedef void (*MarkFun)(void *ptr, style mem, address_space h);
+typedef void (*MarkFun)(void *ptr, address_space h, priv_mem mem,);
 
 
 void traverse_stack (address_space h, mark_fun f, void *p);
@@ -37,9 +37,10 @@ Boolean in_address_space(void *ptr, address_space h) {
  * one (or more) pointers to be considered alive.
  */
 
-void traverse_heap(void *ptr, style mem, address_space h){
+void traverse_heap(void *ptr, address_space h, priv_mem mem){
   chunk_size size = 0;
-  while (size < memory_size(ptr)){
+  Chunk chunk = alloclist (mem);
+  while (size < memory_size(search_memory(ptr,chunk)){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
      */
@@ -60,8 +61,8 @@ void traverse_heap(void *ptr, style mem, address_space h){
   * The first stage of the mark & sweep algorithm.
   * Traverses the alloclist and sets all mark_bits to false.
   */
-void mark_unused(style mem) {
-  Chunk current_chunk = alloclist(style_to_priv(mem));
+void mark_unused(priv_mem mem) {
+  Chunk current_chunk = alloclist(mem);
   while (current_chunk) {           // be om next_chunk
     set_memory_status(current_chunk ,false);
     current_chunk = next_chunk(current_chunk);       
@@ -73,9 +74,9 @@ void mark_unused(style mem) {
  * Frees the chunks that is no longer being used, the ones with
  * the mark bit set to false.
  */
-int sweep(style mem) {
+int sweep(priv_mem mem) {
   int i = 0;
-  Chunk current_chunk = alloclist(style_to_priv(mem)); 
+  Chunk current_chunk = alloclist(mem); 
   //Initiate iterator
   while (current_chunk) { //While there is a current element
     if (memory_is_marked(current_chunk) == FALSE) {
@@ -97,11 +98,10 @@ int sweep(style mem) {
  */
 unsigned int collect(Memory mem) {
   priv_mem memory_private = style_to_priv(mem);
-  Chunk alloclist_memory_private = alloclist(memory_private);
-  mark_unused(alloclist_memory_private);
+  mark_unused(memory_private);
   address_space as;
   as->start = //first object in the heap's addresspace
   as->end = //last object in the heap's addresspace
-  traverse_stack(&as, traverse_heap(*ptr, as, alloclist_memory_private), NULL);
-  return sweep(alloclist_memory_private);
+  traverse_stack(&as, traverse_heap(*ptr, as, memory_private), NULL);
+  return sweep(memory_private);
 }
