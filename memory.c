@@ -93,6 +93,7 @@ Chunk claim_memory(chunk_size size, Lists lists) {
   // Move one of them to the end of the alloc_list.
   
   // If no splittable chunk was found, return null.
+  return NULL;
 }
 
 /*

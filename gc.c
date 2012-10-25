@@ -7,6 +7,6 @@
  */
 
 
-unsigned int collect (style mem){
-
+unsigned int collect (Memory mem){
+return 0;
 }
