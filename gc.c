@@ -103,7 +103,7 @@ unsigned int collect(Memory mem){
   address_space as;
   as.start = as_start(memory_private);
   as.end = as_end(memory_private);
-  traverse_stack(as, traverse_heap(*ptr, memory_private), NULL);
+  traverse_stack(as, traverse_heap, memory_private);
   unsigned int i = sweep(memory_private);
   return i;
 }
