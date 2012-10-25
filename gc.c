@@ -9,7 +9,7 @@ RawPtr start;
 RawPtr end;
 } address_space;
 
-typedef void (*MarkFun)(void *ptr, void *data);
+typedef void (*MarkFun)(void *ptr, style mem, address_space h);
 
 
 void traverse_stack (address_space h, mark_fun f, void *p);
@@ -67,8 +67,9 @@ void stage_one (style mem) {
  * Frees the chunks that is no longer being used, the ones with the mark bit set to false.
  */
 int sweep (style mem) {
-  int i = 0;
-  while (!next_chunk) {
+  int i = 0; 
+  //Initiate iterator
+  while (!next_chunk) { //While there is a current element
     if (memory_is_marked (current_chunk) == FALSE) {
       free_memory(current_chunk);
       i++;
