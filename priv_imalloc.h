@@ -26,8 +26,7 @@
 struct priv_mem {
   void* start;
   void* end;
-  Chunk freelist;
-  Chunk alloclist;
+  Lists lists;
   style functions;
 };
 typedef struct priv_mem priv_mem;

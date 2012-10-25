@@ -9,6 +9,7 @@
 
 #include "CUnit/Basic.h"
 #include "../memory.h"
+#include "../memory_priv.h"
 
 /*
  * Add tests.

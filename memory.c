@@ -1,4 +1,5 @@
 #include "memory.h"
+#include "memory_priv.h"
 
 /* PRIVATE FUNCITONS */
 
@@ -8,7 +9,7 @@
  */
 Chunk new_chunk(void *start, chunk_size size, Chunk next) {
   // Allocate memory for a new chunk.
-  Chunk chunk = malloc(sizeof(Chunk));
+  Chunk chunk = malloc(sizeof(struct _chunk));
   
   chunk->start = start;
   chunk->size = size;
@@ -17,6 +18,23 @@ Chunk new_chunk(void *start, chunk_size size, Chunk next) {
   
   return chunk;
 }
+
+/*
+ * Frees a chunk struct from memory.
+ */
+void free_chunk(Chunk chunk) {
+  free(chunk);
+}
+
+/*
+ * Frees a whole lists struct.
+ */
+void free_lists(Lists lists) {
+  free_chunklist(lists->freelist);
+  free_chunklist(lists->alloclist);
+  free(lists);
+}
+
 
 /* PUBLIC FUNCTIONS */
 
@@ -48,16 +66,34 @@ Boolean memory_is_marked(Chunk chunk) {
  }
  
 /*
- * Searches for a chunk in the memory.
+ * Searches for a chunk in the memory. If strict is TRUE the needle must match
+ * the chunks' start pointer. If FALSE the needle may point to anywhere in the chunks'
+ * memory.
  */
-Chunk search_memory(void *needle, Chunk haystack) { return NULL; }
+Chunk search_memory(void *needle, Chunk haystack, Boolean strict) {
+  while (haystack) {
+    if (needle == haystack->start)
+      return haystack;
+    else if (!strict && haystack->start < needle && needle < (haystack->start + haystack->size))
+      return haystack;
+    else
+      haystack = next_chunk(haystack);
+  }
+  return NULL;
+}
 
 /*
  * Claims a part of the memory. Finds a suitable chunk in the free-list,
  * splits it if neccessary and pushes the chunk on to the allocated-list.
  * Keeps the free-list sorted.
  */
-Chunk claim_memory(chunk_size size, Chunk free_list, Chunk alloc_list) { return NULL; }
+Chunk claim_memory(chunk_size size, Lists lists) {
+  // Traverse free-list until we find a large enough chunk.
+  // Split that chunk into two parts.
+  // Move one of them to the end of the alloc_list.
+  
+  // If no splittable chunk was found, return null.
+}
 
 /*
  * Removes the chunk from the allocated-list and adds it to the free-list.
@@ -67,18 +103,49 @@ Chunk claim_memory(chunk_size size, Chunk free_list, Chunk alloc_list) { return 
 void free_memory(Chunk chunk) {}
 
 /*
- * Creates a new chunklist with a first chunk of given size and start at given pointer.
+ * Creates a new lists struct with a freelist and an alloclist.
  */
-Chunk new_chunklist(void *start, chunk_size size) {
-  return new_chunk(start, size, NULL);
+Lists create_lists(void *start, chunk_size size, unsigned int sort_style) {
+  Lists lists = malloc(sizeof(struct _lists));
+  lists->alloclist = NULL;
+  lists->freelist = new_chunk(start, size, NULL);
+  lists->sort_style = sort_style;
+  
+  return lists;
 }
+
+/*
+ * Frees a whole chunklist.
+ */
+void free_chunklist(Chunk list) {
+  Chunk temp;
+  while (list) {
+    temp = list;
+    free(list);
+    list = next_chunk(temp);
+  }
+}
+
 
 /*
  * Returns the next chunk after chunk
  */
- 
 Chunk next_chunk(Chunk chunk) {
   if (chunk == NULL)
     return NULL;
   return chunk->next;
+}
+
+/*
+ * Returns the freelist in lists.
+ */
+Chunk memory_freelist(Lists lists) {
+  return lists->freelist;
+}
+
+/*
+ * Returns the alloclist in lists.
+ */
+Chunk memory_alloclist(Lists lists) {
+  return lists->alloclist;
 }
