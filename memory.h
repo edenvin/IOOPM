@@ -18,8 +18,14 @@ struct _chunk {
   struct _chunk *next;
   Boolean mark;
 };
-
 typedef struct _chunk *Chunk;
+
+struct _lists {
+  Chunk freelist;
+  Chunk alloclist;
+  unsigned int sort_style;
+};
+typedef struct _lists *Lists;
 
 
 /*
@@ -38,16 +44,18 @@ Boolean set_memory_mark(Chunk chunk, Boolean mark);
 chunk_size memory_size(Chunk chunk);
 
 /*
- * Searches for a chunk in the memory.
+ * Searches for a chunk in the memory. If strict is TRUE the needle must match
+ * the chunks' start pointer. If FALSE the needle may point to anywhere in the chunks'
+ * memory.
  */
-Chunk search_memory(void *needle, Chunk haystack);
+Chunk search_memory(void *needle, Chunk haystack, Boolean strict);
 
 /*
  * Claims a part of the memory. Finds a suitable chunk in the free-list,
  * splits it if neccessary and pushes the chunk on to the allocated-list.
  * Keeps the free-list sorted.
  */
-Chunk claim_memory(chunk_size size, Chunk free_list, Chunk alloc_list);
+Chunk claim_memory(chunk_size size, Lists lists);
 
 /*
  * Removes the chunk from the allocated-list and adds it to the free-list.
@@ -57,13 +65,28 @@ Chunk claim_memory(chunk_size size, Chunk free_list, Chunk alloc_list);
 void free_memory(Chunk chunk);
 
 /*
- * Creates a new chunklist with a first chunk of given size and start at given pointer.
+ * Creates a new lists struct with a freelist and an alloclist.
  */
-Chunk new_chunklist(void *start, chunk_size size);
+Lists create_lists(void *start, chunk_size size, unsigned int sort_style);
+
+/*
+ * Frees a whole chunklist.
+ */
+void free_chunklist(Chunk list);
 
 /*
  * Returns the next chunk after chunk
  */
 Chunk next_chunk(Chunk chunk);
+
+/*
+ * Returns the freelist in lists.
+ */
+Chunk memory_freelist(Lists lists);
+
+/*
+ * Returns the alloclist in lists.
+ */
+Chunk memory_alloclist(Lists lists);
 
 #endif

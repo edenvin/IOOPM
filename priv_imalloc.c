@@ -8,6 +8,8 @@
  * of memory manager and allows fine-tunes some options.
  */
 struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
+  return NULL;
+  /*
   priv_mem *new_mem = (priv_mem) malloc(sizeof(priv_mem));
   new_mem->start = (void*) malloc(memsiz);
   new_mem->end = (void*) ((char*) (new_mem->start) + memsiz - 1);
@@ -72,7 +74,7 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
       break;
     }
   }
-  return priv_to_style(new_mem);
+  return priv_to_style(new_mem); */
 }
 
 /* 
@@ -107,7 +109,7 @@ void* typed_alloc(format_string size) { return NULL; }
 /*
  * Returns the total size of the free space in the address space.
  */
-unsigned int avail(Memory mem) {
+unsigned int avail(Memory mem) {
   return 0;
 }
 
@@ -129,14 +131,14 @@ priv_mem* style_to_priv(Memory mem) {
  * Returns the freelist in mem.
  */
 Chunk freelist(priv_mem* mem) {
-  return mem->freelist;
+  return memory_freelist(mem->lists);
 }
 
 /*
  * Returns the alloclist in mem.
  */
 Chunk alloclist(priv_mem* mem) {
-  return mem->alloclist;
+  return memory_alloclist(mem->lists);
 }
 
 /*
