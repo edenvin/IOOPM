@@ -28,6 +28,7 @@ struct priv_mem {
   void* end;
   Chunk freelist;
   Chunk alloclist;
+  FreeListStyle sortstyle;
   style functions;
 };
 typedef struct priv_mem priv_mem;
@@ -86,5 +87,15 @@ Chunk freelist(priv_mem* mem);
  * Returns the alloclist in mem.
  */
 Chunk alloclist(priv_mem* mem);
+
+/*
+ * Returns pointer to the start of the allocated address space
+ */
+void* as_start(priv_mem *mem);
+
+/*
+ * Returns pointer to the end of the allocated address space
+ */
+void* as_end(priv_mem *mem);
 
 #endif
