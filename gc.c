@@ -9,7 +9,7 @@ typedef struct {
   RawPtr end;
 } address_space;
 
-typedef void (*MarkFun)(void *ptr, address_space h, priv_mem mem,);
+typedef void (*MarkFun)(void *ptr, address_space h, priv_mem mem);
 
 
 void traverse_stack (address_space h, mark_fun f, void *p);
@@ -102,6 +102,6 @@ unsigned int collect(Memory mem) {
   address_space as;
   as->start = as_start(memory_private);
   as->end = as_end(memory_private);
-  traverse_stack(&as, traverse_heap(*ptr, as, memory_private), NULL);
+  traverse_stack(&as, traverse_heap(*ptr, &as, memory_private), NULL);
   return sweep(memory_private);
 }
