@@ -1,5 +1,5 @@
 #include "gc.h"
-
+#include "priv_imalloc.h"
 /*
  * Typedefs from the specification
  */
