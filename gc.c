@@ -64,7 +64,7 @@ void traverse_heap(void *ptr, address_space h, priv_mem *mem){
 void mark_unused(priv_mem *mem){
   Chunk current_chunk = alloclist(mem);
   while (current_chunk){
-    set_memory_status(current_chunk ,FALSE);
+    set_memory_mark(current_chunk ,FALSE);
     current_chunk = next_chunk(current_chunk);       
   } 
 }
