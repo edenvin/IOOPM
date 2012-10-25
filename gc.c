@@ -40,16 +40,16 @@ Boolean in_address_space(void *ptr, priv_mem *mem) {
  * Objects on the heap must be "connected" to the stack via
  * one (or more) pointers to be considered alive.
  */
-void traverse_heap(void *ptr, /*address_space h*/ priv_mem *mem){
+void traverse_heap(void *ptr, priv_mem *mem){
   chunk_size size = 0;
   Chunk chunk = alloclist (mem);
   while (size < memory_size(search_memory(ptr,chunk))){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
      */
-     if (in_address_space((int)*ptr + size, mem) == TRUE){
-      traverse_heap(((int)*ptr + size), mem);
-      set_memory_mark(((int)*ptr + size), TRUE);
+     if (in_address_space(*(int)ptr + size, mem) == TRUE){
+      traverse_heap((*(int)ptr + size), mem);
+      set_memory_mark((*(int)ptr + size), TRUE);
       size = size+sizeof(int);
     }
     // If no pointer was found, continue to read the rest of the chunk as int pointers
