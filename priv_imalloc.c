@@ -129,14 +129,14 @@ priv_mem* style_to_priv(Memory mem) {
  * Returns the freelist in mem.
  */
 Chunk freelist(priv_mem* mem) {
-  return mem->freelist;
+  return memory_freelist(mem->lists);
 }
 
 /*
  * Returns the alloclist in mem.
  */
 Chunk alloclist(priv_mem* mem) {
-  return mem->alloclist;
+  return memory_alloclist(mem->lists);
 }
 
 /*
