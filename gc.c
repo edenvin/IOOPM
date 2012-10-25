@@ -5,8 +5,8 @@
  */
 typedef char *RawPtr;
 typedef struct {
-RawPtr start;
-RawPtr end;
+  RawPtr start;
+  RawPtr end;
 } address_space;
 
 typedef void (*MarkFun)(void *ptr, address_space h, priv_mem mem,);
@@ -100,8 +100,8 @@ unsigned int collect(Memory mem) {
   priv_mem memory_private = style_to_priv(mem);
   mark_unused(memory_private);
   address_space as;
-  as->start = //first object in the heap's addresspace
-  as->end = //last object in the heap's addresspace
+  as->start = as_start(memory_private);
+  as->end = as_end(memory_private);
   traverse_stack(&as, traverse_heap(*ptr, as, memory_private), NULL);
   return sweep(memory_private);
 }
