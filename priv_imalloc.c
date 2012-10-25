@@ -41,14 +41,14 @@ void* typed_alloc(format_string size) { return NULL; }
  * Converts a priv_mem pointer to a style pointer.
  */
 style* priv_to_style(priv_mem* mem) {
-  return (style*) mem+(2 * sizeof(void*) + 2 * sizeof(Chunk));
+  return (style*) ((void*) ((Chunk) mem + 2) + 2);
 }
 
 /*
  * Converts a style style pointer to a priv_mem pointer.
  */
 priv_mem* style_to_priv(style* mem) {
-  return (priv_mem*) mem-(2 * sizeof(void*) + 2 * sizeof(Chunk));
+  return (priv_mem*) ((void*) ((Chunk) mem - 2) - 2);
 }
 
 /*
