@@ -21,7 +21,7 @@ void traverse_stack (address_space h, mark_fun f, void *p);
 /*
  * Returns true if pointer ptr is within the addresspace on the heap that was allocated using iMalloc
  */
-Boolean in_address_space (void *ptr, address_space h) {
+Boolean in_address_space(void *ptr, address_space h) {
   if (ptr < h->end && ptr > h->start)
     return TRUE;
   else
@@ -39,11 +39,11 @@ Boolean in_address_space (void *ptr, address_space h) {
 
 void traverse_heap(void *ptr, style mem, address_space h){
   chunk_size size = 0;
-  while(size < memory_size(ptr)){
+  while (size < memory_size(ptr)){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
      */
-    if(in_address_space((int)*ptr + size, h) == TRUE){
+    if (in_address_space((int)*ptr + size, h) == TRUE){
       traverse_heap((int)*ptr + size), h, mem);
       set_memory_mark(((int)*ptr + size), TRUE);
       size = size+sizeof(int);
@@ -60,10 +60,11 @@ void traverse_heap(void *ptr, style mem, address_space h){
   * The first stage of the mark & sweep algorithm.
   * Traverses the alloclist and sets all mark_bits to false.
   */
-void stage_one (style mem) {
+void mark_unused(style mem) {
+  Chunk current_chunk = alloclist(style_to_priv(mem));
   while (current_chunk) {           // be om next_chunk
-    set_memory_status (current_chunk ,false);
-    current_chunk = next_chunk;       
+    set_memory_status(current_chunk ,false);
+    current_chunk = next_chunk(current_chunk);       
   } 
 }
 
@@ -72,17 +73,18 @@ void stage_one (style mem) {
  * Frees the chunks that is no longer being used, the ones with
  * the mark bit set to false.
  */
-int sweep (style mem) {
-  int i = 0; 
+int sweep(style mem) {
+  int i = 0;
+  Chunk current_chunk = alloclist(style_to_priv(mem)); 
   //Initiate iterator
-  while (!next_chunk) { //While there is a current element
-    if (memory_is_marked (current_chunk) == FALSE) {
+  while (current_chunk) { //While there is a current element
+    if (memory_is_marked(current_chunk) == FALSE) {
       free_memory(current_chunk);
       i++;
-      current_chunk = next_chunk;
+      current_chunk = next_chunk(current_chunk);
     }
     else {
-      current_chunk = next_chunk;
+      current_chunk = next_chunk(current_chunk);
     }
   }
   return i;
@@ -93,11 +95,13 @@ int sweep (style mem) {
  * Returns a positive integer if the sweep stage was successful and memory was freed.
  * The integer returned is corresponding to the number of memory blocks freed.
  */
-unsigned int collect (style mem) {
-  stage_one (mem);
+unsigned int collect(Memory mem) {
+  priv_mem memory_private = style_to_priv(mem);
+  Chunk alloclist_memory_private = alloclist(memory_private);
+  mark_unused(alloclist_memory_private);
   address_space as;
   as->start = //first object in the heap's addresspace
   as->end = //last object in the heap's addresspace
-  traverse_stack (&as, traverse_heap(*ptr, as, mem), NULL);
-  return sweep (mem);
+  traverse_stack(&as, traverse_heap(*ptr, as, alloclist_memory_private), NULL);
+  return sweep(alloclist_memory_private);
 }
