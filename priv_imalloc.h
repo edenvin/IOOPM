@@ -76,12 +76,12 @@ unsigned int avail(Memory mem);
 /*
  * Converts a priv_mem pointer to a style pointer.
  */
-style* priv_to_style(priv_mem* mem);
+Memory priv_to_style(priv_mem* mem);
 
 /*
  * Converts a style style pointer to a priv_mem pointer.
  */
-priv_mem* style_to_priv(style* mem);
+priv_mem* style_to_priv(Memory mem);
 
 /*
  * Returns the freelist in mem.

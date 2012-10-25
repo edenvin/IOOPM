@@ -114,14 +114,14 @@ unsigned int avail(Memory mem) {
 /*
  * Converts a priv_mem pointer to a style pointer.
  */
-style* priv_to_style(priv_mem* mem) {
-  return (style*) ((unsigned int) ((void*) ((Chunk) mem + 2) + 2) + 1);
+Memory priv_to_style(priv_mem* mem) {
+  return (Memory) ((unsigned int) ((void*) ((Chunk) mem + 2) + 2) + 1);
 }
 
 /*
  * Converts a style style pointer to a priv_mem pointer.
  */
-priv_mem* style_to_priv(style* mem) {
+priv_mem* style_to_priv(Memory mem) {
   return (priv_mem*) ((unsigned int) ((void*) ((Chunk) mem - 2) - 2) - 1);
 }
 
