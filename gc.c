@@ -16,7 +16,7 @@ typedef void (*MarkFun)(void *ptr, void *data);
 * Then, for all r in R, calls f(r, p), where p is just some
 * additional user-provided payload.
 */
-void traverse_stack (address_space h, MarkFun f, void *p);
+void traverse_stack (address_space h, MarkFun f, void *p){}
 
 /*
  * Returns true if pointer ptr is within the addresspace on the heap that was allocated using iMalloc
@@ -24,7 +24,7 @@ void traverse_stack (address_space h, MarkFun f, void *p);
 Boolean in_address_space(void *ptr, priv_mem *mem) {
   int *start = as_start(mem);
   int *end = as_end(mem);
-  if (ptr < end && ptr > start){
+  if ((int*)ptr < end && (int*)ptr > start){
     return TRUE;
   }
   else{
@@ -40,16 +40,16 @@ Boolean in_address_space(void *ptr, priv_mem *mem) {
  * Objects on the heap must be "connected" to the stack via
  * one (or more) pointers to be considered alive.
  */
-void traverse_heap(void *ptr, priv_mem *mem){
+void traverse_heap(void *ptr, void *mem){
   chunk_size size = 0;
   Chunk chunk = alloclist (mem);
-  while (size < memory_size(search_memory(ptr,chunk))){
+  while (size < memory_size(search_memory(ptr,chunk,FALSE))){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
      */
      if (in_address_space((int*)ptr + size, mem) == TRUE){
-      traverse_heap(((int*)ptr + size), mem);
-      set_memory_mark(((int*)ptr + size), TRUE);
+      traverse_heap((Chunk)((int*)ptr + size), mem);
+      set_memory_mark((Chunk)((int*)ptr + size), TRUE);
       size = size+sizeof(int);
     }
     // If no pointer was found, continue to read the rest of the chunk as int pointers
