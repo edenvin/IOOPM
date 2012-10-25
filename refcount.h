@@ -9,7 +9,7 @@
  *
  */
 
- #include "imalloc.h"
+#include "imalloc.h"
 
 /*
  * Increment adress's refcount by 1
@@ -26,5 +26,4 @@ void release(Memory mem, void *object);
  */
 unsigned int count(void *object);
 
-
- #endif
+#endif

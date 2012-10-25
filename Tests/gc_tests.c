@@ -15,7 +15,7 @@
   *p2 = 2;
   *p3 = 3;
   CU_ASSERT(collect(mem) == 0);
-  free_mem(mem); //not made yet
+  free_memory(mem); //not made yet
 }
 
 
@@ -33,7 +33,7 @@
   *p2 = 2;
    p3 = NULL;
   CU_ASSERT(collect(mem) == 1);
-  free_mem(mem); //not made yet
+  free_memory(mem); //not made yet
 }
 
 /*
@@ -51,7 +51,7 @@
   *p2 = p3;
    p3 = NULL;
   CU_ASSERT(collect(mem) == 0);
-  free_mem(mem); //not made yet
+  free_memory(mem); //not made yet
 }
 
 /*
@@ -70,7 +70,7 @@
    p2 = NULL;
    p3 = NULL;
   CU_ASSERT(collect(mem) == 1);
-  free_mem(mem); //not made yet
+  free_memory(mem); //not made yet
 }
 
 

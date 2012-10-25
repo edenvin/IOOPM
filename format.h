@@ -16,4 +16,4 @@ typedef char* format_string;
  */
 chunk_size format_string_to_size (format_string str);
 
- #endif
+#endif

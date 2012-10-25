@@ -30,6 +30,13 @@ struct priv_mem {
   Chunk alloclist;
   style functions;
 };
+typedef struct priv_mem priv_mem;
+
+/* Initiates the malloc library to be used. memsiz defines the
+ * maximum amount of memory that can be used. flags specifies kind
+ * of memory manager and allows fine-tunes some options.
+ */
+struct style *priv_imalloc(chunk_size memsiz, unsigned int flags);
 
 /* 
  * Frees an object. 
@@ -59,5 +66,25 @@ void* managed_alloc(chunk_size size);
  * and returns a pointer for the allocated memory 
  */
 void* typed_alloc(format_string size);
+
+/*
+ * Converts a priv_mem pointer to a style pointer.
+ */
+style* priv_to_style(priv_mem* mem);
+
+/*
+ * Converts a style style pointer to a priv_mem pointer.
+ */
+priv_mem* style_to_priv(style* mem);
+
+/*
+ * Returns the freelist in mem.
+ */
+Chunk freelist(priv_mem* mem);
+
+/*
+ * Returns the alloclist in mem.
+ */
+Chunk alloclist(priv_mem* mem);
 
 #endif

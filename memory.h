@@ -12,12 +12,14 @@
 #include "imalloc.h"
 #include "utilities.h"
 
-typedef struct _chunk {
+struct _chunk {
   void *start;
   chunk_size size;
   struct _chunk *next;
   Boolean mark;
-} *Chunk;
+};
+
+typedef struct _chunk *Chunk;
 
 
 /*
