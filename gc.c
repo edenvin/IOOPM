@@ -19,7 +19,7 @@ void traverse_stack (address_space h, mark_fun f, void *p);
 
 
 /*
- * Returns true if pointer ptr is within the addresspace of the heap that was allocated using iMalloc
+ * Returns true if pointer ptr is within the addresspace on the heap that was allocated using iMalloc
  */
 Boolean in_address_space (void *ptr, address_space h) {
   if (ptr < h->end && ptr > h->start)
@@ -29,9 +29,14 @@ Boolean in_address_space (void *ptr, address_space h) {
 }
 
 /*
- * Function to traverse the heap and mark items that are linked within
- * the adress space as used.
+ * Funciton to traverse the heap and mark all the chunk's whose 
+ * corresponding object were found with pointers from the stack as alive.
+ * Also marks a chunk as alive if you can "backtrace" a number of pointers
+ * from an object back to the stack.
+ * Objects on the heap must be "connected" to the stack via
+ * one (or more) pointers to be considered alive.
  */
+
 void traverse_heap(void *ptr, style mem, address_space h){
   chunk_size size = 0;
   while(size < memory_size(ptr)){
@@ -43,7 +48,7 @@ void traverse_heap(void *ptr, style mem, address_space h){
       set_memory_mark(((int)*ptr + size), TRUE);
       size = size+sizeof(int);
     }
-    // When no pointer was found, continue to read the rest of the chunk as int pointers
+    // If no pointer was found, continue to read the rest of the chunk as int pointers
     else
       size = size+sizeof(int);
   }
@@ -64,7 +69,8 @@ void stage_one (style mem) {
 
 /*
  * The sweep-stage of the mark & sweep algorithm.
- * Frees the chunks that is no longer being used, the ones with the mark bit set to false.
+ * Frees the chunks that is no longer being used, the ones with
+ * the mark bit set to false.
  */
 int sweep (style mem) {
   int i = 0; 
@@ -85,6 +91,7 @@ int sweep (style mem) {
 /*
  * Performs a garbage collection according to the mark and sweep algorithm.
  * Returns a positive integer if the sweep stage was successful and memory was freed.
+ * The integer returned is corresponding to the number of memory blocks freed.
  */
 unsigned int collect (style mem) {
   stage_one (mem);
