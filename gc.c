@@ -78,7 +78,7 @@ int sweep(priv_mem mem) {
   int i = 0;
   Chunk current_chunk = alloclist(mem); 
   //Initiate iterator
-  while (current_chunk) { //While there is a current element
+  while (current_chunk) {
     if (memory_is_marked(current_chunk) == FALSE) {
       free_memory(current_chunk);
       i++;
