@@ -189,6 +189,7 @@ void insert_chunk_to_freelist(Lists lists, Chunk chunk) {
         (lists->sort_style == ADDRESS && chunk->start > cursor->start && chunk->start < cursor->next->start)) {
       chunk->next = cursor->next;
       cursor->next = chunk;
+      break;
     }
     
     cursor = cursor->next;
