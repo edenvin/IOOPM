@@ -28,5 +28,4 @@ unsigned int release(Memory mem, void *object);
  */
 unsigned int count(void *object);
 
-
- #endif
+#endif

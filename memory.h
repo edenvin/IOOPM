@@ -12,13 +12,20 @@
 #include "imalloc.h"
 #include "utilities.h"
 
-typedef struct _chunk {
+struct _chunk {
   void *start;
   chunk_size size;
   struct _chunk *next;
   Boolean mark;
-  unsigned short refcount;
-} *Chunk;
+};
+typedef struct _chunk *Chunk;
+
+struct _lists {
+  Chunk freelist;
+  Chunk alloclist;
+  unsigned int sort_style;
+};
+typedef struct _lists *Lists;
 
 
 /*
@@ -27,9 +34,9 @@ typedef struct _chunk {
 Boolean memory_is_marked(Chunk chunk);
 
 /*
- * Marks a chunk as free or taken.
+ * Marks a chunk as marked or not marked
  */
-Boolean set_memory_status(Chunk chunk, Boolean free);
+Boolean set_memory_mark(Chunk chunk, Boolean mark);
 
 /*
  * Returns the size of the chunk.
@@ -37,27 +44,23 @@ Boolean set_memory_status(Chunk chunk, Boolean free);
 chunk_size memory_size(Chunk chunk);
 
 /*
- * Returns the refcount for the chunk.
+ * Returns a pointer to the start of the memory represented by chunk.
  */
-unsigned short memory_refcount(Chunk chunk);
+void *memory_start(Chunk chunk);
 
 /*
- * Increase or decrease the refcount.
+ * Searches for a chunk in the memory. If strict is TRUE the needle must match
+ * the chunks' start pointer. If FALSE the needle may point to anywhere in the chunks'
+ * memory.
  */
-unsigned short increase_memory_refcount(Chunk chunk);
-unsigned short decrease_memory_refcount(Chunk chunk);
-
-/*
- * Searches for a chunk in the memory.
- */
-Chunk search_memory(void *needle, Chunk stack);
+Chunk search_memory(void *needle, Chunk haystack, Boolean strict);
 
 /*
  * Claims a part of the memory. Finds a suitable chunk in the free-list,
  * splits it if neccessary and pushes the chunk on to the allocated-list.
  * Keeps the free-list sorted.
  */
-Chunk claim_memory(chunk_size size);
+Chunk claim_memory(chunk_size size, Lists lists);
 
 /*
  * Removes the chunk from the allocated-list and adds it to the free-list.
@@ -67,9 +70,28 @@ Chunk claim_memory(chunk_size size);
 void free_memory(Chunk chunk);
 
 /*
- * Creates a new chunklist with a first chunk of given size and start at given pointer.
- * The chunk will have a refcount of 0.
+ * Creates a new lists struct with a freelist and an alloclist.
  */
-Chunk new_chunklist(void *start, chunk_size size);
+Lists create_lists(void *start, chunk_size size, unsigned int sort_style);
+
+/*
+ * Frees a whole chunklist.
+ */
+void free_chunklist(Chunk list);
+
+/*
+ * Returns the next chunk after chunk
+ */
+Chunk next_chunk(Chunk chunk);
+
+/*
+ * Returns the freelist in lists.
+ */
+Chunk memory_freelist(Lists lists);
+
+/*
+ * Returns the alloclist in lists.
+ */
+Chunk memory_alloclist(Lists lists);
 
 #endif

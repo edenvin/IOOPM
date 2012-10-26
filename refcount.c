@@ -10,8 +10,8 @@ unsigned int release(Memory mem, void* object) {
 	unsigned int* t = REFCOUNT(object);
 	*t = *t - 1;
   if (*t == 0) {
-    // PLACEHOLDER free the object with the help of ifree PLACEHOLDER
-    return 0;
+    managed_free(mem, object);
+    return *t;
   } 
   return *t;
 }

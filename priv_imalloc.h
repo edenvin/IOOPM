@@ -6,7 +6,6 @@
 #include "memory.h"
 #include "gc.h"
 #include "refcount.h"
-#include "utilities.h"
 
 /*
  * priv_imalloc.h
@@ -23,43 +22,115 @@
  */
 
 /* Actual return type specifications for iMalloc */
-struct private_manual {
-  void  *data; 
+
+typedef struct priv_mem *Priv_mem; 
+
+typedef struct {
+  void* start;
+  void* end;
+  Lists lists;
   manual functions;
-};
+} priv_manual, *Priv_manual;
 
-struct private_managed {
-  void   *data; 
+typedef struct {
+  void* start;
+  void* end;
+  Lists lists;
   managed functions;
-};
+} priv_managed, *Priv_managed;
+
+typedef union {
+  priv_manual priv_manual;
+  priv_managed priv_managed;
+} priv_mem;
+
+/* Initiates the malloc library to be used. memsiz defines the
+ * maximum amount of memory that can be used. flags specifies kind
+ * of memory manager and allows fine-tunes some options.
+ */
+struct style *priv_imalloc(chunk_size memsiz, unsigned int flags);
 
 /* 
- * Frees an object. 
+ * Frees object in managed memory mem, returns the amount of memory freed
  */
-void ifree(void *object);
+unsigned int managed_free(Memory mem, void *object);
 
 /* 
- * Allocates memory for the given chunk size 
- * and returns a pointer for the allocated memory 
+ * Frees object in manual memory mem, returns the amount of memory freed
  */
-void* ialloc(chunk_size size);
+unsigned int manual_free(Memory mem, void *object);
 
 /*
  * Allocates memory for the given chunk size 
  * and returns a pointer for the allocated memory 
  */
-void* manual_alloc(chunk_size size);
+void* manual_alloc(Memory mem, chunk_size size);
 
 /*
  * Allocates memory for the given chunk size 
  * and returns a pointer for the allocated memory 
  */
-void* managed_alloc(chunk_size size);
+void* managed_alloc(Memory mem, chunk_size size);
 
 /*
  * Allocates memory for the given chunk size as a string
  * and returns a pointer for the allocated memory 
  */
-void* typed_alloc(format_string size);
+void* typed_alloc(Memory mem, format_string size);
+
+/*
+ * Returns the total size of the free space in the address space.
+ */
+unsigned int avail(Memory mem);
+
+/*
+ * Converts a priv_mem pointer to a style pointer.
+ */
+Memory priv_to_style(Priv_mem mem);
+
+/*
+ * Converts a style style pointer to a priv_mem pointer.
+ */
+Priv_mem style_to_priv(Memory mem);
+
+/*
+ * Returns the freelist in manual memory mem.
+ */
+Chunk manual_freelist(Priv_manual mem);
+
+/*
+ * Returns the freelist in managed memory mem.
+ */
+Chunk managed_freelist(Priv_managed mem);
+
+/*
+ * Returns the alloclist in manual memory mem.
+ */
+Chunk manual_alloclist(Priv_manual mem);
+
+/*
+ * Returns the alloclist in managed memory mem.
+ */
+Chunk managed_alloclist(Priv_managed mem);
+
+/*
+ * Returns pointer to the start of the allocated address space of manual memory mem
+ */
+void* manual_as_start(Priv_manual mem);
+
+/*
+ * Returns pointer to the start of the allocated address space of managed memory mem
+ */
+void* managed_as_start(Priv_managed mem);
+
+/*
+ * Returns pointer to the end of the allocated address space of manual memory mem
+ */
+void* manual_as_end(Priv_manual mem);
+
+/*
+ * Returns pointer to the end of the allocated address space of managed memory mem
+ */
+void* managed_as_end(Priv_managed mem);
 
 #endif
