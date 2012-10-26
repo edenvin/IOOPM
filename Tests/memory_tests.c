@@ -89,12 +89,15 @@ void test_claim_memory(void) {
   Chunk asc1 = claim_memory(1, ascending);
   CU_ASSERT(asc1 != NULL && asc1->size == 1);
   CU_ASSERT(memory_freelist(ascending)->size == 2);
+  CU_ASSERT(memory_alloclist(ascending) == asc1);
   Chunk desc1 = claim_memory(16, descending);
   CU_ASSERT(desc1 != NULL && desc1->size == 16);
   CU_ASSERT(memory_freelist(descending)->size == 8);
+  CU_ASSERT(memory_alloclist(descending) == desc1);
   Chunk addr1 = claim_memory(8, address);
   CU_ASSERT(addr1 != NULL && addr1->size == 8);
   CU_ASSERT(memory_freelist(address)->size == 2);
+  CU_ASSERT(memory_alloclist(address) == addr1);
   
   /*
    *  ascending = [  2  |   4   |     8     |       16        ]
@@ -106,9 +109,13 @@ void test_claim_memory(void) {
   Chunk asc2 = claim_memory(16, ascending);
   CU_ASSERT(asc2 != NULL && asc2->size == 16);
   CU_ASSERT(memory_freelist(ascending)->next->next->next == NULL);
+  CU_ASSERT(memory_alloclist(ascending) == asc2);
+  CU_ASSERT(memory_alloclist(ascending)->next == asc1);
   Chunk addr2 = claim_memory(16, address);
   CU_ASSERT(addr2 != NULL && addr2->size == 16);
   CU_ASSERT(memory_freelist(address)->next->next->next == NULL);
+  CU_ASSERT(memory_alloclist(address) == addr2);
+  CU_ASSERT(memory_alloclist(address)->next == addr1);
   
   /*
    *  ascending = [  2  |   4   |     8     ]
@@ -156,6 +163,83 @@ void test_claim_memory(void) {
   
 }
 
+void test_combine_adjecent(void) {
+  int *ptr = malloc(sizeof(int) * 10);
+  Chunk new;
+  Chunk chunk;
+  
+  Lists lists = create_lists(ptr+1, sizeof(int), ASCENDING_SIZE);
+  
+  chunk = new_chunk(ptr+8, sizeof(int), NULL);
+  chunk = new_chunk(ptr+6, sizeof(int), chunk);
+  chunk = new_chunk(ptr+3, 2*sizeof(int), chunk);
+  lists->freelist->next = chunk;
+  
+  /*
+   * [   ptr+1     ptr+3   ptr+6   ptr+8 ]
+   * [ x | 1 | x |  2  | x | 1 | x | 1 | x ]
+   */
+  
+  // Test combine with a chunk that lies after.
+  new = new_chunk(ptr, sizeof(int), NULL);
+  new = combine_adjecent(lists, new);
+  CU_ASSERT(new->size == 2*sizeof(int));
+  CU_ASSERT(new->start == ptr);
+  CU_ASSERT(lists->freelist->start == ptr+3);
+  free_chunk(new);
+  
+  /*
+   * [ ptr+3   ptr+6   ptr+8 ]
+   * [  2  | x | 1 | x | 1 | x ]
+   */
+   
+  
+  // Test combine with a chunk that lies before.
+  new = new_chunk(ptr+9, sizeof(int), NULL);
+  new = combine_adjecent(lists, new);
+  CU_ASSERT(new->size == 2*sizeof(int));
+  CU_ASSERT(new->start == ptr+8);
+  CU_ASSERT(lists->freelist->next->next == NULL);
+  free_chunk(new);
+  
+  /*
+   * [ ptr+3   ptr+6 ]
+   * [  2  | x | 1 ]
+   */
+   
+  // Test combine with a chunk that lies before and after.
+  new = new_chunk(ptr+5, sizeof(int), NULL);
+  new = combine_adjecent(lists, new);
+  CU_ASSERT(new->size == 4*sizeof(int));
+  CU_ASSERT(new->start == ptr+3);
+  CU_ASSERT(lists->freelist == NULL);
+  free_chunk(new);
+  
+  /*
+   * [ ]
+   * [ ]
+   */
+   
+  free_lists(lists);
+  free(ptr);
+}
+
+void test_free_memory(void) {
+  void *ptr = malloc(10);
+  Lists lists = create_lists(ptr, 10, ASCENDING_SIZE);
+  
+  Chunk chunk1 = claim_memory(4, lists);
+  Chunk chunk2 = claim_memory(6, lists);
+  
+  free_memory(chunk1, lists);
+  CU_ASSERT(lists->freelist == chunk1);
+  CU_ASSERT(lists->freelist->next == NULL);
+  free_memory(chunk2, lists);
+  CU_ASSERT(lists->freelist->size == 10);
+  
+  free(ptr);
+}
+
 /*
  * Add tests to suites.
  */
@@ -174,7 +258,9 @@ int memory_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
     (NULL == CU_add_test(memory_suite, "test of memory_size()", test_memory_size)) ||
     (NULL == CU_add_test(memory_suite, "test of set_memory_mark()", test_set_memory_mark)) ||
     (NULL == CU_add_test(memory_suite, "test of search_memory()", test_search_memory)) ||
-    (NULL == CU_add_test(memory_suite, "test of claim_memory()", test_claim_memory))
+    (NULL == CU_add_test(memory_suite, "test of claim_memory()", test_claim_memory)) ||
+    (NULL == CU_add_test(memory_suite, "test of combine_adjecent()", test_combine_adjecent)) ||
+    (NULL == CU_add_test(memory_suite, "test of free_memory()", test_free_memory))
   ) {
     CU_cleanup_registry();
     return CU_get_error();
