@@ -11,7 +11,7 @@ clean:
 	rm -rf $(GEN_EXTENSIONS) *.orig *.dSYM
 
 # Tests to load
-TEST_FILES = Tests/memory_tests.c Tests/format_tests.c Tests/refcount_tests.c
+TEST_FILES = Tests/memory_tests.c Tests/format_tests.c Tests/refcount_tests.c Tests/priv_imalloc_tests.c
 
 # Ordinary files
 FILES = imalloc.c priv_imalloc.c format.c memory.c refcount.c gc.c
