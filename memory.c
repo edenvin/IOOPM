@@ -24,11 +24,20 @@ Boolean memory_is_marked(Chunk chunk) {
 /*
  * Returns the size of the chunk.
  */
- chunk_size memory_size(Chunk chunk) {
-   if (chunk == NULL)
-     return 0;
-   return chunk->size;
- }
+chunk_size memory_size(Chunk chunk) {
+  if (chunk == NULL)
+    return 0;
+  return chunk->size;
+}
+ 
+/*
+ * Returns a pointer to the start of the memory represented by chunk.
+ */
+void *memory_start(Chunk chunk) {
+  if (chunk == NULL)
+    return NULL;
+  return chunk->start;
+}
  
 /*
  * Searches for a chunk in the memory. If strict is TRUE the needle must match
@@ -179,6 +188,8 @@ void free_lists(Lists lists) {
  * Inserts chunk into the freelist in lists.
  */
 void insert_chunk_to_freelist(Lists lists, Chunk chunk) {
+  //chunk = combine_adjecent(lists, chunk);
+  
   Chunk cursor = lists->freelist;
   while (cursor) {
     
@@ -206,3 +217,25 @@ void insert_chunk_to_freelist(Lists lists, Chunk chunk) {
     cursor = cursor->next;
   }
 }
+
+/*
+ * Finds any adjecent chunks to chunk, removes them from the freelist and returns them combined into one chunk.
+ * If no adjecent chunks are found, return chunk.
+ */
+/*
+Chunk combine_adjecent(Lists lists, Chunk chunk) {
+  Chunk before;
+  Chunk after;
+  
+  Chunk cursor = memory_freelist(lists);
+  
+  void *start = cursor->start;
+  void *end = cursor->start + cursor->size;
+  
+  while (cursor) {
+    if (cursor->start + cursor->start)
+    
+    cursor = cursor->next;
+  }
+}
+*/
