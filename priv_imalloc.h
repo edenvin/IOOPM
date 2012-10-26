@@ -60,12 +60,6 @@ unsigned int managed_free(Memory mem, void *object);
  */
 unsigned int manual_free(Memory mem, void *object);
 
-/* 
- * Allocates memory for the given chunk size 
- * and returns a pointer for the allocated memory 
- */
-void* priv_alloc(Memory mem, chunk_size size);
-
 /*
  * Allocates memory for the given chunk size 
  * and returns a pointer for the allocated memory 

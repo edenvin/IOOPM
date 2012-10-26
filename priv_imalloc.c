@@ -35,6 +35,8 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
       new_mem->functions.rc.retain  = &retain;
       new_mem->functions.rc.release = &release;
       new_mem->functions.rc.count   = &count;
+      new_mem->functions.gc.alloc   = NULL;
+      new_mem->functions.gc.collect = NULL;
       switch (flags) {
         case 17: new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
         break;
@@ -45,6 +47,9 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
       }
   // MANAGED + GC
     } else if (flags < 37) {
+      new_mem->functions.rc.retain  = NULL;
+      new_mem->functions.rc.release = NULL;
+      new_mem->functions.rc.count   = NULL;
       new_mem->functions.gc.alloc   = &typed_alloc;
       new_mem->functions.gc.collect = &collect;
       switch (flags) {
@@ -99,29 +104,56 @@ unsigned int managed_free(Memory mem, void *object) {
   return size;
 }
 
-/* 
+/*
  * Allocates memory for the given chunk size 
  * and returns a pointer for the allocated memory 
  */
-void* priv_alloc(Memory mem, chunk_size size) { return NULL; }
+void* manual_alloc(Memory mem, chunk_size size) {
+  Priv_manual temp = (Priv_manual) style_to_priv(mem);
+  Chunk new_chunk = claim_memory(size, temp->lists);
+  return memory_start(new_chunk);
+}
 
 /*
  * Allocates memory for the given chunk size 
  * and returns a pointer for the allocated memory 
  */
-void* manual_alloc(Memory mem, chunk_size size) { return NULL; }
-
-/*
- * Allocates memory for the given chunk size 
- * and returns a pointer for the allocated memory 
- */
-void* managed_alloc(Memory mem, chunk_size size) { return NULL; }
+void* managed_alloc(Memory mem, chunk_size size) {
+  Priv_managed temp = (Priv_managed) style_to_priv(mem);
+  void* object;
+  if (temp->functions.rc.retain == NULL){
+    Chunk new_chunk = claim_memory(size, temp->lists);
+    if (new_chunk == NULL) {
+      if (collect(mem) == 0) {
+        return NULL;
+      }
+      new_chunk = claim_memory(size, temp->lists);
+    }
+    object = memory_start(new_chunk);
+  } else {
+    Chunk new_chunk = claim_memory(size+sizeof(int), temp->lists);
+    if (temp->functions.gc.alloc == NULL) {
+      if (new_chunk == NULL) {
+        if (collect(mem) == 0) {
+          object = NULL;
+        }
+        new_chunk = claim_memory(size+sizeof(int), temp->lists);
+      }
+    }
+    object = OBJECT(memory_start(new_chunk));
+    retain(object);
+  }
+  return object;
+}
 
 /*
  * Allocates memory for the given chunk size as a string
  * and returns a pointer for the allocated memory 
  */
-void* typed_alloc(Memory mem, format_string size) { return NULL; }
+void* typed_alloc(Memory mem, format_string size) {
+  chunk_size decoded_size = format_string_to_size(size);
+  return managed_alloc(mem, decoded_size);
+}
 
 /*
  * Returns the total size of the free space in the address space.
