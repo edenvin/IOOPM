@@ -15,7 +15,7 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
     new_mem->end = (void*) ((char*) (new_mem->start) + memsiz - 1);
     new_mem->functions.alloc        = &manual_alloc;
     new_mem->functions.avail        = &avail;
-    new_mem->functions.free         = &priv_free;
+    new_mem->functions.free         = &manual_free;
     switch (flags) {
       case 9:  new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
       break;
@@ -76,9 +76,28 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
 }
 
 /* 
- * Frees an object. 
+ * Frees object in manual memory mem, returns the amount of memory freed
  */
-unsigned int priv_free(Memory mem, void *object) { return 0; }
+unsigned int manual_free(Memory mem, void *object) {
+  Priv_manual temp = (Priv_manual) style_to_priv(mem);
+  Chunk temp_list  = manual_alloclist(temp);
+  Chunk needle     = search_memory(object, temp_list, FALSE);
+  chunk_size size  = memory_size(needle);
+  free_memory(needle);
+  return size;
+}
+
+/* 
+ * Frees object in managed memory mem, returns the amount of memory freed
+ */
+unsigned int managed_free(Memory mem, void *object) {
+  Priv_managed temp = (Priv_managed) style_to_priv(mem);
+  Chunk temp_list  = managed_alloclist(temp);
+  Chunk needle     = search_memory(object, temp_list, FALSE);
+  chunk_size size  = memory_size(needle);
+  free_memory(needle);
+  return size;
+}
 
 /* 
  * Allocates memory for the given chunk size 
@@ -126,41 +145,57 @@ Priv_mem style_to_priv(Memory mem) {
 }
 
 /*
- * Returns the freelist in mem.
+ * Returns the freelist in manual memory mem.
  */
-Chunk freelist(Priv_mem mem, unsigned int flag) {
-  if (flag)
-    return memory_freelist(((Priv_managed) mem)->lists);
-  else
-    return memory_freelist(((Priv_manual) mem)->lists);
+Chunk manual_freelist(Priv_manual mem) {
+    return memory_freelist(mem->lists);
 }
 
 /*
- * Returns the alloclist in mem.
+ * Returns the freelist in managed memory mem.
  */
-Chunk alloclist(Priv_mem mem, unsigned int flag) {
-  if (flag)
-    return memory_alloclist(((Priv_managed) mem)->lists);
-  else
-    return memory_alloclist(((Priv_manual) mem)->lists);
+Chunk managed_freelist(Priv_managed mem) {
+    return memory_freelist(mem->lists);
 }
 
 /*
- * Returns pointer to the start of the allocated address space
+ * Returns the alloclist in manual memory mem.
  */
-void* as_start(Priv_mem mem, unsigned int flag) {
-  if (flag)
-    return ((Priv_managed) mem)->start;
-  else
-    return ((Priv_manual) mem)->start;
+Chunk manual_alloclist(Priv_manual mem) {
+    return memory_alloclist(mem->lists);
 }
 
 /*
- * Returns pointer to the end of the allocated address space
+ * Returns the alloclist in managed memory mem.
  */
-void* as_end(Priv_mem mem, unsigned int flag) {
-  if (flag)
-    return ((Priv_managed) mem)->end;
-  else
-    return ((Priv_manual) mem)->end;
+Chunk managed_alloclist(Priv_managed mem) {
+    return memory_alloclist (mem->lists);
+}
+
+/*
+ * Returns pointer to the start of the allocated address space of manual memory mem
+ */
+void* manual_as_start(Priv_manual mem) {
+    return mem->start;
+}
+
+/*
+ * Returns pointer to the start of the allocated address space of managed memory mem
+ */
+void* managed_as_start(Priv_managed mem) {
+    return mem->start;
+}
+
+/*
+ * Returns pointer to the end of the allocated address space of manual memory mem
+ */
+void* manual_as_end(Priv_manual mem) {
+    return mem->end;
+}
+
+/*
+ * Returns pointer to the end of the allocated address space of managed memory mem
+ */
+void* managed_as_end(Priv_managed mem) {
+    return mem->end;
 }

@@ -51,9 +51,14 @@ typedef union {
 struct style *priv_imalloc(chunk_size memsiz, unsigned int flags);
 
 /* 
- * Frees an object. 
+ * Frees object in managed memory mem, returns the amount of memory freed
  */
-unsigned int priv_free(Memory mem, void *object);
+unsigned int managed_free(Memory mem, void *object);
+
+/* 
+ * Frees object in manual memory mem, returns the amount of memory freed
+ */
+unsigned int manual_free(Memory mem, void *object);
 
 /* 
  * Allocates memory for the given chunk size 
@@ -95,23 +100,43 @@ Memory priv_to_style(Priv_mem mem);
 Priv_mem style_to_priv(Memory mem);
 
 /*
- * Returns the freelist in mem.
+ * Returns the freelist in manual memory mem.
  */
-Chunk freelist(Priv_mem mem, unsigned int flag);
+Chunk manual_freelist(Priv_manual mem);
 
 /*
- * Returns the alloclist in mem.
+ * Returns the freelist in managed memory mem.
  */
-Chunk alloclist(Priv_mem mem, unsigned int flag);
+Chunk managed_freelist(Priv_managed mem);
 
 /*
- * Returns pointer to the start of the allocated address space
+ * Returns the alloclist in manual memory mem.
  */
-void* as_start(Priv_mem mem, unsigned int flag);
+Chunk manual_alloclist(Priv_manual mem);
 
 /*
- * Returns pointer to the end of the allocated address space
+ * Returns the alloclist in managed memory mem.
  */
-void* as_end(Priv_mem mem, unsigned int flag);
+Chunk managed_alloclist(Priv_managed mem);
+
+/*
+ * Returns pointer to the start of the allocated address space of manual memory mem
+ */
+void* manual_as_start(Priv_manual mem);
+
+/*
+ * Returns pointer to the start of the allocated address space of managed memory mem
+ */
+void* managed_as_start(Priv_managed mem);
+
+/*
+ * Returns pointer to the end of the allocated address space of manual memory mem
+ */
+void* manual_as_end(Priv_manual mem);
+
+/*
+ * Returns pointer to the end of the allocated address space of managed memory mem
+ */
+void* managed_as_end(Priv_managed mem);
 
 #endif

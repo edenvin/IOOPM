@@ -13,6 +13,4 @@
 
 typedef enum { FALSE, TRUE } Boolean;
 
-enum { F_MANUAL = 0, F_MANAGED = 1 } Type;
-
 #endif
