@@ -104,7 +104,7 @@ void test_claim_memory(void) {
   
   // Test claiming a whole chunk from the end.
   Chunk asc2 = claim_memory(16, ascending);
-  CU_ASSERT(asc1 != NULL && asc2->size == 16);
+  CU_ASSERT(asc2 != NULL && asc2->size == 16);
   CU_ASSERT(memory_freelist(ascending)->next->next->next == NULL);
   Chunk addr2 = claim_memory(16, address);
   CU_ASSERT(addr2 != NULL && addr2->size == 16);
@@ -138,11 +138,11 @@ void test_claim_memory(void) {
   CU_ASSERT(ascending->freelist->next->next->size == 8);
   Chunk desc4 = claim_memory(5, descending);
   CU_ASSERT(desc4 != NULL && desc4->size == 5);
-  CU_ASSERT(ascending->freelist->size == 4);
-  CU_ASSERT(ascending->freelist->next->size == 3);
-  CU_ASSERT(ascending->freelist->next->next->size == 2);
-  CU_ASSERT(ascending->freelist->next->next->next->size == 1);
-  Chunk addr4 = claim_memory(3, ascending);
+  CU_ASSERT(descending->freelist->size == 4);
+  CU_ASSERT(descending->freelist->next->size == 3);
+  CU_ASSERT(descending->freelist->next->next->size == 2);
+  CU_ASSERT(descending->freelist->next->next->next->size == 1);
+  Chunk addr4 = claim_memory(3, address);
   CU_ASSERT(addr4 != NULL && addr4->size == 3);
   CU_ASSERT(address->freelist->size == 2);
   CU_ASSERT(address->freelist->next->size == 1);

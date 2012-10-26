@@ -69,11 +69,13 @@ Chunk claim_memory(chunk_size size, Lists lists) {
       lists->alloclist = alloc;
       
       chunk_size remaining = chunk->size - size;
-      void *start = chunk->start+size;
-      Chunk new = new_chunk(start, remaining, NULL);
-      
-      // Insert chunk to freelist
-      insert_chunk_to_freelist(lists, new);
+      if (remaining > 0) {
+        void *start = chunk->start+size;
+        Chunk new = new_chunk(start, remaining, NULL);
+
+        // Insert chunk to freelist
+        insert_chunk_to_freelist(lists, new);
+      }
       return alloc;
     }
     prev = chunk;
@@ -180,7 +182,16 @@ void insert_chunk_to_freelist(Lists lists, Chunk chunk) {
   Chunk cursor = lists->freelist;
   while (cursor) {
     
-    if (cursor->next == NULL) {
+    // if chunk is going in as the first element in freelist
+    if (cursor == lists->freelist &&
+      ((lists->sort_style == ASCENDING_SIZE && chunk->size < cursor->size) ||
+        (lists->sort_style == DESCENDING_SIZE && chunk->size > cursor->size) ||
+        (lists->sort_style == ADDRESS && chunk->start < cursor->start))) {
+      chunk->next = cursor;
+      lists->freelist = chunk;
+      break;
+    }
+    else if (cursor->next == NULL) {
       cursor->next = chunk;
       break;
     }
