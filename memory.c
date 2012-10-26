@@ -1,41 +1,6 @@
 #include "memory.h"
 #include "memory_priv.h"
 
-/* PRIVATE FUNCITONS */
-
-/*
- * Creates a new chunk with given size and start at given pointer.
- * The chunk will not be marked.
- */
-Chunk new_chunk(void *start, chunk_size size, Chunk next) {
-  // Allocate memory for a new chunk.
-  Chunk chunk = malloc(sizeof(struct _chunk));
-  
-  chunk->start = start;
-  chunk->size = size;
-  chunk->next = next;
-  chunk->mark = FALSE;
-  
-  return chunk;
-}
-
-/*
- * Frees a chunk struct from memory.
- */
-void free_chunk(Chunk chunk) {
-  free(chunk);
-}
-
-/*
- * Frees a whole lists struct.
- */
-void free_lists(Lists lists) {
-  free_chunklist(lists->freelist);
-  free_chunklist(lists->alloclist);
-  free(lists);
-}
-
-
 /* PUBLIC FUNCTIONS */
 
 /*
@@ -59,11 +24,20 @@ Boolean memory_is_marked(Chunk chunk) {
 /*
  * Returns the size of the chunk.
  */
- chunk_size memory_size(Chunk chunk) {
-   if (chunk == NULL)
-     return 0;
-   return chunk->size;
- }
+chunk_size memory_size(Chunk chunk) {
+  if (chunk == NULL)
+    return 0;
+  return chunk->size;
+}
+ 
+/*
+ * Returns a pointer to the start of the memory represented by chunk.
+ */
+void *memory_start(Chunk chunk) {
+  if (chunk == NULL)
+    return NULL;
+  return chunk->start;
+}
  
 /*
  * Searches for a chunk in the memory. If strict is TRUE the needle must match
@@ -88,11 +62,37 @@ Chunk search_memory(void *needle, Chunk haystack, Boolean strict) {
  * Keeps the free-list sorted.
  */
 Chunk claim_memory(chunk_size size, Lists lists) {
-  // Traverse free-list until we find a large enough chunk.
-  // Split that chunk into two parts.
-  // Move one of them to the end of the alloc_list.
+  Chunk chunk = memory_freelist(lists);
+  Chunk prev = NULL;
+  
+  while (chunk) {
+    if (chunk->size >= size) {
+      // We found a chunk large enough! Extract it.
+      if (prev == NULL)
+        lists->freelist = chunk->next;
+      else
+        prev->next = chunk->next;
+      
+      // Create two new chunks with smaller size.
+      Chunk alloc = new_chunk(chunk->start, size, memory_alloclist(lists));
+      lists->alloclist = alloc;
+      
+      chunk_size remaining = chunk->size - size;
+      if (remaining > 0) {
+        void *start = chunk->start+size;
+        Chunk new = new_chunk(start, remaining, NULL);
+
+        // Insert chunk to freelist
+        insert_chunk_to_freelist(lists, new);
+      }
+      return alloc;
+    }
+    prev = chunk;
+    chunk = chunk->next;
+  }
   
   // If no splittable chunk was found, return null.
+
   return NULL;
 }
 
@@ -150,3 +150,94 @@ Chunk memory_freelist(Lists lists) {
 Chunk memory_alloclist(Lists lists) {
   return lists->alloclist;
 }
+
+
+/* PRIVATE FUNCITONS */
+
+/*
+ * Creates a new chunk with given size and start at given pointer.
+ * The chunk will not be marked.
+ */
+Chunk new_chunk(void *start, chunk_size size, Chunk next) {
+  // Allocate memory for a new chunk.
+  Chunk chunk = malloc(sizeof(struct _chunk));
+  
+  chunk->start = start;
+  chunk->size = size;
+  chunk->next = next;
+  chunk->mark = FALSE;
+  
+  return chunk;
+}
+
+/*
+ * Frees a chunk struct from memory.
+ */
+void free_chunk(Chunk chunk) {
+  free(chunk);
+}
+
+/*
+ * Frees a whole lists struct.
+ */
+void free_lists(Lists lists) {
+  free_chunklist(lists->freelist);
+  free_chunklist(lists->alloclist);
+  free(lists);
+}
+
+/*
+ * Inserts chunk into the freelist in lists.
+ */
+void insert_chunk_to_freelist(Lists lists, Chunk chunk) {
+  //chunk = combine_adjecent(lists, chunk);
+  
+  Chunk cursor = lists->freelist;
+  while (cursor) {
+    
+    // if chunk is going in as the first element in freelist
+    if (cursor == lists->freelist &&
+      ((lists->sort_style == ASCENDING_SIZE && chunk->size < cursor->size) ||
+        (lists->sort_style == DESCENDING_SIZE && chunk->size > cursor->size) ||
+        (lists->sort_style == ADDRESS && chunk->start < cursor->start))) {
+      chunk->next = cursor;
+      lists->freelist = chunk;
+      break;
+    }
+    else if (cursor->next == NULL) {
+      cursor->next = chunk;
+      break;
+    }
+    else if ((lists->sort_style == ASCENDING_SIZE && chunk->size >= cursor->size && chunk->size < cursor->next->size) ||
+        (lists->sort_style == DESCENDING_SIZE && chunk->size <= cursor->size && chunk->size > cursor->next->size) ||
+        (lists->sort_style == ADDRESS && chunk->start > cursor->start && chunk->start < cursor->next->start)) {
+      chunk->next = cursor->next;
+      cursor->next = chunk;
+      break;
+    }
+    
+    cursor = cursor->next;
+  }
+}
+
+/*
+ * Finds any adjecent chunks to chunk, removes them from the freelist and returns them combined into one chunk.
+ * If no adjecent chunks are found, return chunk.
+ */
+/*
+Chunk combine_adjecent(Lists lists, Chunk chunk) {
+  Chunk before;
+  Chunk after;
+  
+  Chunk cursor = memory_freelist(lists);
+  
+  void *start = cursor->start;
+  void *end = cursor->start + cursor->size;
+  
+  while (cursor) {
+    if (cursor->start + cursor->start)
+    
+    cursor = cursor->next;
+  }
+}
+*/
