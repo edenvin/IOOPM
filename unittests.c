@@ -5,6 +5,7 @@
 #include "CUnit/Basic.h"
 #include "Tests/memory_tests.h"
 #include "Tests/format_tests.h"
+#include "Tests/gc_tests.h"
 
 int init_suite(void)
 {
@@ -28,6 +29,9 @@ int main()
   if (error)
     return error;
   error = format_tests(&init_suite, &clean_suite);
+  if (error)
+    return error;
+  error = gc_tests(&init_suite, &clean_suite);
   if (error)
     return error;
   
