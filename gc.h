@@ -9,6 +9,7 @@
 
 #include "imalloc.h"
 #include "utilities.h"
+#include "rootset/rootset.h"
 
 /* 
  * Performs a garbage collection according to the mark and sweep algorithm.

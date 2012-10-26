@@ -8,8 +8,8 @@
  */
 
 #include "CUnit/Basic.h"
-#include "../imalloc.h"
 #include "../priv_imalloc.h"
+ #include "memory_priv.h"
 
 /*
  * Add tests.

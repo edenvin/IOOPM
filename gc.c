@@ -1,22 +1,23 @@
 #include "gc.h"
 #include "priv_imalloc.h"
+
 /*
  * Typedefs from the specification
  */
-typedef char *RawPtr;
+/*typedef char *RawPtr;
 typedef struct {
   RawPtr start;
   RawPtr end;
 } address_space;
-
-typedef void (*MarkFun)(void *ptr, void *data);
+*/
+//typedef void (*MarkFun)(void *ptr, void *data);
 
 /* Scans the stack, CPU registers, and static data to build a
 * root set, R s.t. for all r in R, h->start <= r && r <= h->end.
 * Then, for all r in R, calls f(r, p), where p is just some
 * additional user-provided payload.
 */
-void traverse_stack (address_space h, MarkFun f, void *p){}
+//void traverse_stack (address_space h, MarkFun f, void *p){}
 
 /*
  * Returns true if pointer ptr is within the addresspace on the heap that was allocated using iMalloc
@@ -97,13 +98,14 @@ int sweep(priv_mem *mem){
  * Returns a positive integer if the sweep stage was successful and memory was freed.
  * The integer returned is corresponding to the number of memory blocks freed.
  */
-unsigned int collect(Memory mem){
-  priv_mem *memory_private = style_to_priv(mem);
-  mark_unused(memory_private);
-  address_space as;
-  as.start = as_start(memory_private);
-  as.end = as_end(memory_private);
-  traverse_stack(as, &traverse_heap, memory_private);
-  unsigned int i = sweep(memory_private);
+unsigned int collect(Memory memory){
+  SET_STACK_BOTTOM
+  priv_mem *mem = style_to_priv(memory);
+  mark_unused(mem);
+  AddressSpace as;
+  as->start = as_start(mem);
+  as->end = as_end(mem);
+  traverseStack(as, &traverse_heap, mem);
+  unsigned int i = sweep(mem);
   return i;
 }

@@ -11,10 +11,10 @@ clean:
 	rm -rf $(GEN_EXTENSIONS) *.orig *.dSYM
 
 # Tests to load
-TEST_FILES = Tests/memory_tests.c Tests/format_tests.c
+TEST_FILES = Tests/memory_tests.c Tests/format_tests.c Tests/gc_tests.c
 
 # Ordinary files
-FILES = imalloc.c priv_imalloc.c format.c memory.c refcount.c gc.c
+FILES = imalloc.c priv_imalloc.c format.c memory.c refcount.c gc.c rootset/rootset.c
 
 test: unittests.c
 	$(C_COMPILER) $(C_OPTIONS) unittests.c $(TEST_FILES) $(FILES) -o unittests -lcunit
