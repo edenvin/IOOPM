@@ -1,8 +1,16 @@
+/*!
+ * \file gc.c
+ *
+ * \author Celine Dion
+ * \date 2012-10-26
+ *
+ * Functions needed to perform garbage collection
+ */
 #include "gc.h"
 #include "priv_imalloc.h"
 
-
-/*
+//! Checks if the pointer is pointing within the adress space
+/*!
  * Returns true if pointer ptr is within the addresspace on the heap that
  * was allocated using iMalloc.
  */
@@ -17,7 +25,7 @@ Boolean in_address_space(void *ptr, priv_mem *mem) {
   }
 }
 
-/*
+/*!
  * Funciton to traverse the heap and mark all the chunk's whose 
  * corresponding object were found with pointers from the stack as alive.
  * Also marks a chunk as alive if you can "backtrace" a number of pointers
@@ -45,7 +53,7 @@ void traverse_heap(void *ptr, void *mem){
   return;
 }
 
-/*
+/*!
  * The sweep-stage of the mark & sweep algorithm.
  * Frees the chunks that is no longer being used, the ones with
  * the mark bit set to false.
@@ -67,7 +75,7 @@ int sweep(priv_mem *mem){
   return i;
 }
 
- /*
+ /*!
   * The first stage of the mark & sweep algorithm.
   * Traverses the alloclist and sets all mark_bits to false.
   */
@@ -79,7 +87,7 @@ void mark_unused(priv_mem *mem){
   } 
 }
 
-/*
+/*!
  * Performs a garbage collection according to the mark and sweep algorithm.
  * Returns a positive integer if the sweep stage was successful and memory 
  * was freed.
