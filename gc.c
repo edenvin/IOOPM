@@ -1,26 +1,10 @@
 #include "gc.h"
 #include "priv_imalloc.h"
 
-/*
- * Typedefs from the specification
- */
-/*typedef char *RawPtr;
-typedef struct {
-  RawPtr start;
-  RawPtr end;
-} address_space;
-*/
-//typedef void (*MarkFun)(void *ptr, void *data);
-
-/* Scans the stack, CPU registers, and static data to build a
-* root set, R s.t. for all r in R, h->start <= r && r <= h->end.
-* Then, for all r in R, calls f(r, p), where p is just some
-* additional user-provided payload.
-*/
-//void traverse_stack (address_space h, MarkFun f, void *p){}
 
 /*
- * Returns true if pointer ptr is within the addresspace on the heap that was allocated using iMalloc
+ * Returns true if pointer ptr is within the addresspace on the heap that
+ * was allocated using iMalloc.
  */
 Boolean in_address_space(void *ptr, priv_mem *mem) {
   int *start = as_start(mem);
@@ -60,17 +44,6 @@ void traverse_heap(void *ptr, void *mem){
   }
   return;
 }
- /*
-  * The first stage of the mark & sweep algorithm.
-  * Traverses the alloclist and sets all mark_bits to false.
-  */
-void mark_unused(priv_mem *mem){
-  Chunk current_chunk = alloclist(mem);
-  while (current_chunk){
-    set_memory_mark(current_chunk ,FALSE);
-    current_chunk = next_chunk(current_chunk);       
-  } 
-}
 
 /*
  * The sweep-stage of the mark & sweep algorithm.
@@ -87,15 +60,29 @@ int sweep(priv_mem *mem){
       i++;
       current_chunk = next_chunk(current_chunk);
     }
-    else
+    else{
       current_chunk = next_chunk(current_chunk);
+    }
   }
   return i;
 }
 
+ /*
+  * The first stage of the mark & sweep algorithm.
+  * Traverses the alloclist and sets all mark_bits to false.
+  */
+void mark_unused(priv_mem *mem){
+  Chunk current_chunk = alloclist(mem);
+  while (current_chunk){
+    set_memory_mark(current_chunk ,FALSE);
+    current_chunk = next_chunk(current_chunk);       
+  } 
+}
+
 /*
  * Performs a garbage collection according to the mark and sweep algorithm.
- * Returns a positive integer if the sweep stage was successful and memory was freed.
+ * Returns a positive integer if the sweep stage was successful and memory 
+ * was freed.
  * The integer returned is corresponding to the number of memory blocks freed.
  */
 unsigned int collect(Memory memory){
