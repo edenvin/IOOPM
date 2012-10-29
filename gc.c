@@ -27,7 +27,7 @@ Boolean in_address_space(void *ptr, priv_mem *mem) {
 
 //! Traverses the heap and marks all objects with pointers as alive.
 /*!
- * Funciton to traverse the heap and mark all the chunk's whose 
+ * Function to traverse the heap and mark all the chunk's whose 
  * corresponding object were found with pointers from the stack as alive.
  * Also marks a chunk as alive if you can "backtrace" a number of pointers
  * from an object back to the stack.
