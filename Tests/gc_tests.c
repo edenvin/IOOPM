@@ -5,7 +5,7 @@
  * Test when there is no garbage to collect.
  */
  void test_collect_1(void) {
-  Managed mem = (Managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ASCENDING_SIZE);
   int *p0 = mem->alloc(sizeof(int));
   int *p1 = mem->alloc(sizeof(int));
   int *p2 = mem->alloc(sizeof(int));
@@ -23,7 +23,7 @@
  * Test when there is garbage to collect.
  */
  void test_collect_2(void) {
-  Managed mem = (Managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ASCENDING_SIZE);
   int *p0 = mem->alloc(sizeof(int));
   int *p1 = mem->alloc(sizeof(int));
   int *p2 = mem->alloc(sizeof(int));
@@ -40,7 +40,7 @@
  * Test when there is no garbage to collect but we cant reach all posts from  * the stack.
  */
  void test_collect_3(void) {
-  Managed mem = (Managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ASCENDING_SIZE);
   int *p0 = mem->alloc(sizeof(int));
   int *p1 = mem->alloc(sizeof(int));
   int *p2 = mem->alloc(sizeof(int));
@@ -58,7 +58,7 @@
  * Test when we have garbage but it can't be reached without traversing the    * heap. 
  */
  void test_collect_4(void) {
-  Managed mem = (Managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ASCENDING_SIZE);
   int *p0 = mem->alloc(sizeof(int));
   int *p1 = mem->alloc(sizeof(int));
   int *p2 = mem->alloc(sizeof(int));
