@@ -4,7 +4,7 @@ void test_conversion_functions(void) {
   chunk_size memsiz = 1 Mb;
   Priv_mem new_mem = malloc(sizeof(priv_mem));
   new_mem->start = malloc(memsiz);
-  new_mem->end = (void*) ((char*) (new_mem->start) + memsiz - 1);
+  new_mem->end = new_mem->start + memsiz - 1;
   new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
   new_mem->functions.manual.alloc        = &manual_alloc;
   new_mem->functions.manual.avail        = &avail;
@@ -31,6 +31,10 @@ void test_conversion_functions(void) {
   CU_ASSERT(new_mem->functions.manual.free  == compare_priv->functions.manual.free);
 }
 
+void test_priv_imalloc(void) {
+  Priv_mem new_mem = style_to_priv(priv_imalloc(1 Mb, REFCOUNT + GCD + ADDRESS));
+  Priv_mem compare_mem = malloc(sizeof(priv_mem));
+}
 
 /*
  * Add tests to suites.
@@ -45,7 +49,8 @@ int priv_imalloc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   
   // Add tests
   if (
-    (NULL == CU_add_test(priv_imalloc_suite, "test of conversion functions: priv_to_style and style_to_priv", test_conversion_functions))
+    (NULL == CU_add_test(priv_imalloc_suite, "test of conversion functions: priv_to_style and style_to_priv", test_conversion_functions)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of priv_imalloc()", test_priv_imalloc))
     ) {
     CU_cleanup_registry();
     return CU_get_error();

@@ -7,7 +7,7 @@
  * maximum amount of memory that can be used. flags specifies kind
  * of memory manager and allows fine-tunes some options.
  */
-struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
+Memory priv_imalloc(chunk_size memsiz, unsigned int flags) {
   // MANUAL
   if (flags < 13) {
     Priv_mem new_mem = malloc(sizeof(priv_mem));

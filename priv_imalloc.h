@@ -35,7 +35,7 @@ typedef struct {
  * maximum amount of memory that can be used. flags specifies kind
  * of memory manager and allows fine-tunes some options.
  */
-struct style *priv_imalloc(chunk_size memsiz, unsigned int flags);
+Memory priv_imalloc(chunk_size memsiz, unsigned int flags);
 
 /*
  * Set function pointers to a priv_mem struct.
