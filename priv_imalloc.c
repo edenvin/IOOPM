@@ -72,7 +72,7 @@ unsigned int manual_free(Memory mem, void *object) {
   Chunk temp_list  = manual_alloclist(temp);
   Chunk needle     = search_memory(object, temp_list, FALSE);
   chunk_size size  = memory_size(needle);
-  free_memory(needle);
+  free_memory(needle, temp->lists);
   return size;
 }
 
@@ -84,7 +84,7 @@ unsigned int managed_free(Memory mem, void *object) {
   Chunk temp_list  = managed_alloclist(temp);
   Chunk needle     = search_memory(object, temp_list, FALSE);
   chunk_size size  = memory_size(needle);
-  free_memory(needle);
+  free_memory(needle, temp->lists);
   return size;
 }
 

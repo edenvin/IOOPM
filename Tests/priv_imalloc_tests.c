@@ -5,23 +5,30 @@ void test_conversion_functions(void) {
   Priv_manual new_mem = malloc(sizeof(priv_manual));
   new_mem->start = malloc(memsiz);
   new_mem->end = (void*) ((char*) (new_mem->start) + memsiz - 1);
+  new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
   new_mem->functions.alloc        = &manual_alloc;
   new_mem->functions.avail        = &avail;
   new_mem->functions.free         = &manual_free;
-  new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
 
   Manual new_manual = (Manual) priv_to_style((Priv_mem) new_mem);
 
-  Manual compare_manual = malloc(sizeof(manual));
-  compare_manual->alloc               = &manual_alloc;
-  compare_manual->avail               = &avail;
-  compare_manual->free                = &manual_free;
+  Manual compare_style = malloc(sizeof(manual));
+  compare_style->alloc               = &manual_alloc;
+  compare_style->avail               = &avail;
+  compare_style->free                = &manual_free;
 
-  CU_ASSERT(new_manual->alloc == compare_manual->alloc);
-  CU_ASSERT(new_manual->avail == compare_manual->avail);
-  CU_ASSERT(new_manual->free == compare_manual->free);
+  CU_ASSERT(new_manual->alloc == compare_style->alloc);
+  CU_ASSERT(new_manual->avail == compare_style->avail);
+  CU_ASSERT(new_manual->free == compare_style->free);
 
-  
+  Priv_manual compare_priv = (Priv_manual) style_to_priv((Memory) new_manual);
+
+  CU_ASSERT(new_mem->start == compare_priv->start);
+  CU_ASSERT(new_mem->end == compare_priv->end);
+  CU_ASSERT(new_mem->lists == compare_priv->lists);
+  CU_ASSERT(new_mem->functions.alloc == compare_priv->functions.alloc);
+  CU_ASSERT(new_mem->functions.avail == compare_priv->functions.avail);
+  CU_ASSERT(new_mem->functions.free == compare_priv->functions.free);
 }
 
 
