@@ -166,14 +166,14 @@ unsigned int avail(Memory mem) {
  * Converts a priv_mem pointer to a style pointer.
  */
 Memory priv_to_style(Priv_mem mem) {
-  return (Memory) (((void*) (((Lists) mem) + 1)) + 2);
+  return (Memory) ((void**) mem + 3);
 }
 
 /*
  * Converts a style style pointer to a priv_mem pointer.
  */
 Priv_mem style_to_priv(Memory mem) {
-  return (Priv_mem) (((void*) ((Lists) mem - 1)) - 2);
+  return (Priv_mem) ((void**) mem - 3);
 }
 
 /*

@@ -1,6 +1,6 @@
 #include "priv_imalloc_tests.h"
 
-void test_priv_to_style(void) {
+void test_conversion_functions(void) {
   chunk_size memsiz = 1 Mb;
   Priv_manual new_mem = malloc(sizeof(priv_manual));
   new_mem->start = malloc(memsiz);
@@ -10,7 +10,7 @@ void test_priv_to_style(void) {
   new_mem->functions.free         = &manual_free;
   new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
 
-  Manual new_manual = priv_to_style((Priv_mem) new_mem);
+  Manual new_manual = (Manual) priv_to_style((Priv_mem) new_mem);
 
   Manual compare_manual = malloc(sizeof(manual));
   compare_manual->alloc               = &manual_alloc;
@@ -20,8 +20,10 @@ void test_priv_to_style(void) {
   CU_ASSERT(new_manual->alloc == compare_manual->alloc);
   CU_ASSERT(new_manual->avail == compare_manual->avail);
   CU_ASSERT(new_manual->free == compare_manual->free);
+
   
 }
+
 
 /*
  * Add tests to suites.
@@ -36,7 +38,7 @@ int priv_imalloc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   
   // Add tests
   if (
-    (NULL == CU_add_test(priv_imalloc_suite, "test of test()", test_priv_to_style))
+    (NULL == CU_add_test(priv_imalloc_suite, "test of conversion functions: priv_to_style and style_to_priv", test_conversion_functions))
     ) {
     CU_cleanup_registry();
     return CU_get_error();
