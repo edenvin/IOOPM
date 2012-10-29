@@ -9,7 +9,7 @@
 #include "gc.h"
 #include "priv_imalloc.h"
 
-//! Checks if the pointer is pointing within the adress space
+//! Checks if the pointer is pointing within the adress space.
 /*!
  * Returns true if pointer ptr is within the addresspace on the heap that
  * was allocated using iMalloc.
@@ -25,6 +25,7 @@ Boolean in_address_space(void *ptr, priv_mem *mem) {
   }
 }
 
+//! Traverses the heap and marks all objects with pointers as alive.
 /*!
  * Funciton to traverse the heap and mark all the chunk's whose 
  * corresponding object were found with pointers from the stack as alive.
@@ -53,6 +54,7 @@ void traverse_heap(void *ptr, void *mem){
   return;
 }
 
+//! Frees the chunks that are no longer being used.
 /*!
  * The sweep-stage of the mark & sweep algorithm.
  * Frees the chunks that is no longer being used, the ones with
@@ -75,6 +77,7 @@ int sweep(priv_mem *mem){
   return i;
 }
 
+//! Marks all the objects on the heap as dead.
  /*!
   * The first stage of the mark & sweep algorithm.
   * Traverses the alloclist and sets all mark_bits to false.
@@ -87,6 +90,7 @@ void mark_unused(priv_mem *mem){
   } 
 }
 
+//! Performs a garbage collection according to the mark and sweep algorithm.
 /*!
  * Performs a garbage collection according to the mark and sweep algorithm.
  * Returns a positive integer if the sweep stage was successful and memory 
