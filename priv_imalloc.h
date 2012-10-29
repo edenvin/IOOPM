@@ -44,11 +44,17 @@ typedef union {
   priv_managed priv_managed;
 } priv_mem;
 
-/* Initiates the malloc library to be used. memsiz defines the
+/* 
+ * Initiates the malloc library to be used. memsiz defines the
  * maximum amount of memory that can be used. flags specifies kind
  * of memory manager and allows fine-tunes some options.
  */
 struct style *priv_imalloc(chunk_size memsiz, unsigned int flags);
+
+/*
+ * Returns a Lists object based on flags and x, y, z.
+ */
+Lists lists_based_on_flags(unsigned int flags, unsigned int x, unsigned int y, unsigned int z, void *start, chunk_size memsiz);
 
 /* 
  * Frees object in managed memory mem, returns the amount of memory freed

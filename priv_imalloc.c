@@ -16,14 +16,7 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
     new_mem->functions.alloc        = &manual_alloc;
     new_mem->functions.avail        = &avail;
     new_mem->functions.free         = &manual_free;
-    switch (flags) {
-      case 9:  new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
-      break;
-      case 10: new_mem->lists = create_lists(new_mem->start, memsiz, DESCENDING_SIZE);
-      break;
-      case 12: new_mem->lists = create_lists(new_mem->start, memsiz, ADDRESS);
-      break;
-    }
+    new_mem->lists = lists_based_on_flags(flags, 9, 10, 12, new_mem->start, memsiz);
     return priv_to_style((Priv_mem) new_mem);
   } else {
     Priv_managed new_mem = malloc(sizeof(priv_managed));
@@ -37,14 +30,7 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
       new_mem->functions.rc.count   = &count;
       new_mem->functions.gc.alloc   = NULL;
       new_mem->functions.gc.collect = NULL;
-      switch (flags) {
-        case 17: new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
-        break;
-        case 18: new_mem->lists = create_lists(new_mem->start, memsiz, DESCENDING_SIZE);
-        break;
-        case 20: new_mem->lists = create_lists(new_mem->start, memsiz, ADDRESS);
-        break;
-      }
+      new_mem->lists = lists_based_on_flags(flags, 17, 18, 20, new_mem->start, memsiz);
   // MANAGED + GC
     } else if (flags < 37) {
       new_mem->functions.rc.retain  = NULL;
@@ -52,14 +38,7 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
       new_mem->functions.rc.count   = NULL;
       new_mem->functions.gc.alloc   = &typed_alloc;
       new_mem->functions.gc.collect = &collect;
-      switch (flags) {
-        case 33: new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
-        break;
-        case 34: new_mem->lists = create_lists(new_mem->start, memsiz, DESCENDING_SIZE);
-        break;
-        case 36: new_mem->lists = create_lists(new_mem->start, memsiz, ADDRESS);
-        break;
-      }
+      new_mem->lists = lists_based_on_flags(flags, 33, 34, 36, new_mem->start, memsiz);
   // MANAGED + REFCOUNT + GC
     } else {
       new_mem->functions.rc.retain  = &retain;
@@ -67,17 +46,22 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
       new_mem->functions.rc.count   = &count;
       new_mem->functions.gc.alloc   = &typed_alloc;
       new_mem->functions.gc.collect = &collect;
-      switch (flags) {
-        case 49: new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
-        break;
-        case 50: new_mem->lists = create_lists(new_mem->start, memsiz, DESCENDING_SIZE);
-        break;
-        case 52: new_mem->lists = create_lists(new_mem->start, memsiz, ADDRESS);
-        break;
-      }
+      new_mem->lists = lists_based_on_flags(flags, 49, 50, 52, new_mem->start, memsiz);
     }
     return priv_to_style((Priv_mem) new_mem);
   }
+}
+
+/*
+ * Returns a Lists object based on flags and x, y, z.
+ */
+Lists lists_based_on_flags(unsigned int flags, unsigned int x, unsigned int y, unsigned int z, void *start, chunk_size memsiz) {
+  if (flags == x)
+    return create_lists(start, memsiz, ASCENDING_SIZE);
+  else if (flags == y)
+    return create_lists(start, memsiz, DESCENDING_SIZE);
+  else if (flags == z)
+    return create_lists(start, memsiz, ADDRESS);
 }
 
 /* 
