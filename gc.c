@@ -37,7 +37,7 @@ Boolean in_address_space(void *ptr, Priv_mem mem) {
 void traverse_heap(void *ptr, void *mem){
   chunk_size size = 0;
   Chunk chunk = alloclist (mem);
-  while (size < memory_size(search_memory(ptr,chunk,FALSE))){
+  while (size+sizeof(void*) < memory_size(search_memory(ptr,chunk,FALSE))){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
      */
