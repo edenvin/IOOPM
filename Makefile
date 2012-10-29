@@ -1,7 +1,7 @@
 all: test
 
 # Tex settings
-C_COMPILER   = gcc
+C_COMPILER   = cc
 C_OPTIONS    = -ggdb -Wall -std=c99
 
 # Clean settings

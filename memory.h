@@ -67,7 +67,7 @@ Chunk claim_memory(chunk_size size, Lists lists);
  * Combines the new chunk on the free-list with surrounding chunks if possible.
  * Keeps the free-list sorted.
  */
-void free_memory(Chunk chunk);
+void free_memory(Chunk chunk, Lists lists);
 
 /*
  * Creates a new lists struct with a freelist and an alloclist.
