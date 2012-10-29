@@ -4,30 +4,30 @@
 /*
  * Test when there is no garbage to collect.
  */
- void test_collect_1(void) {CU_FAIL("WRITE TESTS...");}
-  /*managed mem = (managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
-  int *p0 = mem->alloc(mem, sizeof(int));
-  int *p1 = mem->alloc(mem, sizeof(int));
-  int *p2 = mem->alloc(mem, sizeof(int));
-  int *p3 = mem->alloc(mem, sizeof(int));
+ void test_collect_1(void) {
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(sizeof(int));
+  int *p1 = mem->alloc(sizeof(int));
+  int *p2 = mem->alloc(sizeof(int));
+  int *p3 = mem->alloc(sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
   *p3 = 3;
   CU_ASSERT(collect(mem) == 0);
-  free_memory(mem); //not made yet */
-
+  free_memory(mem); //not made yet 
+}
 
 
 /*
  * Test when there is garbage to collect.
  */
- void test_collect_2(void) { CU_FAIL("WRITE TESTS...");}
- /* managed mem = (managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
-  int *p0 = mem->alloc(mem, sizeof(int));
-  int *p1 = mem->alloc(mem, sizeof(int));
-  int *p2 = mem->alloc(mem, sizeof(int));
-  int *p3 = mem->alloc(mem, sizeof(int));
+ void test_collect_2(void) {
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(sizeof(int));
+  int *p1 = mem->alloc(sizeof(int));
+  int *p2 = mem->alloc(sizeof(int));
+  int *p3 = mem->alloc(sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
@@ -35,16 +35,16 @@
   CU_ASSERT(collect(mem) == 1);
   free_memory(mem); //not made yet
 }
-*/
+
 /*
  * Test when there is no garbage to collect but we cant reach all posts from  * the stack.
  */
- void test_collect_3(void) {CU_FAIL("WRITE TESTS...");}
- /* managed mem = (managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
-  int *p0 = mem->alloc(mem, sizeof(int));
-  int *p1 = mem->alloc(mem, sizeof(int));
-  int *p2 = mem->alloc(mem, sizeof(int));
-  int *p3 = mem->alloc(mem, sizeof(int));
+ void test_collect_3(void) {
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(sizeof(int));
+  int *p1 = mem->alloc(sizeof(int));
+  int *p2 = mem->alloc(sizeof(int));
+  int *p3 = mem->alloc(sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p3 = 3;
@@ -53,16 +53,16 @@
   CU_ASSERT(collect(mem) == 0);
   free_memory(mem); //not made yet
 }
-*/
+
 /*
  * Test when we have garbage but it can't be reached without traversing the    * heap. 
  */
- void test_collect_4(void) {CU_FAIL("WRITE TESTS...");}
-  /*managed mem = (managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
-  int *p0 = mem->alloc(mem, sizeof(int));
-  int *p1 = mem->alloc(mem, sizeof(int));
-  int *p2 = mem->alloc(mem, sizeof(int));
-  int *p3 = mem->alloc(mem, sizeof(int));
+ void test_collect_4(void) {
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GC + ASCENDING_SIZE);
+  int *p0 = mem->alloc(sizeof(int));
+  int *p1 = mem->alloc(sizeof(int));
+  int *p2 = mem->alloc(sizeof(int));
+  int *p3 = mem->alloc(sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
@@ -72,7 +72,7 @@
   CU_ASSERT(collect(mem) == 1);
   free_memory(mem); //not made yet
 }
-*/
+
 
 /*
  * Add tests to suites.
