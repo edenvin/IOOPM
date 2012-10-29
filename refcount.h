@@ -9,17 +9,19 @@
  *
  */
 
-#include "imalloc.h"
+ #include "imalloc.h"
+ #include "utilities.h"
+ #include <stdlib.h>
 
 /*
  * Increment adress's refcount by 1
  */
-void retain(void *object);
+unsigned int retain(void *object);
 
 /*
  * Decrement adress's refcount by 1
  */
-void release(Memory mem, void *object);
+unsigned int release(Memory mem, void *object);
 
 /*
  * Return adress's refcount

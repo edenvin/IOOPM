@@ -44,6 +44,11 @@ Boolean set_memory_mark(Chunk chunk, Boolean mark);
 chunk_size memory_size(Chunk chunk);
 
 /*
+ * Returns a pointer to the start of the memory represented by chunk.
+ */
+void *memory_start(Chunk chunk);
+
+/*
  * Searches for a chunk in the memory. If strict is TRUE the needle must match
  * the chunks' start pointer. If FALSE the needle may point to anywhere in the chunks'
  * memory.

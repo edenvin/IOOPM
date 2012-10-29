@@ -64,20 +64,20 @@ void test_claim_memory(void) {
   Lists descending = create_lists(NULL, 1, DESCENDING_SIZE);
   Lists address = create_lists(address_pointers+4, 16, ADDRESS);
   
-  ascending->freelist = new_chunk(NULL, 8, memory_freelist(ascending)->next);
-  ascending->freelist = new_chunk(NULL, 4, memory_freelist(ascending)->next);
-  ascending->freelist = new_chunk(NULL, 2, memory_freelist(ascending)->next);
-  ascending->freelist = new_chunk(NULL, 1, memory_freelist(ascending)->next);
+  ascending->freelist = new_chunk(NULL, 8, memory_freelist(ascending));
+  ascending->freelist = new_chunk(NULL, 4, memory_freelist(ascending));
+  ascending->freelist = new_chunk(NULL, 2, memory_freelist(ascending));
+  ascending->freelist = new_chunk(NULL, 1, memory_freelist(ascending));
   
-  descending->freelist = new_chunk(NULL, 2, memory_freelist(descending)->next);
-  descending->freelist = new_chunk(NULL, 4, memory_freelist(descending)->next);
-  descending->freelist = new_chunk(NULL, 8, memory_freelist(descending)->next);
-  descending->freelist = new_chunk(NULL, 16, memory_freelist(descending)->next);
+  descending->freelist = new_chunk(NULL, 2, memory_freelist(descending));
+  descending->freelist = new_chunk(NULL, 4, memory_freelist(descending));
+  descending->freelist = new_chunk(NULL, 8, memory_freelist(descending));
+  descending->freelist = new_chunk(NULL, 16, memory_freelist(descending));
   
-  address->freelist = new_chunk(address_pointers+3, 1, memory_freelist(address)->next);
-  address->freelist = new_chunk(address_pointers+2, 4, memory_freelist(address)->next);
-  address->freelist = new_chunk(address_pointers+1, 2, memory_freelist(address)->next);
-  address->freelist = new_chunk(address_pointers+0, 8, memory_freelist(address)->next);
+  address->freelist = new_chunk(address_pointers+3, 1, memory_freelist(address));
+  address->freelist = new_chunk(address_pointers+2, 4, memory_freelist(address));
+  address->freelist = new_chunk(address_pointers+1, 2, memory_freelist(address));
+  address->freelist = new_chunk(address_pointers+0, 8, memory_freelist(address));
   
   /*
    *  ascending = [ 1 |  2  |   4   |     8     |       16        ]
@@ -102,16 +102,57 @@ void test_claim_memory(void) {
    *    address = [  2  |   4   | 1 |       16        ]
    */
   
-/*   Chunk asc2 = claim_memory(16, ascending);
-   CU_ASSERT(asc1 != NULL && asc1->size == 16);
-   CU_ASSERT(memory_freelist(ascending)->next->next->next == NULL);
-   Chunk desc1 = claim_memory(1, descending);
-   CU_ASSERT(desc1 != NULL && desc1->size == 1);
-   CU_ASSERT(memory_freelist(descending)->size == 8);
-   Chunk addr1 = claim_memory(8, address);
-   CU_ASSERT(addr1 != NULL && addr1->size == 8);
-   CU_ASSERT(memory_freelist(address)->size == 2);
- */ 
+  // Test claiming a whole chunk from the end.
+  Chunk asc2 = claim_memory(16, ascending);
+  CU_ASSERT(asc2 != NULL && asc2->size == 16);
+  CU_ASSERT(memory_freelist(ascending)->next->next->next == NULL);
+  Chunk addr2 = claim_memory(16, address);
+  CU_ASSERT(addr2 != NULL && addr2->size == 16);
+  CU_ASSERT(memory_freelist(address)->next->next->next == NULL);
+  
+  /*
+   *  ascending = [  2  |   4   |     8     ]
+   * descending = [     8     |   4   |  2  | 1 ]
+   *    address = [  2  |   4   | 1 ]
+   */
+  
+  // Test claiming a chunk that is too large.
+  Chunk asc3 = claim_memory(32, ascending);
+  CU_ASSERT(asc3 == NULL);
+  Chunk desc3 = claim_memory(32, descending);
+  CU_ASSERT(desc3 == NULL);
+  Chunk addr3 = claim_memory(32, address);
+  CU_ASSERT(addr3 == NULL);
+  
+  /*
+   *  ascending = [  2  |   4   |     8     ]
+   * descending = [     8     |   4   |  2  | 1 ]
+   *    address = [  2  |   4   | 1 ]
+   */
+  
+  // Test sorting
+  Chunk asc4 = claim_memory(3, ascending);
+  CU_ASSERT(asc4 != NULL && asc4->size == 3);
+  CU_ASSERT(ascending->freelist->size == 1);
+  CU_ASSERT(ascending->freelist->next->size == 2);
+  CU_ASSERT(ascending->freelist->next->next->size == 8);
+  Chunk desc4 = claim_memory(5, descending);
+  CU_ASSERT(desc4 != NULL && desc4->size == 5);
+  CU_ASSERT(descending->freelist->size == 4);
+  CU_ASSERT(descending->freelist->next->size == 3);
+  CU_ASSERT(descending->freelist->next->next->size == 2);
+  CU_ASSERT(descending->freelist->next->next->next->size == 1);
+  Chunk addr4 = claim_memory(3, address);
+  CU_ASSERT(addr4 != NULL && addr4->size == 3);
+  CU_ASSERT(address->freelist->size == 2);
+  CU_ASSERT(address->freelist->next->size == 1);
+  CU_ASSERT(address->freelist->next->next->size == 1);
+  
+  /*
+   *  ascending = [ 1 |  2  |     8     ]
+   * descending = [   4   |   3   |  2  | 1 ]
+   *    address = [  2  | 1 | 1 ]
+   */
   
 }
 
@@ -132,7 +173,8 @@ int memory_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
     (NULL == CU_add_test(memory_suite, "test of create_lists()", test_create_lists)) ||
     (NULL == CU_add_test(memory_suite, "test of memory_size()", test_memory_size)) ||
     (NULL == CU_add_test(memory_suite, "test of set_memory_mark()", test_set_memory_mark)) ||
-    (NULL == CU_add_test(memory_suite, "test of search_memory()", test_search_memory))
+    (NULL == CU_add_test(memory_suite, "test of search_memory()", test_search_memory)) ||
+    (NULL == CU_add_test(memory_suite, "test of claim_memory()", test_claim_memory))
   ) {
     CU_cleanup_registry();
     return CU_get_error();
