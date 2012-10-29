@@ -27,11 +27,11 @@ Memory priv_imalloc(chunk_size memsiz, unsigned int flags) {
     if (flags < 21) {
       set_priv_mem_managed_functions(new_mem, &retain, &release, &count, NULL, NULL);
       new_mem->lists = lists_based_on_flags(flags, 17, 18, 20, new_mem->start, memsiz);
-  // MANAGED + GC
+  // MANAGED + GCD
     } else if (flags < 37) {
       set_priv_mem_managed_functions(new_mem, NULL, NULL, NULL, &typed_alloc, &collect);
       new_mem->lists = lists_based_on_flags(flags, 33, 34, 36, new_mem->start, memsiz);
-  // MANAGED + REFCOUNT + GC
+  // MANAGED + REFCOUNT + GCD
     } else {
       set_priv_mem_managed_functions(new_mem, &retain, &release, &count, &typed_alloc, &collect);
       new_mem->lists = lists_based_on_flags(flags, 49, 50, 52, new_mem->start, memsiz);
