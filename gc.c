@@ -48,7 +48,7 @@ void traverse_heap(void *ptr, void *mem){
     }
     // If no pointer was found, continue to read the rest of the chunk as int pointers
     else{
-      size = size+sizeof(int);
+      size++;
     }
   }
   return;
