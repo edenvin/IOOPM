@@ -15,8 +15,8 @@
  * was allocated using iMalloc.
  */
 Boolean in_address_space(void *ptr, priv_mem *mem) {
-  int *start = as_start(mem);
-  int *end = as_end(mem);
+  int *start = managed_as_start(mem);
+  int *end = managed_as_end(mem);
   if ((int*)ptr < end && (int*)ptr > start){
     return TRUE;
   }
@@ -102,8 +102,8 @@ unsigned int collect(Memory memory){
   priv_mem *mem = style_to_priv(memory);
   mark_unused(mem);
   AddressSpace as;
-  as->start = as_start(mem);
-  as->end = as_end(mem);
+  as->start = managed_as_start(mem);
+  as->end = managed_as_end(mem);
   traverseStack(as, &traverse_heap, mem);
   unsigned int i = sweep(mem);
   return i;
