@@ -6,14 +6,14 @@
  */
  void test_collect_1(void) {
   Memory mem = (Memory) iMalloc(sizeof(int)*4, GCD + ASCENDING_SIZE);
-  void *p0 = mem->alloc(mem, sizeof(int));
-  void *p1 = mem->alloc(mem, sizeof(int));
-  void *p2 = mem->alloc(mem, sizeof(int));
-  void *p3 = mem->alloc(mem, sizeof(int));
-  *(int*)p0 = 0;
-  *(int*)p1 = 1;
-  *(int*)p2 = 2;
-  *(int*)p3 = 3;
+  int *p0 = mem->alloc(mem, sizeof(int));
+  int *p1 = mem->alloc(mem, sizeof(int));
+  int *p2 = mem->alloc(mem, sizeof(int));
+  int *p3 = mem->alloc(mem, sizeof(int));
+  *p0 = 0;
+  *p1 = 1;
+  *p2 = 2;
+  *p3 = 3;
   CU_ASSERT(collect(mem) == 0);
   managed_free(mem,p0);
   managed_free(mem,p1);

@@ -41,10 +41,10 @@ void traverse_heap(void *ptr, void *mem){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
      */
-     if (in_address_space((int*)ptr + size, mem) == TRUE){
-      traverse_heap((Chunk)((int*)ptr + size), mem);
-      set_memory_mark((Chunk)((int*)ptr + size), TRUE);
-      size = size+sizeof(int);
+     if (in_address_space(ptr + 1, mem) == TRUE){
+      traverse_heap((Chunk)(ptr + 1), mem);
+      set_memory_mark((Chunk)(ptr + 1), TRUE);
+      size++;
     }
     // If no pointer was found, continue to read the rest of the chunk as int pointers
     else{
