@@ -10,6 +10,7 @@
 #include "CUnit/Basic.h"
 #include "../priv_imalloc.h"
  #include "../memory_priv.h"
+ #include "../imalloc.h"
 
 /*
  * Add tests.

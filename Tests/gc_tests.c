@@ -15,10 +15,10 @@
   *p2 = 2;
   *p3 = 3;
   CU_ASSERT(collect(mem) == 0);
-  managed_free(mem,p0);
-  managed_free(mem,p1);
-  managed_free(mem,p2);
-  managed_free(mem,p3);
+  priv_free(mem,p0);
+  priv_free(mem,p1);
+  priv_free(mem,p2);
+  priv_free(mem,p3);
 }
 
 

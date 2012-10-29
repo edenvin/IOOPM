@@ -14,9 +14,9 @@
  * Returns true if pointer ptr is within the addresspace on the heap that
  * was allocated using iMalloc.
  */
-Boolean in_address_space(void *ptr, Priv_managed mem) {
-  void *start = managed_as_start(mem);
-  void *end = managed_as_end(mem);
+Boolean in_address_space(void *ptr, Priv_mem mem) {
+  void *start = as_start(mem);
+  void *end = as_end(mem);
   if (ptr < end && ptr > start){
     return TRUE;
   }
@@ -36,7 +36,7 @@ Boolean in_address_space(void *ptr, Priv_managed mem) {
  */
 void traverse_heap(void *ptr, void *mem){
   chunk_size size = 0;
-  Chunk chunk = managed_alloclist (mem);
+  Chunk chunk = alloclist (mem);
   while (size < memory_size(search_memory(ptr,chunk,FALSE))){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
@@ -60,13 +60,13 @@ void traverse_heap(void *ptr, void *mem){
  * Frees the chunks that is no longer being used, the ones with
  * the mark bit set to false.
  */
-int sweep(Priv_managed mem){
+int sweep(Priv_mem mem){
   int i = 0;
-  Chunk current_chunk = managed_alloclist(mem); 
+  Chunk current_chunk = alloclist(mem); 
   //Initiate iterator
   while (current_chunk){
     if (memory_is_marked(current_chunk) == FALSE){
-      free_memory(current_chunk);
+
       i++;
       current_chunk = next_chunk(current_chunk);
     }
@@ -74,6 +74,7 @@ int sweep(Priv_managed mem){
       current_chunk = next_chunk(current_chunk);
     }
   }
+  priv_free(priv_to_style(mem),memory_start(alloclist(mem)));
   return i;
 }
 
@@ -82,8 +83,8 @@ int sweep(Priv_managed mem){
   * The first stage of the mark & sweep algorithm.
   * Traverses the alloclist and sets all mark_bits to false.
   */
-void mark_unused(Priv_managed mem){
-  Chunk current_chunk = managed_alloclist(mem);
+void mark_unused(Priv_mem mem){
+  Chunk current_chunk = alloclist(mem);
   while (current_chunk){
     set_memory_mark(current_chunk ,FALSE);
     current_chunk = next_chunk(current_chunk);       
@@ -99,11 +100,11 @@ void mark_unused(Priv_managed mem){
  */
 unsigned int collect(Memory memory){
   SET_STACK_BOTTOM
-  Priv_managed mem = (Priv_managed) style_to_priv(memory);
+  Priv_mem mem = (Priv_mem) style_to_priv(memory);
   mark_unused(mem);
   AddressSpace as;
-  as->start = managed_as_start(mem);
-  as->end = managed_as_end(mem);
+  as->start = as_start(mem);
+  as->end = as_end(mem);
   traverseStack(as, &traverse_heap, mem);
   unsigned int i = sweep(mem);
   return i;
