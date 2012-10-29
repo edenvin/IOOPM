@@ -25,4 +25,21 @@ void free_lists(Lists lists);
  */
 void insert_chunk_to_freelist(Lists lists, Chunk chunk);
 
+/*
+ * Finds any adjecent chunks to chunk, removes them from the freelist and returns them combined into one chunk.
+ * If no adjecent chunks are found, return chunk.
+ */
+Chunk combine_adjecent(Lists lists, Chunk chunk);
+
+/*
+ * Unlinks the chunk from the freelist.
+ */
+void unlink_chunk_from_freelist(Chunk chunk, Chunk prev, Lists lists);
+
+/*
+ * Unlinks the chunk from the alloclist..
+ */
+void unlink_chunk_from_alloclist(Chunk chunk, Chunk prev, Lists lists);
+
+
 #endif
