@@ -10,6 +10,8 @@ void test_retain(void) {
 }
 
 void test_release(void) {
+  CU_FAIL("Not implemented");
+  /*
   // PLACEHOLDER
   Memory test = malloc(10);
   // PLACEHOLDER
@@ -22,7 +24,7 @@ void test_release(void) {
   CU_ASSERT(t == NULL);
   // PLACERHOLDER
   free(test);
-  // PLACEHOLDER
+  // PLACEHOLDER*/
 }
 
 void test_count(void) {

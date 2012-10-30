@@ -101,10 +101,6 @@ void* managed_alloc(Memory mem, chunk_size size) {
   Boolean using_refcount = temp->functions.managed.rc.retain != NULL;
   Boolean using_gc = temp->functions.managed.gc.alloc != NULL;
   
-  // If we're using refcount, we need to allocate an int to store the refcount as well.
-  if (using_refcount)
-    size = size + sizeof(int);
-  
   Chunk new_chunk = claim_memory(size, temp->lists);
   
   // Allocation failed.

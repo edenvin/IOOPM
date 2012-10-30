@@ -10,7 +10,7 @@ unsigned int release(Memory mem, void* object) {
   unsigned int* t = object_to_refcount(object);
   *t = *t - 1;
   if (*t == 0) {
-    priv_free(mem, object);
+    priv_free(mem, refcount_to_object(object));
     return *t;
   }
   return *t;

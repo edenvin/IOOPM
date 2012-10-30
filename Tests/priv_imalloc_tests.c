@@ -54,13 +54,45 @@ void test_priv_imalloc(void) {
 }*/
 
 void test_managed_alloc(void) {
-  // Test refcount.
-  Managed mem = (Managed) iMalloc(1 Mb, REFCOUNT + ASCENDING_SIZE);
-  void *tmp = mem->alloc((Memory) mem, 1 Kb);
+  char *tmp_rc;
+  char *tmp_gc;
+  char *tmp_rc2;
+  char *tmp_gc2;
   
-  Priv_mem priv_mem  = style_to_priv((Memory) mem);
-  CU_ASSERT(alloclist(priv_mem) != NULL);
-  CU_ASSERT(alloclist(priv_mem)->size == 1 Kb + sizeof(int));
+  Managed mem_rc = (Managed) iMalloc(1 Mb, REFCOUNT + ASCENDING_SIZE);
+  Managed mem_gc = (Managed) iMalloc(1 Mb, GCD + ASCENDING_SIZE);
+  Priv_mem priv_mem_rc = style_to_priv((Memory) mem_rc);
+  Priv_mem priv_mem_gc = style_to_priv((Memory) mem_gc);
+  
+  // Test allocating 1 Kb
+  tmp_rc = mem_rc->alloc((Memory) mem_rc, 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_rc) != NULL);
+  CU_ASSERT(alloclist(priv_mem_rc)->size == 1 Kb);
+  CU_ASSERT(freelist(priv_mem_rc) != NULL);
+  CU_ASSERT(freelist(priv_mem_rc)->size == 1 Mb - 1 Kb);
+  tmp_gc = mem_gc->alloc((Memory) mem_gc, 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_gc) != NULL);
+  CU_ASSERT(alloclist(priv_mem_gc)->size == 1 Kb);
+  CU_ASSERT(freelist(priv_mem_gc) != NULL);
+  CU_ASSERT(freelist(priv_mem_gc)->size == 1 Mb - 1 Kb);
+  
+  // Allocate all remeaining space.
+  tmp_rc = mem_rc->alloc((Memory) mem_rc, 1 Mb - 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_rc) != NULL);
+  CU_ASSERT(alloclist(priv_mem_rc)->size == 1 Mb - 1 Kb);
+  CU_ASSERT(freelist(priv_mem_rc) == NULL);
+  tmp_gc = mem_gc->alloc((Memory) mem_gc, 1 Mb - 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_gc) != NULL);
+  CU_ASSERT(alloclist(priv_mem_gc)->size == 1 Mb - 1 Kb);
+  CU_ASSERT(freelist(priv_mem_gc) == NULL);
+  
+  // This allocation should fail using refcount, but succeed using gc.
+  // Note: tmp no longer points to the 1 Kb block allocated in the beginning.
+  tmp_rc2 = mem_rc->alloc((Memory) mem_rc, 1 Kb);
+  CU_ASSERT(tmp_rc2 == NULL);
+  tmp_gc2 = mem_gc->alloc((Memory) mem_gc, 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_gc)->size == 1 Kb);
+  CU_ASSERT(freelist(priv_mem_gc) == NULL);
 }
 
 /*
