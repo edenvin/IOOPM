@@ -14,11 +14,11 @@
   *p1 = 1;
   *p2 = 2;
   *p3 = 3;
-  CU_ASSERT(collect(mem) == 0);
-  priv_free(mem,p0);
-  priv_free(mem,p1);
-  priv_free(mem,p2);
-  priv_free(mem,p3);
+  CU_ASSERT(collect((Memory) mem) == 0);
+  priv_free((Memory) mem,p0);
+  priv_free((Memory) mem,p1);
+  priv_free((Memory) mem,p2);
+  priv_free((Memory) mem,p3);
 }
 
 
