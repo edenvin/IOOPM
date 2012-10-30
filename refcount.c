@@ -1,4 +1,5 @@
 #include "refcount.h"
+#include "priv_imalloc.h"
 
 unsigned int retain(void* object) {
   unsigned int* t = object_to_refcount(object);

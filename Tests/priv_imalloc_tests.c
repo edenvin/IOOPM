@@ -73,6 +73,10 @@ void test_priv_free(void) {
   CU_ASSERT(memory_start(search_memory(temp, new_mem->lists->alloclist, FALSE)) == temp);
   CU_ASSERT(priv_free((Memory) mem, temp) == 2 Kb);
   CU_ASSERT(memory_start(search_memory(temp, new_mem->lists->alloclist, FALSE)) == NULL);
+
+  free_lists(new_mem->lists);
+  free(new_mem->start);
+  free(new_mem);
 }
 
 void test_avail(void) {
@@ -86,6 +90,46 @@ void test_avail(void) {
   CU_ASSERT(avail((Memory) mem) == 1 Kb);
 
   Priv_mem new_mem = style_to_priv((Memory) mem);
+  free_lists(new_mem->lists);
+  free(new_mem->start);
+  free(new_mem);
+}
+
+void test_freelist(void) {
+  Manual mem = (Manual) priv_imalloc(1 Mb, MANUAL + ASCENDING_SIZE);
+  Priv_mem new_mem = style_to_priv((Memory) mem);
+  CU_ASSERT(freelist(new_mem) == new_mem->lists->freelist);
+
+  free_lists(new_mem->lists);
+  free(new_mem->start);
+  free(new_mem);
+}
+
+void test_alloclist(void) {
+  Manual mem = (Manual) priv_imalloc(1 Mb, MANUAL + ASCENDING_SIZE);
+  Priv_mem new_mem = style_to_priv((Memory) mem);
+  CU_ASSERT(alloclist(new_mem) == new_mem->lists->alloclist);
+
+  free_lists(new_mem->lists);
+  free(new_mem->start);
+  free(new_mem);
+}
+
+void test_as_start(void) {
+  Manual mem = (Manual) priv_imalloc(1 Mb, MANUAL + ASCENDING_SIZE);
+  Priv_mem new_mem = style_to_priv((Memory) mem);
+  CU_ASSERT(as_start(new_mem) == new_mem->start);
+
+  free_lists(new_mem->lists);
+  free(new_mem->start);
+  free(new_mem);
+}
+
+void test_as_end(void) {
+  Manual mem = (Manual) priv_imalloc(1 Mb, MANUAL + ASCENDING_SIZE);
+  Priv_mem new_mem = style_to_priv((Memory) mem);
+  CU_ASSERT(as_end(new_mem) == new_mem->end);
+
   free_lists(new_mem->lists);
   free(new_mem->start);
   free(new_mem);
@@ -133,6 +177,24 @@ void test_managed_alloc(void) {
   CU_ASSERT(freelist(priv_mem_gc) == NULL);
 }
 
+void test_typed_alloc(void) {
+  char *tmp_gc;
+  
+  Managed mem_gc = (Managed) iMalloc(1 Mb, GCD + ASCENDING_SIZE);
+  Priv_mem priv_mem_gc = style_to_priv((Memory) mem_gc);
+  
+  // Test allocating 10 pointers, 5 ints and 8 chars 
+  tmp_gc = mem_gc->gc.alloc((Memory) mem_gc, "10*5i8c");
+  CU_ASSERT(alloclist(priv_mem_gc) != NULL);
+  CU_ASSERT(alloclist(priv_mem_gc)->size == 10 * sizeof(void*) + 5 * sizeof(int) + 8 * sizeof(char));
+  CU_ASSERT(freelist(priv_mem_gc) != NULL);
+  CU_ASSERT(freelist(priv_mem_gc)->size == (1 Mb - (10 * sizeof(void*) + 5 * sizeof(int) + 8 * sizeof(char))));
+
+  free_lists(priv_mem_gc->lists);
+  free(priv_mem_gc->start);
+  free(priv_mem_gc);
+}
+
 /*
  * Add tests to suites.
  */
@@ -151,7 +213,12 @@ int priv_imalloc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
     (NULL == CU_add_test(priv_imalloc_suite, "test of manual_alloc()", test_manual_alloc)) ||
     (NULL == CU_add_test(priv_imalloc_suite, "test of priv_free()", test_priv_free)) ||
     (NULL == CU_add_test(priv_imalloc_suite, "test of avail()", test_avail)) ||
-    (NULL == CU_add_test(priv_imalloc_suite, "test of test_managed_alloc()", test_managed_alloc))
+    (NULL == CU_add_test(priv_imalloc_suite, "test of freelist()", test_freelist)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of alloclist()", test_alloclist)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of as_start()", test_as_start)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of as_end()", test_as_end)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of managed_alloc()", test_managed_alloc))  ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of typed_alloc()", test_typed_alloc))
     ) {
     CU_cleanup_registry();
     return CU_get_error();
