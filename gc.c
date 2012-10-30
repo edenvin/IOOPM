@@ -66,7 +66,6 @@ int sweep(Priv_mem mem){
   //Initiate iterator
   while (current_chunk){
     if (memory_is_marked(current_chunk) == FALSE){
-
       i++;
       current_chunk = next_chunk(current_chunk);
     }
@@ -102,10 +101,10 @@ unsigned int collect(Memory memory){
   SET_STACK_BOTTOM
   Priv_mem mem = (Priv_mem) style_to_priv(memory);
   mark_unused(mem);
-  AddressSpace as;
-  as->start = as_start(mem);
-  as->end = as_end(mem);
-  traverseStack(as, &traverse_heap, mem);
+  addressspace as;
+  as.start = (RawPtr) as_start(mem);
+  as.end   = (RawPtr) as_end(mem);
+  traverseStack(&as, &traverse_heap, mem);
   unsigned int i = sweep(mem);
   return i;
 }
