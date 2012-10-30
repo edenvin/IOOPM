@@ -1,37 +1,39 @@
 #include "refcount_tests.h"
 
 void test_retain(void) {
-  char *t = OBJECT(malloc(10 * sizeof(char) + sizeof(int)));
+  char *t = refcount_to_object(malloc(10 * sizeof(char) + sizeof(int)));
   strcpy(t,"Hejhopp");
-  *REFCOUNT(t) = 1;
+  *object_to_refcount(t) = 1;
   CU_ASSERT(retain(t) == 2);
-  *REFCOUNT(t) = 7;
+  *object_to_refcount(t) = 7;
   CU_ASSERT(retain(t) == 8);
 }
 
 void test_release(void) {
+  CU_FAIL("Not implemented");
+  /*
   // PLACEHOLDER
   Memory test = malloc(10);
   // PLACEHOLDER
-  char *t = OBJECT(malloc(10 * sizeof(char)+ sizeof(int)));
+  char *t = refcount_to_object(malloc(10 * sizeof(char)+ sizeof(int)));
   strcpy(t,"Jultomte");
-  *REFCOUNT(t) = 3;
+  *object_to_refcount(t) = 3;
   CU_ASSERT(release(test, t) == 2);
   CU_ASSERT(release(test, t) == 1);
   CU_ASSERT(release(test, t) == 0);
   CU_ASSERT(t == NULL);
   // PLACERHOLDER
   free(test);
-  // PLACEHOLDER
+  // PLACEHOLDER*/
 }
 
 void test_count(void) {
   // PLACEHOLDER
   Memory test = malloc(10);
   // PLACEHOLDER
-  char *t = OBJECT(malloc(10 * sizeof(char)+ sizeof(int)));
+  char *t = refcount_to_object(malloc(10 * sizeof(char)+ sizeof(int)));
   strcpy(t,"tjenixen");
-  *REFCOUNT(t) = 3;
+  *object_to_refcount(t) = 3;
   CU_ASSERT(count(t) == 3);
   retain(t);
   release(test, t);

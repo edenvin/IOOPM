@@ -28,4 +28,14 @@ unsigned int release(Memory mem, void *object);
  */
 unsigned int count(void *object);
 
+/*
+ * Returns an object pointer from a refcount pointer.
+ */
+unsigned int* object_to_refcount(void *object);
+
+/*
+ * Returns a refcount pointer from an object pointer.
+ */
+void* refcount_to_object(unsigned int *refcount);
+
 #endif

@@ -91,6 +91,48 @@ void test_avail(void) {
   free(new_mem);
 }
 
+void test_managed_alloc(void) {
+  char *tmp_rc;
+  char *tmp_gc;
+  char *tmp_rc2;
+  char *tmp_gc2;
+  
+  Managed mem_rc = (Managed) iMalloc(1 Mb, REFCOUNT + ASCENDING_SIZE);
+  Managed mem_gc = (Managed) iMalloc(1 Mb, GCD + ASCENDING_SIZE);
+  Priv_mem priv_mem_rc = style_to_priv((Memory) mem_rc);
+  Priv_mem priv_mem_gc = style_to_priv((Memory) mem_gc);
+  
+  // Test allocating 1 Kb
+  tmp_rc = mem_rc->alloc((Memory) mem_rc, 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_rc) != NULL);
+  CU_ASSERT(alloclist(priv_mem_rc)->size == 1 Kb);
+  CU_ASSERT(freelist(priv_mem_rc) != NULL);
+  CU_ASSERT(freelist(priv_mem_rc)->size == 1 Mb - 1 Kb);
+  tmp_gc = mem_gc->alloc((Memory) mem_gc, 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_gc) != NULL);
+  CU_ASSERT(alloclist(priv_mem_gc)->size == 1 Kb);
+  CU_ASSERT(freelist(priv_mem_gc) != NULL);
+  CU_ASSERT(freelist(priv_mem_gc)->size == 1 Mb - 1 Kb);
+  
+  // Allocate all remeaining space.
+  tmp_rc = mem_rc->alloc((Memory) mem_rc, 1 Mb - 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_rc) != NULL);
+  CU_ASSERT(alloclist(priv_mem_rc)->size == 1 Mb - 1 Kb);
+  CU_ASSERT(freelist(priv_mem_rc) == NULL);
+  tmp_gc = mem_gc->alloc((Memory) mem_gc, 1 Mb - 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_gc) != NULL);
+  CU_ASSERT(alloclist(priv_mem_gc)->size == 1 Mb - 1 Kb);
+  CU_ASSERT(freelist(priv_mem_gc) == NULL);
+  
+  // This allocation should fail using refcount, but succeed using gc.
+  // Note: tmp no longer points to the 1 Kb block allocated in the beginning.
+  tmp_rc2 = mem_rc->alloc((Memory) mem_rc, 1 Kb);
+  CU_ASSERT(tmp_rc2 == NULL);
+  tmp_gc2 = mem_gc->alloc((Memory) mem_gc, 1 Kb);
+  CU_ASSERT(alloclist(priv_mem_gc)->size == 1 Kb);
+  CU_ASSERT(freelist(priv_mem_gc) == NULL);
+}
+
 /*
  * Add tests to suites.
  */
@@ -108,7 +150,8 @@ int priv_imalloc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
     (NULL == CU_add_test(priv_imalloc_suite, "test of priv_imalloc()", test_priv_imalloc)) ||
     (NULL == CU_add_test(priv_imalloc_suite, "test of manual_alloc()", test_manual_alloc)) ||
     (NULL == CU_add_test(priv_imalloc_suite, "test of priv_free()", test_priv_free)) ||
-    (NULL == CU_add_test(priv_imalloc_suite, "test of avail()", test_avail))
+    (NULL == CU_add_test(priv_imalloc_suite, "test of avail()", test_avail)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of test_managed_alloc()", test_managed_alloc))
     ) {
     CU_cleanup_registry();
     return CU_get_error();
