@@ -88,6 +88,8 @@ void* manual_alloc(Memory mem, chunk_size size) {
   return memory_start(new_chunk);
 }
 
+
+
 /*
  * Allocates memory for the given chunk size 
  * and returns a pointer for the allocated memory 
@@ -95,28 +97,39 @@ void* manual_alloc(Memory mem, chunk_size size) {
 void* managed_alloc(Memory mem, chunk_size size) {
   Priv_mem temp = style_to_priv(mem);
   void* object;
-  if (temp->functions.managed.rc.retain == NULL){
-    Chunk new_chunk = claim_memory(size, temp->lists);
-    if (new_chunk == NULL) {
-      if (collect(mem) == 0) {
+  
+  Boolean using_refcount = temp->functions.managed.rc.retain != NULL;
+  Boolean using_gc = temp->functions.managed.gc.alloc != NULL;
+  
+  // If we're using refcount, we need to allocate an int to store the refcount as well.
+  if (using_refcount)
+    size = size + sizeof(int);
+  
+  Chunk new_chunk = claim_memory(size, temp->lists);
+  
+  // Allocation failed.
+  if (new_chunk == NULL) {
+    // If we're using gc, we need to run garbage the collection and retry the allocation.
+    if (using_gc) {
+      if (collect(mem) == 0)
         return NULL;
-      }
-      new_chunk = claim_memory(size, temp->lists);
+      else
+        return managed_alloc(mem, size);
     }
-    object = memory_start(new_chunk);
-  } else {
-    Chunk new_chunk = claim_memory(size+sizeof(int), temp->lists);
-    if (temp->functions.managed.gc.alloc == NULL) {
-      if (new_chunk == NULL) {
-        if (collect(mem) == 0) {
-          object = NULL;
-        }
-        new_chunk = claim_memory(size+sizeof(int), temp->lists);
-      }
+    else {
+      // We're not using gc, so no garbage collection can be done. The allocation failed.
+      return NULL;
     }
+  }
+  
+  if (using_refcount) {
     object = OBJECT(memory_start(new_chunk));
     retain(object);
   }
+  else {
+    object = memory_start(new_chunk);
+  }
+  
   return object;
 }
 

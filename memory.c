@@ -151,7 +151,8 @@ void free_chunklist(Chunk list) {
 Chunk next_chunk(Chunk chunk) {
   if (chunk == NULL)
     return NULL;
-  return chunk->next;
+  else
+    return chunk->next;
 }
 
 /*

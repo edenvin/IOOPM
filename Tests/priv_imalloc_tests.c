@@ -53,6 +53,16 @@ void test_priv_imalloc(void) {
 
 }*/
 
+void test_managed_alloc(void) {
+  // Test refcount.
+  Managed mem = (Managed) iMalloc(1 Mb, REFCOUNT + ASCENDING_SIZE);
+  void *tmp = mem->alloc((Memory) mem, 1 Kb);
+  
+  Priv_mem priv_mem  = style_to_priv((Memory) mem);
+  CU_ASSERT(alloclist(priv_mem) != NULL);
+  CU_ASSERT(alloclist(priv_mem)->size == 1 Kb + sizeof(int));
+}
+
 /*
  * Add tests to suites.
  */
@@ -67,6 +77,7 @@ int priv_imalloc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   // Add tests
   if (
     (NULL == CU_add_test(priv_imalloc_suite, "test of conversion functions: priv_to_style and style_to_priv", test_conversion_functions)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of test_managed_alloc()", test_managed_alloc)) ||
     (NULL == CU_add_test(priv_imalloc_suite, "test of priv_imalloc()", test_priv_imalloc))
     ) {
     CU_cleanup_registry();
