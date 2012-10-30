@@ -108,7 +108,7 @@ int priv_imalloc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   
   // Add tests
   if (
-    (NULL == CU_add_test(priv_imalloc_suite, "test of conversion functions: priv_to_style and style_to_priv", test_conversion_functions)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of conversion functions: priv_to_style() and style_to_priv()", test_conversion_functions)) ||
     (NULL == CU_add_test(priv_imalloc_suite, "test of test_managed_alloc()", test_managed_alloc)) ||
     (NULL == CU_add_test(priv_imalloc_suite, "test of priv_imalloc()", test_priv_imalloc))
     ) {
