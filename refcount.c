@@ -1,4 +1,5 @@
 #include "refcount.h"
+#include "priv_imalloc.h"
 
 unsigned int retain(void* object) {
   unsigned int* t = object_to_refcount(object);
@@ -10,7 +11,7 @@ unsigned int release(Memory mem, void* object) {
   unsigned int* t = object_to_refcount(object);
   *t = *t - 1;
   if (*t == 0) {
-    priv_free(mem, refcount_to_object(object));
+    priv_free(mem, t);
     return *t;
   }
   return *t;
