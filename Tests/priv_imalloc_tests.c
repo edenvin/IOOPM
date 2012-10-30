@@ -32,8 +32,8 @@ void test_conversion_functions(void) {
 
 void test_priv_imalloc(void) {
   Priv_mem new_mem = style_to_priv(priv_imalloc(1 Mb, REFCOUNT + GCD + ADDRESS));
-  CU_ASSERT(new_mem->end == new_mem->start + 1048575);
-  CU_ASSERT(new_mem->lists->freelist->size == 1048576);
+  CU_ASSERT(new_mem->end == new_mem->start + 1 Mb - 1);
+  CU_ASSERT(new_mem->lists->freelist->size == 1 Mb);
   CU_ASSERT(new_mem->lists->freelist->next == NULL);
   CU_ASSERT(new_mem->lists->alloclist == NULL);
   CU_ASSERT(new_mem->lists->sort_style == 4);
@@ -48,10 +48,48 @@ void test_priv_imalloc(void) {
   free(new_mem);
 }
 
-/*void test_manual_alloc(void) {
-  Priv_mem new_mem = style_to_priv(priv_imalloc(1 Mb, REFCOUNT + GCD + ADDRESS));
+void test_manual_alloc(void) {
+  Manual mem = (Manual) priv_imalloc(1 Mb, MANUAL + ASCENDING_SIZE);
+  mem->alloc((Memory) mem, 1 Kb);
+  Priv_mem new_mem = style_to_priv((Memory) mem);
+  CU_ASSERT(new_mem->lists->freelist->size == 1 Mb - 1 Kb);
+  CU_ASSERT(new_mem->lists->alloclist->size == 1 Kb);
+  mem->alloc((Memory) mem, 1 Mb - 1 Kb);
+  CU_ASSERT(new_mem->lists->freelist == NULL);
+  CU_ASSERT(new_mem->lists->alloclist->size == 1 Mb - 1 Kb);
+  CU_ASSERT(new_mem->lists->alloclist->next->size == 1 Kb);
 
-}*/
+  free_lists(new_mem->lists);
+  free(new_mem->start);
+  free(new_mem);
+}
+
+void test_priv_free(void) {
+  Manual mem = (Manual) priv_imalloc(1 Mb, MANUAL + ASCENDING_SIZE);
+  Priv_mem new_mem = style_to_priv((Memory) mem);
+  mem->alloc((Memory) mem, 1 Kb);
+  void *temp = mem->alloc((Memory) mem, 2 Kb);
+  mem->alloc((Memory) mem, 1 Kb);
+  CU_ASSERT(memory_start(search_memory(temp, new_mem->lists->alloclist, FALSE)) == temp);
+  CU_ASSERT(priv_free((Memory) mem, temp) == 2 Kb);
+  CU_ASSERT(memory_start(search_memory(temp, new_mem->lists->alloclist, FALSE)) == NULL);
+}
+
+void test_avail(void) {
+  Manual mem = (Manual) priv_imalloc(1 Mb, MANUAL + ASCENDING_SIZE);
+  mem->alloc((Memory) mem, 1 Kb);
+  void *temp = mem->alloc((Memory) mem, 1 Kb);
+  mem->alloc((Memory) mem, 1 Kb);
+  CU_ASSERT(priv_free((Memory) mem, temp) == 1 Kb);
+  CU_ASSERT(avail((Memory) mem) == 1 Mb - 3 * 1 Kb);
+  mem->alloc((Memory) mem, 1 Mb - 3 * 1 Kb);
+  CU_ASSERT(avail((Memory) mem) == 1 Kb);
+
+  Priv_mem new_mem = style_to_priv((Memory) mem);
+  free_lists(new_mem->lists);
+  free(new_mem->start);
+  free(new_mem);
+}
 
 /*
  * Add tests to suites.
@@ -67,7 +105,10 @@ int priv_imalloc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   // Add tests
   if (
     (NULL == CU_add_test(priv_imalloc_suite, "test of conversion functions: priv_to_style and style_to_priv", test_conversion_functions)) ||
-    (NULL == CU_add_test(priv_imalloc_suite, "test of priv_imalloc()", test_priv_imalloc))
+    (NULL == CU_add_test(priv_imalloc_suite, "test of priv_imalloc()", test_priv_imalloc)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of manual_alloc()", test_manual_alloc)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of priv_free()", test_priv_free)) ||
+    (NULL == CU_add_test(priv_imalloc_suite, "test of avail()", test_avail))
     ) {
     CU_cleanup_registry();
     return CU_get_error();
