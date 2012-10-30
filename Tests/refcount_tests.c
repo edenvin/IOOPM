@@ -10,37 +10,37 @@ void test_retain(void) {
 }
 
 void test_release(void) {
-  CU_FAIL("Not implemented");
-  /*
-  // PLACEHOLDER
-  Memory test = malloc(10);
-  // PLACEHOLDER
-  char *t = refcount_to_object(malloc(10 * sizeof(char)+ sizeof(int)));
+  Managed mem = (Managed) priv_imalloc(1 Mb, REFCOUNT + ASCENDING_SIZE);
+  Priv_mem new_mem = style_to_priv((Memory) mem);
+  char *t = (mem->alloc((Memory) mem, 10 * sizeof(char) + sizeof(int)));
   strcpy(t,"Jultomte");
   *object_to_refcount(t) = 3;
-  CU_ASSERT(release(test, t) == 2);
-  CU_ASSERT(release(test, t) == 1);
-  CU_ASSERT(release(test, t) == 0);
-  CU_ASSERT(t == NULL);
-  // PLACERHOLDER
-  free(test);
-  // PLACEHOLDER*/
+  CU_ASSERT(memory_start(search_memory(t, alloclist(new_mem), FALSE)) == object_to_refcount(t));
+  CU_ASSERT(release((Memory) mem, t) == 2);
+  CU_ASSERT(release((Memory) mem, t) == 1);
+  CU_ASSERT(release((Memory) mem, t) == 0);
+  CU_ASSERT(search_memory(t, alloclist(new_mem), FALSE) == NULL);
+
+  free_lists(new_mem->lists);
+  free(new_mem->start);
+  free(new_mem);
 }
 
 void test_count(void) {
-  // PLACEHOLDER
-  Memory test = malloc(10);
-  // PLACEHOLDER
-  char *t = refcount_to_object(malloc(10 * sizeof(char)+ sizeof(int)));
+  Managed mem = (Managed) priv_imalloc(1 Mb, REFCOUNT + ASCENDING_SIZE);
+  Priv_mem new_mem = style_to_priv((Memory) mem);
+  char *t = mem->alloc((Memory) mem, 10 * sizeof(char)+ sizeof(int));
   strcpy(t,"tjenixen");
   *object_to_refcount(t) = 3;
   CU_ASSERT(count(t) == 3);
   retain(t);
-  release(test, t);
+  CU_ASSERT(count(t) == 4);
+  release((Memory) mem, t);
   CU_ASSERT(count(t) == 3);
-  // PLACEHOLDER
-  free(test);
-  // PLACEHOLDER
+
+  free_lists(new_mem->lists);
+  free(new_mem->start);
+  free(new_mem);
 }
 
 /*

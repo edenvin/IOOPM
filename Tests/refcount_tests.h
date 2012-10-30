@@ -9,6 +9,8 @@
 
 #include "CUnit/Basic.h"
 #include "../refcount.h"
+#include "../priv_imalloc.h"
+#include "../memory_priv.h"
 
 /*
  * Add tests.
