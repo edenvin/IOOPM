@@ -139,10 +139,19 @@ void* typed_alloc(Memory mem, format_string size) {
 }
 
 /*
- * Returns the total size of the free space in the address space.
+ * Returns the largest possible size available for allocation.
  */
 unsigned int avail(Memory mem) {
-  return 0;
+  Priv_mem new_mem = style_to_priv(mem);
+  unsigned int avail = 0;
+  Chunk freelist = new_mem->lists->freelist;
+  while (freelist) {
+    if (freelist->size > avail) {
+      avail = freelist->size;
+    }
+    freelist = freelist->next;
+  }
+  return avail;
 }
 
 /*
