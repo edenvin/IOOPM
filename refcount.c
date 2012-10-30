@@ -1,18 +1,18 @@
 #include "refcount.h"
 
 unsigned int retain(void* object) {
-	unsigned int* t = object_to_refcount(object);
-	*t = *t + 1;
-	return *t;
+  unsigned int* t = object_to_refcount(object);
+  *t = *t + 1;
+  return *t;
 }
 
 unsigned int release(Memory mem, void* object) {
-	unsigned int* t = object_to_refcount(object);
-	*t = *t - 1;
+  unsigned int* t = object_to_refcount(object);
+  *t = *t - 1;
   if (*t == 0) {
-    //managed_free(mem, object);
+    priv_free(mem, object);
     return *t;
-  } 
+  }
   return *t;
 }
 
