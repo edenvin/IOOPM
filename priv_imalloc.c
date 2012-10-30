@@ -7,7 +7,7 @@
  * maximum amount of memory that can be used. flags specifies kind
  * of memory manager and allows fine-tunes some options.
  */
-struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
+Memory priv_imalloc(chunk_size memsiz, unsigned int flags) {
   // MANUAL
   if (flags < 13) {
     Priv_mem new_mem = malloc(sizeof(priv_mem));
@@ -25,23 +25,15 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
     new_mem->functions.managed.alloc = &managed_alloc;
     // MANAGED + REFCOUNT
     if (flags < 21) {
-      new_mem->functions.managed.rc.retain  = &retain;
-      new_mem->functions.managed.rc.release = &release;
-      new_mem->functions.managed.rc.count   = &count;
-      new_mem->functions.managed.gc.alloc   = NULL;
-      new_mem->functions.managed.gc.collect = NULL;
+      set_priv_mem_managed_functions(new_mem, &retain, &release, &count, NULL, NULL);
       new_mem->lists = lists_based_on_flags(flags, 17, 18, 20, new_mem->start, memsiz);
-  // MANAGED + GC
+  // MANAGED + GCD
     } else if (flags < 37) {
-      new_mem->functions.managed.rc.retain  = NULL;
-      new_mem->functions.managed.rc.release = NULL;
-      new_mem->functions.managed.rc.count   = NULL;
-      new_mem->functions.managed.gc.alloc   = &typed_alloc;
-      new_mem->functions.managed.gc.collect = &collect;
+      set_priv_mem_managed_functions(new_mem, NULL, NULL, NULL, &typed_alloc, &collect);
       new_mem->lists = lists_based_on_flags(flags, 33, 34, 36, new_mem->start, memsiz);
-  // MANAGED + REFCOUNT + GC
+  // MANAGED + REFCOUNT + GCD
     } else {
-      set_priv_mem_functions((Priv_mem) new_mem, &retain, &release, &count, &typed_alloc, &collect);
+      set_priv_mem_managed_functions(new_mem, &retain, &release, &count, &typed_alloc, &collect);
       new_mem->lists = lists_based_on_flags(flags, 49, 50, 52, new_mem->start, memsiz);
     }
     return priv_to_style((Priv_mem) new_mem);
@@ -51,7 +43,7 @@ struct style *priv_imalloc(chunk_size memsiz, unsigned int flags) {
 /*
  * Set function pointers to a priv_mem struct.
  */
-void set_priv_mem_functions(Priv_mem mem, unsigned int (*retain)(void *object), unsigned int (*release)(Memory mem, void *object), unsigned int (*count)(void *object), void* (*typed_alloc)(Memory mem, format_string size), unsigned int (*collect)(Memory mem)) {
+void set_priv_mem_managed_functions(Priv_mem mem, unsigned int (*retain)(void *object), unsigned int (*release)(Memory mem, void *object), unsigned int (*count)(void *object), void* (*typed_alloc)(Memory mem, format_string size), unsigned int (*collect)(Memory mem)) {
   mem->functions.managed.rc.retain  = retain;
   mem->functions.managed.rc.release = release;
   mem->functions.managed.rc.count   = count;
@@ -96,6 +88,8 @@ void* manual_alloc(Memory mem, chunk_size size) {
   return memory_start(new_chunk);
 }
 
+
+
 /*
  * Allocates memory for the given chunk size 
  * and returns a pointer for the allocated memory 
@@ -103,28 +97,35 @@ void* manual_alloc(Memory mem, chunk_size size) {
 void* managed_alloc(Memory mem, chunk_size size) {
   Priv_mem temp = style_to_priv(mem);
   void* object;
-  if (temp->functions.managed.rc.retain == NULL){
-    Chunk new_chunk = claim_memory(size, temp->lists);
-    if (new_chunk == NULL) {
-      if (collect(mem) == 0) {
+  
+  Boolean using_refcount = temp->functions.managed.rc.retain != NULL;
+  Boolean using_gc = temp->functions.managed.gc.alloc != NULL;
+  
+  Chunk new_chunk = claim_memory(size, temp->lists);
+  
+  // Allocation failed.
+  if (new_chunk == NULL) {
+    // If we're using gc, we need to run garbage the collection and retry the allocation.
+    if (using_gc) {
+      if (collect(mem) == 0)
         return NULL;
-      }
-      new_chunk = claim_memory(size, temp->lists);
+      else
+        return managed_alloc(mem, size);
     }
-    object = memory_start(new_chunk);
-  } else {
-    Chunk new_chunk = claim_memory(size+sizeof(int), temp->lists);
-    if (temp->functions.managed.gc.alloc == NULL) {
-      if (new_chunk == NULL) {
-        if (collect(mem) == 0) {
-          object = NULL;
-        }
-        new_chunk = claim_memory(size+sizeof(int), temp->lists);
-      }
+    else {
+      // We're not using gc, so no garbage collection can be done. The allocation failed.
+      return NULL;
     }
-    object = OBJECT(memory_start(new_chunk));
+  }
+  
+  if (using_refcount) {
+    object = refcount_to_object(memory_start(new_chunk));
     retain(object);
   }
+  else {
+    object = memory_start(new_chunk);
+  }
+  
   return object;
 }
 

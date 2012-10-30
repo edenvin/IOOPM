@@ -35,12 +35,12 @@ typedef struct {
  * maximum amount of memory that can be used. flags specifies kind
  * of memory manager and allows fine-tunes some options.
  */
-struct style *priv_imalloc(chunk_size memsiz, unsigned int flags);
+Memory priv_imalloc(chunk_size memsiz, unsigned int flags);
 
 /*
  * Set function pointers to a priv_mem struct.
  */
-void set_priv_mem_functions(Priv_mem mem, unsigned int (*retain)(void *object), unsigned int (*release)(Memory mem, void *object), unsigned int (*count)(void *object), void* (*typed_alloc)(Memory mem, format_string size), unsigned int (*collect)(Memory mem));
+void set_priv_mem_managed_functions(Priv_mem mem, unsigned int (*retain)(void *object), unsigned int (*release)(Memory mem, void *object), unsigned int (*count)(void *object), void* (*typed_alloc)(Memory mem, format_string size), unsigned int (*collect)(Memory mem));
 
 /*
  * Returns a Lists object based on flags and x, y, z.
