@@ -36,14 +36,16 @@ Boolean in_address_space(void *ptr, Priv_mem mem) {
  */
 void traverse_heap(void *ptr, void *mem){
   chunk_size size = 0;
-  Chunk chunk = alloclist (mem);
-  while (size+sizeof(void*) < memory_size(search_memory(ptr,chunk,FALSE))){
+  Chunk list = alloclist (mem);
+  Chunk chunk = search_memory(ptr,list,FALSE);
+  set_memory_mark(chunk, TRUE);
+  while (size+sizeof(void*) < memory_size(chunk)){
     /* If the first intpointer points to something within our adress space,
      * mark the current chunk as used and find pointers from the new chunk. 
      */
      if (in_address_space(ptr + 1, mem) == TRUE){
-      traverse_heap((Chunk)(ptr + 1), mem);
-      set_memory_mark((Chunk)(ptr + 1), TRUE);
+      traverse_heap((void*)(ptr + 1), mem);
+      set_memory_mark(search_memory(ptr+1,list,FALSE), TRUE);
       size++;
     }
     // If no pointer was found, continue to read the rest of the chunk as int pointers
@@ -67,13 +69,10 @@ int sweep(Priv_mem mem){
   while (current_chunk){
     if (memory_is_marked(current_chunk) == FALSE){
       i++;
-      current_chunk = next_chunk(current_chunk);
+      priv_free(priv_to_style(mem), memory_start(current_chunk));
     }
-    else{
-      current_chunk = next_chunk(current_chunk);
-    }
+    current_chunk = next_chunk(current_chunk);
   }
-  priv_free(priv_to_style(mem),memory_start(alloclist(mem)));
   return i;
 }
 
@@ -99,7 +98,7 @@ void mark_unused(Priv_mem mem){
  */
 unsigned int collect(Memory memory){
   SET_STACK_BOTTOM
-  Priv_mem mem = (Priv_mem) style_to_priv(memory);
+  Priv_mem mem = style_to_priv(memory);
   mark_unused(mem);
   addressspace as;
   as.start = (RawPtr) as_start(mem);

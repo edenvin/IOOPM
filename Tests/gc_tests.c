@@ -6,6 +6,7 @@
  */
  void test_collect_1(void) {
   Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ASCENDING_SIZE);
+  Priv_mem new_mem = style_to_priv((Memory) mem);
   int *p0 = mem->alloc((Memory) mem, sizeof(int));
   int *p1 = mem->alloc((Memory) mem, sizeof(int));
   int *p2 = mem->alloc((Memory) mem, sizeof(int));
