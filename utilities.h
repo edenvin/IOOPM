@@ -1,9 +1,6 @@
 #ifndef __utilities_h
 #define __utilities_h
 
-#define REFCOUNT(p) ((unsigned int*) (p) - 1)
-#define OBJECT(p) ((void*) ((p) + 1))
-
 /*
  * utilities.h
  *

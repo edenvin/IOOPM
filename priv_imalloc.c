@@ -123,7 +123,7 @@ void* managed_alloc(Memory mem, chunk_size size) {
   }
   
   if (using_refcount) {
-    object = OBJECT(memory_start(new_chunk));
+    object = refcount_to_object(memory_start(new_chunk));
     retain(object);
   }
   else {
