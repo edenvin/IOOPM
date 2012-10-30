@@ -39,6 +39,9 @@ void traverse_heap(void *ptr, void *mem){
   chunk_size size = 0;
   Chunk list = alloclist (mem);
   Chunk chunk = search_memory(p,list,FALSE);
+  if (chunk == NULL)
+    return;
+    
   set_memory_mark(chunk, TRUE);
   while (size+sizeof(void*) < memory_size(chunk)){
     /* If the first intpointer points to something within our adress space,
