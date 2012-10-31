@@ -21,7 +21,7 @@ Memory priv_imalloc(chunk_size memsiz, unsigned int flags) {
   } else {
     Priv_mem new_mem = malloc(sizeof(priv_mem));
     new_mem->start = malloc(memsiz);
-    new_mem->end = (void*) ((char*) (new_mem->start) + memsiz - 1);
+    new_mem->end = (void*) ((char*) (new_mem->start) + memsiz);
     new_mem->functions.managed.alloc = &managed_alloc;
     // MANAGED + REFCOUNT
     if (flags < 21) {
