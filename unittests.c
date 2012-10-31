@@ -20,7 +20,9 @@ int clean_suite(void)
 }
 
 int main()
-{ 
+{
+  SET_STACK_BOTTOM
+  
   /* initialize the CUnit test registry */
   if (CUE_SUCCESS != CU_initialize_registry())
     return CU_get_error();

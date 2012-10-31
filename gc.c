@@ -100,7 +100,6 @@ void mark_unused(Priv_mem mem){
  * The integer returned is corresponding to the number of memory blocks freed.
  */
 unsigned int collect(Memory memory){
-  SET_STACK_BOTTOM
   Priv_mem mem = style_to_priv(memory);
   mark_unused(mem);
   addressspace as;
