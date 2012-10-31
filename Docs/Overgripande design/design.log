@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  31 OCT 2012 11:29
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  31 OCT 2012 11:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**rapport
-(./rapport.tex
+**design
+(./design.tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, ge
 rman-x-2012-05-30, ngerman-x-2012-05-30, afrikaans, ancientgreek, ibycus, arabi
@@ -309,8 +309,12 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \float@box=\box26
 \@float@everytoks=\toks18
 \@floatcapt=\box27
-) (./rapport.aux)
-\openout1 = `rapport.aux'.
+) (./design.aux
+
+LaTeX Warning: Label `fig:stable' multiply defined.
+
+)
+\openout1 = `design.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 50.
 LaTeX Font Info:    ... okay on input line 50.
@@ -324,8 +328,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 50.
 LaTeX Font Info:    ... okay on input line 50.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 50.
 LaTeX Font Info:    ... okay on input line 50.
-
-(/usr/local/texlive/2012/texmf-dist/tex/context/base/supp-pdf.mkii
+ (/usr/local/texlive/2012/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count90
 \scratchdimen=\dimen106
@@ -391,67 +394,44 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 [1
 
 {/usr/local/texlive/2012/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-(./rapport.toc
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 3.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 3.
-)
-\tf@toc=\write3
-\openout3 = `rapport.toc'.
-
- [2]
-<../bilder/design_whiteboard.jpg, id=16, 3276.24pt x 2457.18pt>
-File: ../bilder/design_whiteboard.jpg Graphic file (type jpg)
-
-<use ../bilder/design_whiteboard.jpg>
-Package pdftex.def Info: ../bilder/design_whiteboard.jpg used on input line 117
-.
-(pdftex.def)             Requested size: 298.75394pt x 224.06114pt.
- [3] [4 <../bilder/design_whiteboard.jpg>] [5] [6] [7] <../bilder/chart_parts.p
-ng, id=33, 1015.1526pt x 495.7722pt>
-File: ../bilder/chart_parts.png Graphic file (type png)
-
-<use ../bilder/chart_parts.png>
-Package pdftex.def Info: ../bilder/chart_parts.png used on input line 216.
-(pdftex.def)             Requested size: 385.4248pt x 188.22896pt.
-
-Overfull \hbox (40.4248pt too wide) in paragraph at lines 216--218
-[][] 
+Overfull \hbox (7.33398pt too wide) in paragraph at lines 80--81
+\OT1/cmr/m/n/10 re-la-tivt bra, dvs att de-la upp min-nes-han-te-ring med al-lo
+c och free, re-fe-rensr[]aknaren
  []
 
-<../bilder/chart_people.png, id=35, 1007.9256pt x 532.389pt>
-File: ../bilder/chart_people.png Graphic file (type png)
+<../bilder/design_overview.png, id=9, 3640.60126pt x 2302.6025pt>
+File: ../bilder/design_overview.png Graphic file (type png)
 
-<use ../bilder/chart_people.png>
-Package pdftex.def Info: ../bilder/chart_people.png used on input line 223.
-(pdftex.def)             Requested size: 385.4248pt x 203.58533pt.
+<use ../bilder/design_overview.png>
+Package pdftex.def Info: ../bilder/design_overview.png used on input line 85.
+(pdftex.def)             Requested size: 345.0pt x 218.18735pt.
+ [2 <../bilder/design_overview.png>]
+<../bilder/design_depth.png, id=15, 986.68625pt x 752.8125pt>
+File: ../bilder/design_depth.png Graphic file (type png)
 
-Overfull \hbox (40.4248pt too wide) in paragraph at lines 223--224
-[][] 
- []
+<use ../bilder/design_depth.png>
+Package pdftex.def Info: ../bilder/design_depth.png used on input line 100.
+(pdftex.def)             Requested size: 345.0pt x 263.22412pt.
+ [3 <../bilder/design_depth.png>] (./design.aux)
 
-[8 <../bilder/chart_parts.png>] [9 <../bilder/chart_people.png>] (./rapport.aux
-) ) 
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2142 strings out of 493488
- 29262 string characters out of 3141326
- 90177 words of memory out of 3000000
- 5418 multiletter control sequences out of 15000+200000
- 8502 words of font info for 30 fonts, out of 3000000 for 9000
+ 2118 strings out of 493488
+ 28891 string characters out of 3141326
+ 87152 words of memory out of 3000000
+ 5403 multiletter control sequences out of 15000+200000
+ 6675 words of font info for 24 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 37i,8n,24p,760b,216s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pf
-b></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
-></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><
-/usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
-sr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
-/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/l
-ocal/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb>
-Output written on rapport.pdf (9 pages, 2598953 bytes).
+ 37i,8n,24p,566b,216s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+</usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></
+usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb>
+Output written on design.pdf (3 pages, 268122 bytes).
 PDF statistics:
- 68 PDF objects out of 1000 (max. 8388607)
- 44 compressed objects within 1 object stream
+ 31 PDF objects out of 1000 (max. 8388607)
+ 18 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
