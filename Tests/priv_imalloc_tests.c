@@ -4,7 +4,7 @@ void test_conversion_functions(void) {
   chunk_size memsiz = 1 Mb;
   Priv_mem new_mem = malloc(sizeof(priv_mem));
   new_mem->start = malloc(memsiz);
-  new_mem->end = new_mem->start + memsiz - 1;
+  new_mem->end = new_mem->start + memsiz;
   new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
   new_mem->functions.manual.alloc        = &manual_alloc;
   new_mem->functions.manual.avail        = &avail;
@@ -32,7 +32,7 @@ void test_conversion_functions(void) {
 
 void test_priv_imalloc(void) {
   Priv_mem new_mem = style_to_priv(priv_imalloc(1 Mb, REFCOUNT + GCD + ADDRESS));
-  CU_ASSERT(new_mem->end == new_mem->start + 1 Mb - 1);
+  CU_ASSERT(new_mem->end == new_mem->start + 1 Mb);
   CU_ASSERT(new_mem->lists->freelist->size == 1 Mb);
   CU_ASSERT(new_mem->lists->freelist->next == NULL);
   CU_ASSERT(new_mem->lists->alloclist == NULL);
