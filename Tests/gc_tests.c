@@ -4,8 +4,8 @@
 /*
  * Test when there is no garbage to collect.
  */
- void test_collect_1(void) {
-  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ASCENDING_SIZE);
+ void test_collect_1(void) {  
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ADDRESS);
   Priv_mem new_mem = style_to_priv((Memory) mem);
   int *p0 = mem->alloc((Memory) mem, sizeof(int));
   int *p1 = mem->alloc((Memory) mem, sizeof(int));
