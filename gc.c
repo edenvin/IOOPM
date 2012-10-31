@@ -50,7 +50,7 @@ void traverse_heap(void *ptr, void *mem) {
   // Go through each possible pointer in the chunk and see if it points
   // to another chunk.
   for (int *cursor = chunk->start + 1; cursor < (chunk->start + chunk->size); (int *) cursor++) {
-    if (in_address_space(cursor)) {
+    if (in_address_space(cursor, mem)) {
       // The pointer points to the stack!
       traverse_heap(&cursor, mem);
     }
