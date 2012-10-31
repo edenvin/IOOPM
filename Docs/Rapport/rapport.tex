@@ -1,0 +1,229 @@
+\documentclass{article}
+
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenc}
+
+% Swedish grammar
+\usepackage[swedish]{babel}
+
+% Space between paragraphs instead of indentation.
+\usepackage{parskip}
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\usepackage{float}
+
+\title{
+  Projekt iMalloc \\
+  Imperativ och objektorienterad programmeringsmetodik, 1DL221
+}
+\author{
+  Niclas Edenvin \\
+  Åke Lagercrantz \\
+  Andreas Lelli \\
+  Daniel Lindgren \\
+  Elias Lundeqvist \\
+  Jakob Sennerby
+}
+
+\date{2012-11-09}
+
+
+
+\begin{document}
+
+\maketitle
+
+\vspace{2cm}
+
+\begin{abstract}
+Abstract
+\end{abstract}
+
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+% *********************
+% Infoga bild
+
+% se Figur \ref{fig:stable}.
+
+%\begin{figure}[H]
+%  \includegraphics[width=165mm]{stabil.png}
+%  \caption{Den slutliga versionen av kretsen i Logisim.}
+%  \label{fig:stable}
+%\end{figure}
+
+
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+\section{Dagbok}
+
+\subsection{Fredag 19 Oktober}
+
+Vi träffades hemma hos Niclas för att gemensamt gå igenom instruktionerna och förbereda oss för första projektveckan. Vi bestämde även att vi skulle använda oss av olika applikationer, tjänster och versionshanteringssystem som gör det enklare för oss att arbeta tillsammans samt hålla koll på hur vårt arbetsflöde fungerar. Vi valde att använda oss av
+
+\begin{description} \parskip0pt
+  \item[Git och github] versionshanteringssystem
+  \item[Trello] strukturering av uppgifter och vem som gör vad
+  \item[Tickspot] tidsrapportering
+  \item[Hipchat] kommunikation och forum
+  \item[Google Drive] utkast av projektdagbok och övriga dokument
+\end{description}
+Vi började även skissa på en övergripande design för systemet för att hitta en lämplig uppdelning.
+
+\subsection{Måndag 22 Oktober}
+
+Vi gjorde klart den övergripande designen. Se Figur \ref{fig:design}. Sedan bestämde vi oss för en gemensam kodstandard enligt följande:
+
+\begin{description} \parskip0pt
+  \item[Tab size] 2 med soft tabs
+  \item[Exempel funktionsnamn] king\_in\_danger
+  \item[Exempel variabelnamn] king\_color
+\end{description}
+
+Vi delade slumpvis in oss i par och tilldelade paren varsin del av programmet och började sedan jobba i paren med headerfilerna.
+
+{\bf Elias och Jakob} Gick igenom hur minneshanteringen kommer fungera på representationsnivå. Diskuterade en del med Åke och Niclas också och kommer inte fram till någon vettig lösning. Vi pratade med våran coach Niklas också och han sa att han inte har fått tillräckligt med info för att hjälpa oss med detta. Vi mailar Tobias för att se vad han har att säga.
+
+{\bf Niclas och Åke} Gjorde makefile och skelett till unittesting. Försökte lösa designproblemet med hur refcount och de privata managed- och manualobjekten ska hanteras.
+
+{\bf Andreas och Daniel} Den större delen av dagen gick åt till att planera hur projektet skulle vara utformat. Vi började arbeta på skräpsamlingen och test för dessa.
+
+\begin{figure}[H]
+  \includegraphics[width=105mm]{design_whiteboard.jpg}
+  \caption{Våran ursprungliga design och indelning.}
+  \label{fig:design}
+\end{figure}
+
+\subsection{Tisdag 23 Oktober}
+
+{\bf Elias och Jakob} Vi satt fast och kunde inte riktigt koda någonting på grund av att vi inte visste hur vi skulle representera våran freelist, alloclist och refcount. Vi väntade på svar från Tobias men började koda på formatstring så länge.
+
+Vi blev klara med formatstring och alla tester till denna innan samtliga i gruppen gick och pratade med Justin Pearsson. Justin berättade att vi skulle “gömma” freelist och alloclist innan stylen och även refcount skulle “gömmas” innan objektet. Vi började arbeta med refcount igen och gjorde klart det mesta förutom release-delen. Vi kunde inte riktigt arbeta mer då vi behöver färdig kod för “ifree”. Därför har nu release och testkoden en del placeholders.
+
+{\bf Niclas och Åke} Fortsatte på funktioner i memory. Fixade unittests så att alla kan skriva tester. Tillämpade TDD och par-switching (highfive!). Vi gick även och pratade med Justin som tyckte att det var helt ok att göra som vi tänkt att spara refcount direkt innan varje objekt på heapen, trots att programmeraren då förlorar en del minne.
+
+{\bf Andreas och Daniel} Vi fortsatte arbeta på gc och diskuterat på vilket sätt den borde fungera. Koden för att traversera stacken har inte delats ut ännu, av denna anledning är det svårt att få våra testfall att fungera som de bör (Då vi ej kan traversera stacken på ett vettigt sätt utan att se vilka pekare som leder dit).
+
+\subsection{Onsdag 24 Oktober}
+
+{\bf Jakob och Elias} Eftersom vi inte kan slutföra refcount på grund av att release inte har funktioner tillräckligt för att free:a korrekt så har vi nästan gjort färdigt priv\_imalloc idag, det saknas lite tester. Efter två timmars diskuterade om hur exemplen som finns i projektspecen var tänkt att fungera så gick vi och Åke till Wrigstad och fick konstaterat för oss att det var som vi trodde, dvs fel i specen.
+
+{\bf Andreas och Daniel} Idag arbetade vi med gc.c och främst funktioner för traversering och markering av element på heapen. Vi fastnade en del på hur vi skulle göra med de element på heapen som var en pekare till andra element inom adressrymden, i början valde vi att spara allt på en lista och sedan markera dem en och en men ändrade oss sedan till att använda rekursion. Vi är snart även klara med Sweep-delen av algoritmen, dvs den delen då vi friar upp de objekt som inte har blivit markerade som använda.
+
+\subsection{Torsdag 25 Oktober}
+
+{\bf Jakob och Elias} Har jobbat med priv\_imalloc för det mesta idag. Det har gått bra. Vi är nästan färdig med implementationen av själva imalloc-funktionen. Har mest felsökning kvar. Sedan kan vi förhoppningsvis börja med priv\_free (a.k.a ifree) så vi kan slutföra refcount.
+
+{\bf Andreas och Daniel} Idag har vi arbetat en hel del på funktionerna för att traversera heapen, Swipe algoritmen och markeringsalgoritmen. Vi har fått det mesta att fungera och börjat felsöka. Vi behöver dock funktionen för att traversera Stacken innan vi kan säga att GC är helt klar men det borde inte vara mycket arbete kvar här nu!
+
+{\bf Niclas och Åke} Arbetat med tester och funktioner i memory. Löst problemet med cross-referencing av headerfiler. Designändringar i vissa structs gällande memory. Implementerat en privat headerfil för memory, så att vi kan testa våra privata hjälpfunktioner med enhetstestning.
+
+\subsection{Fredag 26 Oktober}
+
+{\bf Jakob och Elias} Precis som igår arbetade vi idag med priv\_imalloc, vi skrev klart alla funktioner samt skrev tester som vi tidigare inte kunnat skriva pga. de okompletta memory-funktionerna. Nu återstår bara en del småfix och felsökning.
+
+{\bf Andreas och Daniel} Vi har först och främst gjort klart GC, vi har implementerat funktionerna för att traversera stacken och allting kompilerar som det sig borde. Vi måste dock fixa våra testfall då dessa inte längre fungerar på grund av att vi har ändrat hur minnet beter sig. Dessutom kräver testerna (för att kunna testa vettiga saker) att iMalloc är mer eller mindre klar, detta eftersom att gc ska “städa undan” data genererad av användaren. Vi har kollat på olika program för koddokumentation och de bäst lämpade tycks vara Doxygen som vi började arbeta med då det kan generera latexkod. Vi har även hunnit göra två stycken “flow charts” för hur de olika modulerna kommunicerar med varandra.
+
+{\bf Niclas och Åke} Implementerat memory\_claim och diverse underfunktioner. Tester för desamma. Memory känns nu mer eller mindre klart, finns en del småfix och felsökning att genomföra.
+
+\subsection{Måndag 29 Oktober}
+{\bf Samtliga} Idag träffade vi vår coach Niklas för ett avstämningsmöte. Vi roterade även parkombinationerna och under den här veckan kommer följande par att arbeta:
+
+\begin{description} \parskip0pt
+  \item[Andreas och Niclas] Dokumentation
+  \item[Jakob och Åke] priv\_imalloc
+  \item[Daniel och Elias] garbage collection
+\end{description}
+
+Arbetsfördelningen kommer att variera en del under veckan då de flesta av våra funktioner är mer eller mindre färdiga.
+
+{\bf Elias och Daniel} Idag har vi jobbat med gc-delen, det blev vi som fick fortsätta med den efter rotationen. Elias fick lite tid att sätta sig in i koden och efter det släppte Jakob och Åke ut ny kod till priv\_imalloc. Detta resulterade i att vi fick modifiera vår kod då priv\_imalloc nu hade olika funktioner för managed och manual alloc, något den inte hade tidigare. Detta gjorde att vi fick en del problem att kompilera vår kod. Därefter löste Åke och Jakob lite problem, varpå vi kunde ändra tillbaka vår kod till den ursprungliga. Vi fick koden att fungera som det var tänkt men det saknas fortfarande tester, något vi inte har kunnat göra då vi behöver ha iMalloc helt färdigskriven.
+
+{\bf Andreas och Niclas} Vi började under dagen bygga upp all dokumentation som ska in. Vi har helt enkelt börjat sammanställa all tidsrapportering, alla övergripande designdokument etc och sammanställt detta till en inlämningsbar rapport.
+
+\subsection{Tisdag 30 Oktober}
+\subsection{Onsdag 31 Oktober}
+\subsection{Torsdag 1 November}
+\subsection{Fredag 2 November}
+
+
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+\section{Parrotationer}
+
+Den första dagen jobbade vi allihopa tillsammans. Vi gick igenom instruktionerna och diskuterade uppgiften. Vi valde att inte dela upp oss i par innan vi var säkra på hur vi ville dela upp uppgiften och hade koll på strukturen.
+
+\subsection{Vecka 1}
+Dag två delade in oss i par baserat på den övergripande designen vi hade gjort. Vi använde oss av en slumpgenerator för att ta fram paren samt även vilket par som skulle jobba med vad. Under första veckan jobbade vi så här:
+
+\begin{description} \parskip0pt
+  \item[Niclas och Åke] memory
+  \item[Elias och Jakob] refcount
+  \item[Andreas och Daniel] garbage collection
+\end{description}
+
+Detaljerade beskrivningar av koddelarna finns under \ref{sec:design}.
+
+\subsection{Vecka 2}
+Vi räknade med att arbetsfördelningen skulle variera under andra veckan då vi var klara med de flesta stora delar. Däremot roterade vi paren slumpmässigt, precis som första veckan. Vi slumpade även vilka som skulle sitta kvar med samma uppgift som tidigare. Gruppindelningen vecka två såg ut så här:
+
+\begin{description} \parskip0pt
+  \item[Andreas och Niclas] dokumentation
+  \item[Jakob och Åke] priv\_imalloc
+  \item[Daniel och Elias] garbage collection
+\end{description}
+
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+\section{Tidsåtgång}
+
+
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+\section{Brister}
+
+
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+% *************************************************************************
+\section{Bilagor}
+
+\subsection{Övergripande designdokument}
+\label{sec:design}
+\subsection{Koddokumentation på gränssnittsnivå}
+\subsection{Gränssnitten mellan modulerna}
+\subsection{Reflektion}
+
+
+
+\end{document}
+
