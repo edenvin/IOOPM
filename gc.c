@@ -37,7 +37,7 @@ Boolean in_address_space(void *ptr, Priv_mem mem) {
 
 void traverse_heap(void *ptr, void *mem) {
   Priv_mem priv_mem = (Priv_mem) mem;
-  void *heap_ptr = (uintptr_t) *((int *) ptr);
+  void *heap_ptr = *((int *) ptr);
   
   // Search for a chunk that contains this pointer.
   Chunk chunk = search_memory(heap_ptr, alloclist(mem), FALSE);
@@ -112,7 +112,7 @@ void mark_unused(Priv_mem mem){
   Chunk current_chunk = alloclist(mem);
   while (current_chunk){
     set_memory_mark(current_chunk ,FALSE);
-    current_chunk = next_chunk(current_chunk);       
+    current_chunk = next_chunk(current_chunk);
   } 
 }
 

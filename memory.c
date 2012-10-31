@@ -103,20 +103,21 @@ void free_memory(Chunk chunk, Lists lists) {
   Chunk prev = NULL;
   // Find the previous chunk.
   while (cursor) {
-    if (chunk == cursor)
+    if (chunk == cursor) {
       break;
-      
-    prev = cursor;
-    cursor = cursor->next;
+    }
+    else {
+      prev = cursor;
+      cursor = cursor->next;
+    }
   }
   
-  // Unlink it.
+  
+  
+  // Unlink it from alloclist.
   unlink_chunk_from_alloclist(chunk, prev, lists);
   
-  // Combine with adjecent.
-  chunk = combine_adjecent(lists, chunk);
-  
-  // Insert it.
+  // Insert it to freelist.
   insert_chunk_to_freelist(lists, chunk);
 }
 
