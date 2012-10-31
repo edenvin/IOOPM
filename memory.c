@@ -306,6 +306,8 @@ void unlink_chunk_from_freelist(Chunk chunk, Chunk prev, Lists lists) {
     lists->freelist = chunk->next;
   else
     prev->next = chunk->next;
+  
+  chunk->next = NULL;
 }
 
 /*
@@ -316,4 +318,6 @@ void unlink_chunk_from_alloclist(Chunk chunk, Chunk prev, Lists lists) {
     lists->alloclist = chunk->next;
   else
     prev->next = chunk->next;
+  
+  chunk->next = NULL;
 }
