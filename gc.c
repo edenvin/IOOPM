@@ -34,6 +34,30 @@ Boolean in_address_space(void *ptr, Priv_mem mem) {
  * Objects on the heap must be "connected" to the stack via
  * one (or more) pointers to be considered alive.
  */
+
+void traverse_heap(void *ptr, void *mem) {
+  Priv_mem priv_mem = (Priv_mem) mem;
+  void *heap_ptr = *(int *) ptr;
+  
+  // Search for a chunk that contains this pointer.
+  Chunk chunk = search_memory(heap_ptr, alloclist(priv_mem), FALSE);
+  // No chunk found, this pointer does not need to be saved.
+  if (chunk == NULL)
+    return;
+  else
+    set_memory_mark(chunk, TRUE);
+  
+  // Go through each possible pointer in the chunk and see if it points
+  // to another chunk.
+  for (int *cursor = chunk->start + 1; cursor < (chunk->start + chunk->size); (int *) cursor++) {
+    if (in_address_space(cursor)) {
+      // The pointer points to the stack!
+      traverse_heap(&cursor, mem);
+    }
+  }
+}
+
+/*
 void traverse_heap(void *ptr, void *mem){
   void *p = *((int*)ptr);
   chunk_size size = 0;
@@ -43,9 +67,8 @@ void traverse_heap(void *ptr, void *mem){
     return;
   set_memory_mark(chunk, TRUE);
   while (size+sizeof(void*) < memory_size(chunk)){
-    /* If the first intpointer points to something within our adress space,
-     * mark the current chunk as used and find pointers from the new chunk. 
-     */
+     // If the first intpointer points to something within our adress space,
+     // mark the current chunk as used and find pointers from the new chunk. 
      if (in_address_space(p + 1, mem) == TRUE){
       traverse_heap((void*)(p + 1), mem);
       set_memory_mark(search_memory(p+1,list,FALSE), TRUE);
@@ -58,6 +81,7 @@ void traverse_heap(void *ptr, void *mem){
   }
   return;
 }
+*/
 
 //! Frees the chunks that are no longer being used.
 /*!
