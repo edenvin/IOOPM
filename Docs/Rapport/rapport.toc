@@ -7,8 +7,8 @@
 \contentsline {subsection}{\numberline {1.5}Torsdag 25 Oktober}{5}
 \contentsline {subsection}{\numberline {1.6}Fredag 26 Oktober}{5}
 \contentsline {subsection}{\numberline {1.7}M\IeC {\r a}ndag 29 Oktober}{6}
-\contentsline {subsection}{\numberline {1.8}Tisdag 30 Oktober}{7}
-\contentsline {subsection}{\numberline {1.9}Onsdag 31 Oktober}{7}
+\contentsline {subsection}{\numberline {1.8}Tisdag 30 Oktober}{6}
+\contentsline {subsection}{\numberline {1.9}Onsdag 31 Oktober}{6}
 \contentsline {subsection}{\numberline {1.10}Torsdag 1 November}{7}
 \contentsline {subsection}{\numberline {1.11}Fredag 2 November}{7}
 \contentsline {section}{\numberline {2}Parrotationer}{7}
