@@ -20,12 +20,15 @@
 \fi
 
 \ifpdf
-\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif, .png}
 \else
 \DeclareGraphicsExtensions{.eps, .jpg}
 \fi
 
 \usepackage{float}
+
+\pdfpxdimen=1in
+\divide\pdfpxdimen by 300
 
 \title{
   Projekt iMalloc \\
@@ -111,7 +114,7 @@ Vi delade slumpvis in oss i par och tilldelade paren varsin del av programmet oc
 {\bf Andreas och Daniel} Den större delen av dagen gick åt till att planera hur projektet skulle vara utformat. Vi började arbeta på skräpsamlingen och test för dessa.
 
 \begin{figure}[H]
-  \includegraphics[width=105mm]{design_whiteboard.jpg}
+  \includegraphics[width=105mm]{../bilder/design_whiteboard.jpg}
   \caption{Våran ursprungliga design och indelning.}
   \label{fig:design}
 \end{figure}
@@ -203,6 +206,25 @@ Vi räknade med att arbetsfördelningen skulle variera under andra veckan då vi
 % *************************************************************************
 \section{Tidsåtgång}
 
+Under projektets gång har vi arbetat med ett program för “Time Tracking” som heter Tick. Efter varje arbetsdag rapporterade alla in hur många timmar dem hade arbetat samt hur många timmar dem har lagt på diverse delar av projektet.
+
+Vi har totalt arbetat 230 timmar med projektet varav 6 timmar på möten, x timmar på dokumentation, x timmar på planering samt x timmar på implementation och testning.
+
+Då vi har försökt arbeta enligt test driven development är det svårt att räkna ut hur mycket tid som gick specifikt till testerna utan vi ser det som en del av implementationen. Nedan följer två diagram där arbets- och tidsfördelningen är tydlig.
+
+\begin{figure}[H]
+  \includegraphics[width=1600px]{../bilder/chart_parts.png}
+  \caption{Tidsfördelningen över projektets olika delar 
+    samt vem som arbetat på vad.}
+  \label{fig:chart_parts}
+\end{figure}
+
+\begin{figure}[H]
+  \includegraphics[width=1600px]{../bilder/chart_people.png}
+  \caption{Personlig tidsfördelning över de olika delarna av projektet.}
+  \label{fig:chart_people}
+\end{figure}
+
 
 % *************************************************************************
 % *************************************************************************
@@ -216,12 +238,12 @@ Vi räknade med att arbetsfördelningen skulle variera under andra veckan då vi
 % *************************************************************************
 % *************************************************************************
 \section{Bilagor}
-
-\subsection{Övergripande designdokument}
+\appendix
+\section{Övergripande designdokument}
 \label{sec:design}
-\subsection{Koddokumentation på gränssnittsnivå}
-\subsection{Gränssnitten mellan modulerna}
-\subsection{Reflektion}
+\section{Koddokumentation på gränssnittsnivå}
+\section{Gränssnitten mellan modulerna}
+\section{Reflektion}
 
 
 
