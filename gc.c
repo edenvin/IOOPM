@@ -35,9 +35,7 @@ Boolean in_address_space(void *ptr, Priv_mem mem) {
  * one (or more) pointers to be considered alive.
  */
 
-void traverse_heap(void *ptr, void *mem) {
-  Priv_mem priv_mem = (Priv_mem) mem;
-  
+void traverse_heap(void *ptr, void *mem) {  
   void *heap_ptr = *(void **) ptr;
   
   // Search for a chunk that contains this pointer.
@@ -123,6 +121,13 @@ void mark_unused(Priv_mem mem){
   } 
 }
 
+unsigned int collect_help(Priv_mem mem) {
+  mark_unused(mem);
+  traverseStack(&mem->as, &traverse_heap, mem);
+  unsigned int i = sweep(mem);
+  return i;
+}
+
 //! Performs a garbage collection according to the mark and sweep algorithm.
 /*!
  * Performs a garbage collection according to the mark and sweep algorithm.
@@ -131,9 +136,5 @@ void mark_unused(Priv_mem mem){
  * The integer returned is corresponding to the number of memory blocks freed.
  */
 unsigned int collect(Memory memory){
-  Priv_mem mem = style_to_priv(memory);
-  mark_unused(mem);
-  traverseStack(&mem->as, &traverse_heap, mem);
-  unsigned int i = sweep(mem);
-  return i;
+  return collect_help(style_to_priv(memory));
 }

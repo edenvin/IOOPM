@@ -30,31 +30,30 @@
   int *p0 = mem->alloc((Memory) mem, sizeof(int));
   int *p1 = mem->alloc((Memory) mem, sizeof(int));
   int *p2 = mem->alloc((Memory) mem, sizeof(int));
-  int *p3 = malloc(2);
-  p3 = mem->alloc((Memory) mem, sizeof(int));
+  int *p3 = mem->alloc((Memory) mem, sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
   p3 = NULL;
   CU_ASSERT(collect((Memory) mem) == 1);
-  //priv_free((Memory) mem,p0);
-  //priv_free((Memory) mem,p1);
-  //priv_free((Memory) mem,p2);
+  priv_free((Memory) mem,p0);
+  priv_free((Memory) mem,p1);
+  priv_free((Memory) mem,p2);
 }
 
 /*
  * Test when there is no garbage to collect but we cant reach all posts from  * the stack.
  */
  void test_collect_3(void) {
-  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ADDRESS);
-  int *p0 = mem->alloc((Memory) mem, sizeof(int));
-  int *p1 = mem->alloc((Memory) mem, sizeof(int));
-  int *p2 = mem->alloc((Memory) mem, sizeof(int));
-  int *p3 = mem->alloc((Memory) mem, sizeof(int));
-  *p0 = 0;
-  *p1 = 1;
-  *p3 = 3;
-  *p2 = (int*)p3;
+  Managed mem = (Managed) iMalloc(sizeof(void*)*4, GCD + ADDRESS);
+  void *p0 = mem->alloc((Memory) mem, sizeof(void*));
+  void *p1 = mem->alloc((Memory) mem, sizeof(void*));
+  void *p2 = mem->alloc((Memory) mem, sizeof(void*));
+  void *p3 = mem->alloc((Memory) mem, sizeof(void*));
+  *(int*)p0 = 0;
+  *(int*)p1 = 1;
+  *(int*)p3 = 3;
+  *(void**)p2 = p3;
    p3 = NULL;
   CU_ASSERT(collect((Memory) mem) == 0);
   priv_free((Memory) mem,p0);
