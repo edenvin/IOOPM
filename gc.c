@@ -133,10 +133,7 @@ void mark_unused(Priv_mem mem){
 unsigned int collect(Memory memory){
   Priv_mem mem = style_to_priv(memory);
   mark_unused(mem);
-  addressspace as;
-  as.start = (RawPtr) as_start(mem);
-  as.end   = (RawPtr) as_end(mem);
-  traverseStack(&as, &traverse_heap, mem);
+  traverseStack(&mem->as, &traverse_heap, mem);
   unsigned int i = sweep(mem);
   return i;
 }

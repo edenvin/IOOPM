@@ -6,6 +6,7 @@
 #include "memory.h"
 #include "gc.h"
 #include "refcount.h"
+#include "rootset/rootset.h"
 
 /*
  * priv_imalloc.h
@@ -24,8 +25,7 @@
 /* Actual return type specifications for iMalloc */
 
 typedef struct {
-  void *start;
-  void *end;
+  addressspace as;
   Lists lists;
   style functions;
 } priv_mem, *Priv_mem;
