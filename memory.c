@@ -254,9 +254,11 @@ Chunk combine_adjecent(Lists lists, Chunk chunk) {
   
   Chunk cursor = memory_freelist(lists);
   Chunk prev = NULL;
+  Chunk next = NULL;
   Chunk tmp;
   
   while (cursor) {
+    next = cursor->next;
     if (before && after)
       // We found two adjecent cunks, no need to keep looking.
       break;
@@ -272,7 +274,7 @@ Chunk combine_adjecent(Lists lists, Chunk chunk) {
       chunk->start = cursor->start;
       
       tmp = cursor;
-      cursor = cursor->next;
+      cursor = next;
       free(tmp);
     }
     else if (chunk->start + chunk->size == cursor->start) {
@@ -291,7 +293,7 @@ Chunk combine_adjecent(Lists lists, Chunk chunk) {
     }
     else {
       prev = cursor;
-      cursor = cursor->next;
+      cursor = next;
     }
   }
   

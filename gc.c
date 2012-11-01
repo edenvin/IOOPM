@@ -37,22 +37,25 @@ Boolean in_address_space(void *ptr, Priv_mem mem) {
 
 void traverse_heap(void *ptr, void *mem) {
   Priv_mem priv_mem = (Priv_mem) mem;
+  
   void *heap_ptr = *(void **) ptr;
   
   // Search for a chunk that contains this pointer.
   Chunk chunk = search_memory(heap_ptr, alloclist(mem), FALSE);
-  // No chunk found, this pointer does not need to be saved.
-  if (chunk == NULL)
-    return;
-  else
-    set_memory_mark(chunk, TRUE);
   
-  // Go through each possible pointer in the chunk and see if it points
-  // to another chunk.
-  for (int *cursor = chunk->start + 1; cursor < (chunk->start + chunk->size); (int *) cursor++) {
-    if (in_address_space(cursor, mem)) {
-      // The pointer points to the stack!
-      traverse_heap(&cursor, mem);
+  // We found a chunk! Mark it and check it's pointers.
+  if (chunk) {
+    // Only traverse if this chunk hasn't been processed already.
+    if (memory_is_marked(chunk) == FALSE) {
+      set_memory_mark(chunk, TRUE);
+      // Go through each possible pointer in the chunk and see if it points
+      // to another chunk.
+      for (void **cursor = chunk->start; (void *)cursor < (void *)(chunk->start + chunk->size); cursor++) {
+        if (in_address_space(*cursor, mem)) {
+          // The pointer points to the stack!
+          traverse_heap(cursor, mem);
+        }
+      }
     }
   }
 }
