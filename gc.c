@@ -95,13 +95,17 @@ void traverse_heap(void *ptr, void *mem){
 int sweep(Priv_mem mem){
   int i = 0;
   Chunk current_chunk = alloclist(mem); 
+  Chunk temp = NULL;
   //Initiate iterator
   while (current_chunk){
     if (memory_is_marked(current_chunk) == FALSE){
       i++;
-      priv_free(priv_to_style(mem), memory_start(current_chunk));
+      temp = current_chunk;
+      current_chunk = next_chunk(current_chunk);
+      priv_free(priv_to_style(mem), memory_start(temp));
+    } else {
+      current_chunk = next_chunk(current_chunk);
     }
-    current_chunk = next_chunk(current_chunk);
   }
   return i;
 }

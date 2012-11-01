@@ -5,21 +5,26 @@
  * Test when there is no garbage to collect.
  */
  void test_collect_1(void) {  
-  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ADDRESS);
+  Managed mem = (Managed) iMalloc(sizeof(int)*5, GCD + ADDRESS);
   Priv_mem new_mem = style_to_priv((Memory) mem);
   int *p0 = mem->alloc((Memory) mem, sizeof(int));
   int *p1 = mem->alloc((Memory) mem, sizeof(int));
   int *p2 = mem->alloc((Memory) mem, sizeof(int));
   int *p3 = mem->alloc((Memory) mem, sizeof(int));
+  int *p4 = mem->alloc((Memory) mem, sizeof(int));
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
   *p3 = 3;
-  CU_ASSERT(collect((Memory) mem) == 0);
+  *p4 = 4;
+  p2 = p1;
+  p3 = p1;
+  CU_ASSERT(collect((Memory) mem) == 2);
   priv_free((Memory) mem,p0);
+  //priv_free((Memory) mem,p1);
   priv_free((Memory) mem,p1);
-  priv_free((Memory) mem,p2);
-  priv_free((Memory) mem,p3);
+  priv_free((Memory) mem,p4);
+  //priv_free((Memory) mem,p3);
 }
 
 
