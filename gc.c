@@ -46,9 +46,9 @@ void traverse_heap(void *ptr, void *mem) {
     // Only traverse if this chunk hasn't been processed already.
     if (memory_is_marked(chunk) == FALSE) {
       if (in_address_space(ptr, mem))
-        printf("Heappointer %p resulted in chunk at %p. Traversing pointers in chunk.\n", heap_ptr, chunk->start);
+        printf("HEAP: %p found at %p resulted in chunk with start at %p. Traversing pointers in chunk.\n", heap_ptr, ptr, chunk->start);
       else
-        printf("Stackpointer %p resulted in chunk at %p. Traversing pointers in chunk.\n", heap_ptr, chunk->start);
+        printf("STACK: %p found at %p resulted in chunk with start at %p. Traversing pointers in chunk.\n", heap_ptr, ptr, chunk->start);
       set_memory_mark(chunk, TRUE);
       // Go through each possible pointer in the chunk and see if it points
       // to another chunk.
@@ -58,6 +58,12 @@ void traverse_heap(void *ptr, void *mem) {
           traverse_heap(cursor, mem);
         }
       }
+    }
+    else {
+      if (in_address_space(ptr, mem))
+        printf("HEAP: %p found at %p resulted in chunk with start at %p, but this chunk has already been traversed!\n", heap_ptr, ptr, chunk->start);
+      else
+        printf("STACK: %p found at %p resulted in chunk with start at %p, but this chunk has already been traversed!\n", heap_ptr, ptr, chunk->start);
     }
   }
 }
