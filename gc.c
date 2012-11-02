@@ -58,32 +58,6 @@ void traverse_heap(void *ptr, void *mem) {
   }
 }
 
-/*
-void traverse_heap(void *ptr, void *mem){
-  void *p = *((int*)ptr);
-  chunk_size size = 0;
-  Chunk list = alloclist (mem);
-  Chunk chunk = search_memory(p,list,FALSE);
-  if (chunk == NULL)
-    return;
-  set_memory_mark(chunk, TRUE);
-  while (size+sizeof(void*) < memory_size(chunk)){
-     // If the first intpointer points to something within our adress space,
-     // mark the current chunk as used and find pointers from the new chunk. 
-     if (in_address_space(p + 1, mem) == TRUE){
-      traverse_heap((void*)(p + 1), mem);
-      set_memory_mark(search_memory(p+1,list,FALSE), TRUE);
-      size++;
-    }
-    // If no pointer was found, continue to read the rest of the chunk as int pointers
-    else{
-      size++;
-    }
-  }
-  return;
-}
-*/
-
 //! Frees the chunks that are no longer being used.
 /*!
  * The sweep-stage of the mark & sweep algorithm.
