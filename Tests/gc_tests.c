@@ -1,20 +1,36 @@
 #include "gc_tests.h"
-
+#include "../rootset/rootset.h"
 
 /*
  * Test when there is no garbage to collect.
  */
  void test_collect_1(void) {  
   Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ADDRESS);
+  
+  printf("\n");
+  traverseStack(style_to_priv(mem)->as, &print_stack_pointers_to_chunks, style_to_priv(mem));
+  printf("\n");
+  
   int *p0 = mem->alloc((Memory) mem, sizeof(int));
   int *p1 = mem->alloc((Memory) mem, sizeof(int));
   int *p2 = mem->alloc((Memory) mem, sizeof(int));
   int *p3 = mem->alloc((Memory) mem, sizeof(int));
+  
+  printf("\n");
+  traverseStack(style_to_priv(mem)->as, &print_stack_pointers_to_chunks, style_to_priv(mem));
+  printf("\n");
+  
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
   *p3 = 3;
+  
   CU_ASSERT(collect((Memory) mem) == 0);
+  
+  printf("\n");
+  traverseStack(style_to_priv(mem)->as, &print_stack_pointers_to_chunks, style_to_priv(mem));
+  printf("\n");
+  
   priv_free((Memory) mem,p0);
   priv_free((Memory) mem,p1);
   priv_free((Memory) mem,p2);

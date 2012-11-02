@@ -35,7 +35,7 @@ Boolean in_address_space(void *ptr, Priv_mem mem) {
  * one (or more) pointers to be considered alive.
  */
 
-void traverse_heap(void *ptr, void *mem) {  
+void traverse_heap(void *ptr, void *mem) {
   void *heap_ptr = *(void **) ptr;
   
   // Search for a chunk that contains this pointer.
@@ -65,6 +65,15 @@ void traverse_heap(void *ptr, void *mem) {
       else
         printf("STACK: %p found at %p resulted in chunk with start at %p, but this chunk has already been traversed!\n", heap_ptr, ptr, chunk->start);
     }
+  }
+}
+
+void print_stack_pointers_to_chunks(void *ptr, void *mem) {
+  void *heap_ptr = *(void **) ptr;
+  
+  Chunk chunk = search_memory(heap_ptr, alloclist(mem), FALSE);
+  if (chunk) {
+    printf("STACKDUMP: %p found at %p resulted in chunk with start at %p.\n", heap_ptr, ptr, chunk->start);
   }
 }
 

@@ -16,5 +16,6 @@
  */
 unsigned int collect (Memory mem);
 
+void print_stack_pointers_to_chunks(void *ptr, void *mem);
 
 #endif
