@@ -15,17 +15,71 @@
   *p2 = 2;
   *p3 = 3;
   CU_ASSERT(collect((Memory) mem) == 0);
+  priv_free((Memory) mem,p0);
+  priv_free((Memory) mem,p1);
+  priv_free((Memory) mem,p2);
+  priv_free((Memory) mem,p3);
+}
+
+/*
+ * Test when there is garbage to collect.
+ */
+ void test_collect_2(void) {
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ADDRESS);
+  int *p0 = mem->alloc((Memory) mem, sizeof(int));
+  int *p1 = mem->alloc((Memory) mem, sizeof(int));
+  int *p2 = mem->alloc((Memory) mem, sizeof(int));
+  int *p3 = mem->alloc((Memory) mem, sizeof(int));
+  *p0 = 0;
+  *p1 = 1;
+  *p2 = 2;
   p3 = NULL;
   CU_ASSERT(collect((Memory) mem) == 1);
-  p3 = mem->alloc((Memory) mem, sizeof(void*));
+  priv_free((Memory) mem,p0);
+  priv_free((Memory) mem,p1);
+  priv_free((Memory) mem,p2);
+}
+
+  /*
+ * Test when there is no garbage to collect but we cant reach all posts from  * the stack.
+ */
+ void test_collect_3(void) {
+  Managed mem = (Managed) iMalloc(sizeof(void*)*4, GCD + ADDRESS);
+  void *p0 = mem->alloc((Memory) mem, sizeof(void*));
+  void *p1 = mem->alloc((Memory) mem, sizeof(void*));
+  void *p2 = mem->alloc((Memory) mem, sizeof(void*));
+  void *p3 = mem->alloc((Memory) mem, sizeof(void*));
+  *(int*)p0 = 0;
+  *(int*)p1 = 1;
+  *(int*)p3 = 3;
   *(void**)p2 = p3;
-  p3 = NULL;
+   p3 = NULL;
   CU_ASSERT(collect((Memory) mem) == 0);
-  p2 = NULL;
-  p3 = NULL;
+  priv_free((Memory) mem,p0);
+  priv_free((Memory) mem,p1);
+  priv_free((Memory) mem,p2);
+}
+
+/*
+ * Test when we have garbage but it can't be reached without traversing the    * heap. 
+ */
+ void test_collect_4(void) {
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ADDRESS);
+  int *p0 = mem->alloc((Memory) mem, sizeof(int));
+  int *p1 = mem->alloc((Memory) mem, sizeof(int));
+  int *p2 = mem->alloc((Memory) mem, sizeof(int));
+  int *p3 = mem->alloc((Memory) mem, sizeof(int));
+  *p0 = 0;
+  *p1 = 1;
+  *p2 = 2;
+  *p3 = 3;
+   p2 = NULL;
+   p3 = NULL;
+  CU_ASSERT(collect((Memory) mem) == 2);
   priv_free((Memory) mem,p0);
   priv_free((Memory) mem,p1);
 }
+
 
 /*
  * Add tests to suites.
@@ -48,3 +102,28 @@ int gc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   
   return 0;
 }
+/*
+ * Test when there is no garbage to collect.
+ */
+ /*void test_collect_1(void) {  
+  Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ADDRESS);
+  int *p0 = mem->alloc((Memory) mem, sizeof(int));
+  int *p1 = mem->alloc((Memory) mem, sizeof(int));
+  int *p2 = mem->alloc((Memory) mem, sizeof(int));
+  int *p3 = mem->alloc((Memory) mem, sizeof(int));
+  *p0 = 0;
+  *p1 = 1;
+  *p2 = 2;
+  *p3 = 3;
+  CU_ASSERT(collect((Memory) mem) == 0);
+  p3 = NULL;
+  CU_ASSERT(collect((Memory) mem) == 1);
+  p3 = mem->alloc((Memory) mem, sizeof(void*));
+  *(void**)p2 = p3;
+  p3 = NULL;
+  CU_ASSERT(collect((Memory) mem) == 0);
+  p2 = NULL;
+  p3 = NULL;
+  priv_free((Memory) mem,p0);
+  priv_free((Memory) mem,p1);
+}*/
