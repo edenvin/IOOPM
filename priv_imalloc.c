@@ -8,22 +8,19 @@
  * of memory manager and allows fine-tunes some options.
  */
 Memory priv_imalloc(chunk_size memsiz, unsigned int flags) {
+  Priv_mem new_mem = malloc(sizeof(priv_mem));
+  new_mem->as = malloc(sizeof(addressspace));
+  new_mem->as->start = malloc(memsiz);
+  new_mem->as->end = new_mem->as->start + memsiz - 1;
+  
   // MANUAL
   if (flags < 13) {
-    Priv_mem new_mem = malloc(sizeof(priv_mem));
-    new_mem->as = malloc(sizeof(addressspace));
-    new_mem->as->start = malloc(memsiz);
-    new_mem->as->end = new_mem->as->start + memsiz - 1;
     new_mem->functions.manual.alloc        = &manual_alloc;
     new_mem->functions.manual.avail        = &avail;
     new_mem->functions.manual.free         = &priv_free;
     new_mem->lists = lists_based_on_flags(flags, 9, 10, 12, new_mem->as->start, memsiz);
     return priv_to_style((Priv_mem) new_mem);
   } else {
-    Priv_mem new_mem = malloc(sizeof(priv_mem));
-    new_mem->as = malloc(sizeof(addressspace));
-    new_mem->as->start = malloc(memsiz);
-    new_mem->as->end = new_mem->as->start + memsiz - 1;
     new_mem->functions.managed.alloc = &managed_alloc;
     // MANAGED + REFCOUNT
     if (flags < 21) {

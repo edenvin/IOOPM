@@ -102,13 +102,13 @@ void mark_unused(Priv_mem mem){
   while (current_chunk){
     set_memory_mark(current_chunk ,FALSE);
     current_chunk = next_chunk(current_chunk);
-  } 
+  }
 }
 
 unsigned int collect_help(Priv_mem mem) {
   mark_unused(mem);
   printf("\n\n traversing stack and heap\n\n");
-  traverseStack(&mem->as, &traverse_heap, mem);
+  traverseStack(mem->as, &traverse_heap, mem);
   printf("\n\n traversing complete.\n\n");
   unsigned int i = sweep(mem);
   return i;
