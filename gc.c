@@ -8,6 +8,7 @@
  */
 #include "gc.h"
 #include "priv_imalloc.h"
+#include <stdio.h>
 
 //! Checks if the pointer is pointing within the adress space.
 /*!
@@ -116,9 +117,19 @@ void mark_unused(Priv_mem mem){
 
 unsigned int collect_help(Priv_mem mem) {
   mark_unused(mem);
-  printf("\n\n traversing stack and heap\n\n");
+  
+  printf("Printing stackpointers after return from mark_unused.\n");
+  traverseStack(mem->as, &print_stack_pointers_to_chunks, mem);
+  printf("\n");
+  
+  printf("Traversing stack and heap\n");
   traverseStack(mem->as, &traverse_heap, mem);
-  printf("\n\n traversing complete.\n\n");
+  printf("\n");
+
+  printf("Printing stackpointers after return from traverseStack.\n");
+  traverseStack(mem->as, &print_stack_pointers_to_chunks, mem);
+  printf("\n");
+
   unsigned int i = sweep(mem);
   return i;
 }
