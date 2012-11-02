@@ -35,13 +35,13 @@ int main()
   error = format_tests(&init_suite, &clean_suite);
   if (error)
     return error;
-  error = gc_tests(&init_suite, &clean_suite);
-    if (error)
-      return error;
-  error = refcount_tests(&init_suite, &clean_suite);
+  error = priv_imalloc_tests(&init_suite, &clean_suite);
   if (error)
     return error;
-  error = priv_imalloc_tests(&init_suite, &clean_suite);
+  error = gc_tests(&init_suite, &clean_suite);
+  if (error)
+    return error;
+  error = refcount_tests(&init_suite, &clean_suite);
   if (error)
     return error;
   

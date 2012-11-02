@@ -3,6 +3,7 @@
 void test_conversion_functions(void) {
   chunk_size memsiz = 1 Mb;
   Priv_mem new_mem = malloc(sizeof(priv_mem));
+  new_mem->as = malloc(sizeof(addressspace));
   new_mem->as->start = malloc(memsiz);
   new_mem->as->end = new_mem->as->start + memsiz;
   new_mem->lists = create_lists(new_mem->as->start, memsiz, ASCENDING_SIZE);
