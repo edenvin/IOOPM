@@ -94,10 +94,10 @@ int gc_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   
   // Add tests
   if (
-    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect_1)) ||
-    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect_2)) ||
-    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect_3)) ||
-    (NULL == CU_add_test(gc_suite, "test of collect()", test_collect_4))
+    (NULL == CU_add_test(gc_suite, "test of collect() 1", test_collect_1)) ||
+    (NULL == CU_add_test(gc_suite, "test of collect() 2", test_collect_2)) ||
+    (NULL == CU_add_test(gc_suite, "test of collect() 3", test_collect_3)) ||
+    (NULL == CU_add_test(gc_suite, "test of collect() 4", test_collect_4))
   ) {
     CU_cleanup_registry();
     return CU_get_error();
