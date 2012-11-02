@@ -45,6 +45,10 @@ void traverse_heap(void *ptr, void *mem) {
   if (chunk) {
     // Only traverse if this chunk hasn't been processed already.
     if (memory_is_marked(chunk) == FALSE) {
+      if (in_address_space(ptr, mem))
+        printf("Heappointer %p resulted in chunk at %p. Traversing pointers in chunk.\n", heap_ptr, chunk->start);
+      else
+        printf("Stackpointer %p resulted in chunk at %p. Traversing pointers in chunk.\n", heap_ptr, chunk->start);
       set_memory_mark(chunk, TRUE);
       // Go through each possible pointer in the chunk and see if it points
       // to another chunk.
@@ -97,7 +101,9 @@ void mark_unused(Priv_mem mem){
 
 unsigned int collect_help(Priv_mem mem) {
   mark_unused(mem);
+  printf("\n\n traversing stack and heap\n\n");
   traverseStack(&mem->as, &traverse_heap, mem);
+  printf("\n\n traversing complete.\n\n");
   unsigned int i = sweep(mem);
   return i;
 }
