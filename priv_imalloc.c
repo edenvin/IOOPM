@@ -11,30 +11,32 @@ Memory priv_imalloc(chunk_size memsiz, unsigned int flags) {
   // MANUAL
   if (flags < 13) {
     Priv_mem new_mem = malloc(sizeof(priv_mem));
-    new_mem->as.start = malloc(memsiz);
-    new_mem->as.end = new_mem->as.start + memsiz - 1;
+    new_mem->as = malloc(sizeof(addressspace));
+    new_mem->as->start = malloc(memsiz);
+    new_mem->as->end = new_mem->as->start + memsiz - 1;
     new_mem->functions.manual.alloc        = &manual_alloc;
     new_mem->functions.manual.avail        = &avail;
     new_mem->functions.manual.free         = &priv_free;
-    new_mem->lists = lists_based_on_flags(flags, 9, 10, 12, new_mem->as.start, memsiz);
+    new_mem->lists = lists_based_on_flags(flags, 9, 10, 12, new_mem->as->start, memsiz);
     return priv_to_style((Priv_mem) new_mem);
   } else {
     Priv_mem new_mem = malloc(sizeof(priv_mem));
-    new_mem->as.start = malloc(memsiz);
-    new_mem->as.end = new_mem->as.start + memsiz - 1;
+    new_mem->as = malloc(sizeof(addressspace));
+    new_mem->as->start = malloc(memsiz);
+    new_mem->as->end = new_mem->as->start + memsiz - 1;
     new_mem->functions.managed.alloc = &managed_alloc;
     // MANAGED + REFCOUNT
     if (flags < 21) {
       set_priv_mem_managed_functions(new_mem, &retain, &release, &count, NULL, NULL);
-      new_mem->lists = lists_based_on_flags(flags, 17, 18, 20, new_mem->as.start, memsiz);
+      new_mem->lists = lists_based_on_flags(flags, 17, 18, 20, new_mem->as->start, memsiz);
   // MANAGED + GCD
     } else if (flags < 37) {
       set_priv_mem_managed_functions(new_mem, NULL, NULL, NULL, &typed_alloc, &collect);
-      new_mem->lists = lists_based_on_flags(flags, 33, 34, 36, new_mem->as.start, memsiz);
+      new_mem->lists = lists_based_on_flags(flags, 33, 34, 36, new_mem->as->start, memsiz);
   // MANAGED + REFCOUNT + GCD
     } else {
       set_priv_mem_managed_functions(new_mem, &retain, &release, &count, &typed_alloc, &collect);
-      new_mem->lists = lists_based_on_flags(flags, 49, 50, 52, new_mem->as.start, memsiz);
+      new_mem->lists = lists_based_on_flags(flags, 49, 50, 52, new_mem->as->start, memsiz);
     }
     return priv_to_style((Priv_mem) new_mem);
   }
@@ -186,12 +188,12 @@ Chunk alloclist(Priv_mem mem) {
  * Returns pointer to the start of the allocated address space of memory mem
  */
 void* as_start(Priv_mem mem) {
-    return mem->as.start;
+    return mem->as->start;
 }
 
 /*
  * Returns pointer to the end of the allocated address space of memory mem
  */
 void* as_end(Priv_mem mem) {
-    return mem->as.end;
+    return mem->as->end;
 }

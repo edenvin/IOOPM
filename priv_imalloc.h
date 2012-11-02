@@ -25,7 +25,7 @@
 /* Actual return type specifications for iMalloc */
 
 typedef struct {
-  addressspace as;
+  AddressSpace as;
   Lists lists;
   style functions;
 } priv_mem, *Priv_mem;
