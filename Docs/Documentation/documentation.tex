@@ -70,15 +70,6 @@
 % *************************************************************************
 % *************************************************************************
 
-Information till en användare av iMalloc om hur de olika
-metoderna och strukturera som är synliga för denne fungerar.
-Vad förväntar de sig av sina argument, vad gör dem, etc. 
-Litet som en man-sida för en modul. 
-
-Pröva att köra "man string" på en Solaris-maskin så får du
-litet inspiration. 
-% **************** 
-
 #include imalloc.h
 struct style *iMalloc(chunk_size memsiz, unsigned int flags);
 
@@ -92,20 +83,23 @@ iMalloc();
   the flags chose which functions to call.
 
   memsiz: the number of bytes you want to reserve which can be entered in several forms;
-  //MER FIX HÄR//
+  1Mb - Reserves 1 megabyte of memory
+  1Kb - Reserves 1 kilobyte of memory
+  10 - Reserves 10 bytes of memory
+  sizeof(int)*10 = Reserves enough memory to store 10 integers
 
   Flags: flags are entered separated by a plus sign. Eg. ASCENDING_SIZE+GCD
   The possible flags to choose from is listed below:
 
   First; Choose how the freelist should be sorted:
-  ASCENDING_SIZE - 
-  DESCENDING_SIZE -
-  ADDRESS - 
+  ASCENDING_SIZE - Sort the list with small objects first, large objects in the end
+  DESCENDING_SIZE - Large objects first, small objects in the end
+  ADDRESS - Sort the list depending on their adress, low adresses first, higher towards the end
 
-  Second; Choose which kind of memory manager to use (Note: REFCOUNT and GCD _CAN_ be combined)
-  MANUAL -  
-  REFCOUNT - 
-  GCD -
+  Second; Choose which kind of memory manager to use (Note: only REFCOUNT and GCD can be combined)
+  MANUAL -  Memory allocation using alloc and free
+  REFCOUNT - Managed memory allocation using reference counter
+  GCD - Managed memory allocation using the mark and sweep algorithm for garbage collection
 
   Any other combinations will produce unspecified results and we cannot guaranty functionality
   in those cases.
@@ -116,29 +110,6 @@ iMalloc();
 
   Memory with a size of sizeOf(int)*10, a freelist sorted after adress and refcount combined with GCD;
   iMalloc(sizeOf(int)*10, ADRESS+GCD+REFCOUNT)
-
-  
-
-
-    The strcat() function appends a copy of string s2, including
-     the terminating null character, to the end of string s1. The
-     strncat()  function  appends  at  most  n  characters.  Each
-     returns a pointer to the null-terminated result. The initial
-     character of  s2 overrides the null character at the end  of
-     s1. If copying takes place between objects that overlap, the
-     behavior of strcat(), strncat(), and strlcat() is undefined.
-
-
-
-
-\begin{figure}[H]
-  \includegraphics[width=\columnwidth]{../bilder/design_depth.png}
-  \caption{En mer djupgående beskrivning av vår design.}
-  \label{fig:stable}
-\end{figure}
-
-
-
 
 
 \end{document}
