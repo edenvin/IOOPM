@@ -2,14 +2,6 @@
 #include "../rootset/rootset.h"
 #include <stdio.h>
 
-void zero_stack_above(void) {
-  int memory[100];
-  
-  for (int i = 0; i < 100; i++) {
-    memory[i] = 0;
-  }
-}
-
 /*
  * Test when there is no garbage to collect.
  */

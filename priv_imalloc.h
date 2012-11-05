@@ -105,4 +105,7 @@ void* as_start(Priv_mem mem);
  */
 void* as_end(Priv_mem mem);
 
+void zero_stack_above(void);
+
+
 #endif

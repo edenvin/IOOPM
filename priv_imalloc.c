@@ -194,3 +194,12 @@ void* as_start(Priv_mem mem) {
 void* as_end(Priv_mem mem) {
     return mem->as->end;
 }
+
+void zero_stack_above(void) {
+  int memory[100];
+  
+  for (int i = 0; i < 100; i++) {
+    memory[i] = 0;
+  }
+}
+

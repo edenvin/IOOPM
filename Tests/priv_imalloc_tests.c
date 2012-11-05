@@ -173,6 +173,7 @@ void test_managed_alloc(void) {
   // Note: tmp no longer points to the 1 Kb block allocated in the beginning.
   tmp_rc2 = mem_rc->alloc((Memory) mem_rc, 1 Kb);
   CU_ASSERT(tmp_rc2 == NULL);
+  zero_stack_above();
   tmp_gc2 = mem_gc->alloc((Memory) mem_gc, 1 Kb);
   CU_ASSERT(tmp_gc2 != NULL);
   CU_ASSERT(alloclist(priv_mem_gc)->size == 1 Kb);
