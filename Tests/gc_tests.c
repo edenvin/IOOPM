@@ -2,6 +2,14 @@
 #include "../rootset/rootset.h"
 #include <stdio.h>
 
+void zero_stack_above(void) {
+  int memory[100];
+  
+  for (int i = 0; i < 100; i++) {
+    memory[i] = 0;
+  }
+}
+
 /*
  * Test when there is no garbage to collect.
  */
@@ -18,6 +26,7 @@
   *p2 = 2;
   *p3 = 3;
   
+  zero_stack_above();
   CU_ASSERT(collect((Memory) mem) == 0);
   
   priv_free((Memory) mem,p0);
@@ -32,34 +41,18 @@
  void test_collect_2(void) {
   Managed mem = (Managed) iMalloc(sizeof(int)*4, GCD + ADDRESS);
   
-  printf("\n\nPrinting stackpointers prior to adding stackpointers.\n");
-  traverseStack(style_to_priv((Memory) mem)->as, &print_stack_pointers_to_chunks, style_to_priv((Memory) mem));
-  printf("\n");
-  
-  
   int *p0 = mem->alloc((Memory) mem, sizeof(int));
   int *p1 = mem->alloc((Memory) mem, sizeof(int));
   int *p2 = mem->alloc((Memory) mem, sizeof(int));
   int *p3 = mem->alloc((Memory) mem, sizeof(int));
-  
-  printf("Printing stackpointers after adding stackpointers.\n");
-  traverseStack(style_to_priv((Memory) mem)->as, &print_stack_pointers_to_chunks, style_to_priv((Memory) mem));
-  printf("\n");
-  
+
   *p0 = 0;
   *p1 = 1;
   *p2 = 2;
   p3 = NULL;
   
-  printf("Printing stackpointers after re-setting some pointers, prior to collect.\n");
-  traverseStack(style_to_priv((Memory) mem)->as, &print_stack_pointers_to_chunks, style_to_priv((Memory) mem));
-  printf("\n");
-  
+  zero_stack_above();
   CU_ASSERT(collect((Memory) mem) == 1);
-  
-  printf("Printing stackpointers after return from collect.\n");
-  traverseStack(style_to_priv((Memory) mem)->as, &print_stack_pointers_to_chunks, style_to_priv((Memory) mem));
-  printf("\n");
   
   priv_free((Memory) mem,p0);
   priv_free((Memory) mem,p1);
