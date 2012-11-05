@@ -60,23 +60,6 @@
 
 \newpage
 
-% *********************
-% Infoga bild
-
-% se Figur \ref{fig:stable}.
-
-%\begin{figure}[H]
-%  \includegraphics[width=165mm]{stabil.png}
-%  \caption{Den slutliga versionen av kretsen i Logisim.}
-%  \label{fig:stable}
-%\end{figure}
-
-
-% *************************************************************************
-% *************************************************************************
-% *************************************************************************
-% *************************************************************************
-
 \section{iMalloc}
 
 \subsection*(SYNOPSIS)
@@ -123,6 +106,64 @@ iMalloc(2Mb, ASCENDING\_SIZE+GCD)
 
 Memory with a size of sizeOf(int)*10, a freelist sorted after adress and refcount combined with GCD;
 iMalloc(sizeOf(int)*10, ADRESS+GCD+REFCOUNT)
+
+
+\section{GC}
+\subsection{SYNOPSIS}
+\begin{verbatim}
+typedef struct {
+  TypedAllocator alloc;
+  Global         collect;
+} GC;
+\end{verbatim}
+\subsection*{Description}
+Functions for automatic garbage collecting memory manager (mark-sweep)
+
+
+\section{Refcount}
+\subsection{SYNOPSIS}
+\begin{verbatim}
+typedef struct {
+  Local       retain;
+  Manipulator release;
+  Local       count;
+} Refcount;
+\end{verbatim}
+\subsection*{Description}
+Functions for reference counting memory manager 
+
+\section{manual}
+\subsection{SYNOPSIS}
+\begin{verbatim}
+typedef struct {
+  RawAllocator alloc;
+  Global       avail;
+  Manipulator  free;
+} manual, *Manual; 
+\end{verbatim}
+\subsection*{Description}
+Functions for the manual memory manager
+
+\section{manual}
+\subsection{SYNOPSIS}
+\begin{verbatim}
+typedef struct {
+  RawAllocator alloc;
+  Refcount     rc;
+  GC           gc;
+} managed, *Managed;
+\end{verbatim}
+\subsection*{Description}
+Functions for the managed memory manager
+
+
+\section{style}
+\subsection{SYNOPSIS}
+\begin{verbatim}
+typedef struct style *Memory;
+\end{verbatim}
+\subsection*{Description}
+Something.. Something.. Something.. Dark side
 
 
 \end{document}
