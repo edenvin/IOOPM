@@ -11,13 +11,16 @@
 \contentsline {subsection}{\numberline {1.9}Onsdag 31 Oktober}{6}
 \contentsline {subsection}{\numberline {1.10}Torsdag 1 November}{7}
 \contentsline {subsection}{\numberline {1.11}Fredag 2 November}{7}
+\contentsline {subsection}{\numberline {1.12}M\IeC {\r a}ndag 5 November}{7}
+\contentsline {subsection}{\numberline {1.13}Tisdag 6 November}{7}
 \contentsline {section}{\numberline {2}Parrotationer}{7}
 \contentsline {subsection}{\numberline {2.1}Vecka 1}{7}
-\contentsline {subsection}{\numberline {2.2}Vecka 2}{7}
-\contentsline {section}{\numberline {3}Tids\IeC {\r a}tg\IeC {\r a}ng}{7}
-\contentsline {section}{\numberline {4}Brister}{9}
-\contentsline {section}{\numberline {5}Bilagor}{9}
-\contentsline {section}{\numberline {A}\IeC {\"O}vergripande designdokument}{9}
-\contentsline {section}{\numberline {B}Koddokumentation p\IeC {\r a} gr\IeC {\"a}nssnittsniv\IeC {\r a}}{9}
-\contentsline {section}{\numberline {C}Gr\IeC {\"a}nssnitten mellan modulerna}{9}
-\contentsline {section}{\numberline {D}Reflektion}{9}
+\contentsline {subsection}{\numberline {2.2}Vecka 2}{8}
+\contentsline {subsection}{\numberline {2.3}Vecka 3}{8}
+\contentsline {section}{\numberline {3}Tids\IeC {\r a}tg\IeC {\r a}ng}{8}
+\contentsline {section}{\numberline {4}Brister}{10}
+\contentsline {section}{\numberline {5}Bilagor}{10}
+\contentsline {section}{\numberline {A}\IeC {\"O}vergripande designdokument}{10}
+\contentsline {section}{\numberline {B}Koddokumentation p\IeC {\r a} gr\IeC {\"a}nssnittsniv\IeC {\r a}}{10}
+\contentsline {section}{\numberline {C}Gr\IeC {\"a}nssnitten mellan modulerna}{10}
+\contentsline {section}{\numberline {D}Reflektion}{10}
