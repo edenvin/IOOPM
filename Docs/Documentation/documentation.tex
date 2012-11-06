@@ -77,14 +77,14 @@ the flags chose which functions to call.
 memsiz is the user defined memory size and the flags changes
 the way the memory is behaving and which functions to use.
 
-\subsubsection*{memsiz} the number of bytes you want to reserve which can be entered in several forms.
+\subsubsection*{memsiz} The number of bytes you want to reserve which can be entered in several forms.
 
 |1Mb| - Reserves 1 megabyte of memory \\*
 |1Kb| - Reserves 1 kilobyte of memory \\*
 |10| - Reserves 10 bytes of memory \\*
 |sizeof(int)*10| - Reserves enough memory to store 10 integers
-
-Flags: flags are entered separated by a plus sign. Eg. ASCENDING\_SIZE+GCD
+\subsection*{Flags}
+Flags are entered separated by a plus sign. Eg. ASCENDING\_SIZE+GCD
 The possible flags to choose from is listed below:
 
 First; Choose how the freelist should be sorted:
@@ -108,63 +108,53 @@ Memory with a size of sizeOf(int)*10, a freelist sorted after adress and refcoun
 iMalloc(sizeOf(int)*10, ADRESS+GCD+REFCOUNT)
 
 
-\section{GC}
+\section{Functions}
 \subsection{SYNOPSIS}
 \begin{verbatim}
-typedef struct {
   TypedAllocator alloc;
-  Global         collect;
-} GC;
+  unsigned int collect(Memory mem){
 \end{verbatim}
 \subsection*{Description}
-Functions for automatic garbage collecting memory manager (mark-sweep)
+alloc is used to allocate memory within the adress space created by the iMalloc function.
+collect starts a garbage-collecting process according to the mark- and sweep algorithm.
 
-
-\section{Refcount}
 \subsection{SYNOPSIS}
 \begin{verbatim}
-typedef struct {
-  Local       retain;
-  Manipulator release;
-  Local       count;
-} Refcount;
+  unsigned int retain(void *object);
+  unsigned int release(Memory mem, void *object);
+  unsigned int count(void *object);
 \end{verbatim}
 \subsection*{Description}
-Functions for reference counting memory manager 
+If a memory object is using refcount;
+  retain is used to increment the refcount
+  release is used to decrease the refcount
+  count returns the current refcount value
 
-\section{manual}
 \subsection{SYNOPSIS}
 \begin{verbatim}
-typedef struct {
   RawAllocator alloc;
-  Global       avail;
+  unsigned int avail(Memory mem);
   Manipulator  free;
-} manual, *Manual; 
 \end{verbatim}
 \subsection*{Description}
-Functions for the manual memory manager
 
-\section{manual}
+
+
 \subsection{SYNOPSIS}
 \begin{verbatim}
-typedef struct {
   RawAllocator alloc;
   Refcount     rc;
   GC           gc;
-} managed, *Managed;
 \end{verbatim}
 \subsection*{Description}
-Functions for the managed memory manager
 
 
-\section{style}
-\subsection{SYNOPSIS}
+
+
+
 \begin{verbatim}
-typedef struct style *Memory;
+  typedef struct style *Memory;
 \end{verbatim}
-\subsection*{Description}
-Something.. Something.. Something.. Dark side
-
+\subsection*{Description} 
 
 \end{document}
-
