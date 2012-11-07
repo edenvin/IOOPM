@@ -60,6 +60,7 @@
 
 \newpage
 
+%Structures in private functions
 \section{Strukter som används i våra privata funktioner}
 \begin{description} \parskip0pt
   \item[Lists] - Innehåller två pekare till chunks
@@ -91,7 +92,24 @@
 
 \end{description}
 
+%imalloc section
 \section{imalloc}
+iMalloc är den enda funktionen som slutanvändaren kommer att se. Med hjälp av olika flaggor vid anropet så kan användaren välja olika typer av sortering på freelistan, skräpsamling etc.
+\begin{description} \parskip0pt
+  \item[imalloc.h]
+    \begin{description} \parskip0pt
+      \item[includes]
+    \end{description}
 
+  \item[imalloc.c]
+    \begin{description} \parskip0pt
+      \item[Includes]
+        \begin{description} \parskip0pt
+          \item[imalloc.h]
+          \item[priv_imalloc.h]
+        \end{description}
+    \end{description}
+
+\end{description}
 
 \end{document}
