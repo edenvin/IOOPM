@@ -3,9 +3,10 @@
 void test_conversion_functions(void) {
   chunk_size memsiz = 1 Mb;
   Priv_mem new_mem = malloc(sizeof(priv_mem));
-  new_mem->start = malloc(memsiz);
-  new_mem->end = new_mem->start + memsiz - 1;
-  new_mem->lists = create_lists(new_mem->start, memsiz, ASCENDING_SIZE);
+  new_mem->as = malloc(sizeof(addressspace));
+  new_mem->as->start = malloc(memsiz);
+  new_mem->as->end = new_mem->as->start + memsiz;
+  new_mem->lists = create_lists(new_mem->as->start, memsiz, ASCENDING_SIZE);
   new_mem->functions.manual.alloc        = &manual_alloc;
   new_mem->functions.manual.avail        = &avail;
   new_mem->functions.manual.free         = &priv_free;
@@ -18,21 +19,21 @@ void test_conversion_functions(void) {
 
   Priv_mem compare_priv = (Priv_mem) style_to_priv((Memory) new_manual);
 
-  CU_ASSERT(new_mem->start == compare_priv->start);
-  CU_ASSERT(new_mem->end   == compare_priv->end);
+  CU_ASSERT(new_mem->as->start == compare_priv->as->start);
+  CU_ASSERT(new_mem->as->end   == compare_priv->as->end);
   CU_ASSERT(new_mem->lists == compare_priv->lists);
   CU_ASSERT(new_mem->functions.manual.alloc == compare_priv->functions.manual.alloc);
   CU_ASSERT(new_mem->functions.manual.avail == compare_priv->functions.manual.avail);
   CU_ASSERT(new_mem->functions.manual.free  == compare_priv->functions.manual.free);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
 void test_priv_imalloc(void) {
   Priv_mem new_mem = style_to_priv(priv_imalloc(1 Mb, REFCOUNT + GCD + ADDRESS));
-  CU_ASSERT(new_mem->end == new_mem->start + 1 Mb - 1);
+  CU_ASSERT(new_mem->as->end == new_mem->as->start + 1 Mb - 1);
   CU_ASSERT(new_mem->lists->freelist->size == 1 Mb);
   CU_ASSERT(new_mem->lists->freelist->next == NULL);
   CU_ASSERT(new_mem->lists->alloclist == NULL);
@@ -44,7 +45,7 @@ void test_priv_imalloc(void) {
   CU_ASSERT(new_mem->functions.managed.gc.collect == &collect);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
@@ -60,7 +61,7 @@ void test_manual_alloc(void) {
   CU_ASSERT(new_mem->lists->alloclist->next->size == 1 Kb);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
@@ -75,7 +76,7 @@ void test_priv_free(void) {
   CU_ASSERT(memory_start(search_memory(temp, new_mem->lists->alloclist, FALSE)) == NULL);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
@@ -91,7 +92,7 @@ void test_avail(void) {
 
   Priv_mem new_mem = style_to_priv((Memory) mem);
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
@@ -101,7 +102,7 @@ void test_freelist(void) {
   CU_ASSERT(freelist(new_mem) == new_mem->lists->freelist);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
@@ -111,27 +112,27 @@ void test_alloclist(void) {
   CU_ASSERT(alloclist(new_mem) == new_mem->lists->alloclist);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
 void test_as_start(void) {
   Manual mem = (Manual) priv_imalloc(1 Mb, MANUAL + ASCENDING_SIZE);
   Priv_mem new_mem = style_to_priv((Memory) mem);
-  CU_ASSERT(as_start(new_mem) == new_mem->start);
+  CU_ASSERT(as_start(new_mem) == new_mem->as->start);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
 void test_as_end(void) {
   Manual mem = (Manual) priv_imalloc(1 Mb, MANUAL + ASCENDING_SIZE);
   Priv_mem new_mem = style_to_priv((Memory) mem);
-  CU_ASSERT(as_end(new_mem) == new_mem->end);
+  CU_ASSERT(as_end(new_mem) == new_mem->as->end);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
@@ -172,7 +173,9 @@ void test_managed_alloc(void) {
   // Note: tmp no longer points to the 1 Kb block allocated in the beginning.
   tmp_rc2 = mem_rc->alloc((Memory) mem_rc, 1 Kb);
   CU_ASSERT(tmp_rc2 == NULL);
+  zero_stack_above();
   tmp_gc2 = mem_gc->alloc((Memory) mem_gc, 1 Kb);
+  CU_ASSERT(tmp_gc2 != NULL);
   CU_ASSERT(alloclist(priv_mem_gc)->size == 1 Kb);
   CU_ASSERT(freelist(priv_mem_gc) == NULL);
 }
@@ -191,7 +194,7 @@ void test_typed_alloc(void) {
   CU_ASSERT(freelist(priv_mem_gc)->size == (1 Mb - (10 * sizeof(void*) + 5 * sizeof(int) + 8 * sizeof(char))));
 
   free_lists(priv_mem_gc->lists);
-  free(priv_mem_gc->start);
+  free(priv_mem_gc->as->start);
   free(priv_mem_gc);
 }
 

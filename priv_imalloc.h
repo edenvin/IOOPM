@@ -6,6 +6,7 @@
 #include "memory.h"
 #include "gc.h"
 #include "refcount.h"
+#include "rootset/rootset.h"
 
 /*
  * priv_imalloc.h
@@ -24,8 +25,7 @@
 /* Actual return type specifications for iMalloc */
 
 typedef struct {
-  void *start;
-  void *end;
+  AddressSpace as;
   Lists lists;
   style functions;
 } priv_mem, *Priv_mem;
@@ -104,5 +104,8 @@ void* as_start(Priv_mem mem);
  * Returns pointer to the start of the allocated address space of manual memory mem
  */
 void* as_end(Priv_mem mem);
+
+void zero_stack_above(void);
+
 
 #endif

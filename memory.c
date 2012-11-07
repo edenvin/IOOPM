@@ -103,20 +103,21 @@ void free_memory(Chunk chunk, Lists lists) {
   Chunk prev = NULL;
   // Find the previous chunk.
   while (cursor) {
-    if (chunk == cursor)
+    if (chunk == cursor) {
       break;
-      
-    prev = cursor;
-    cursor = cursor->next;
+    }
+    else {
+      prev = cursor;
+      cursor = cursor->next;
+    }
   }
   
-  // Unlink it.
+  
+  
+  // Unlink it from alloclist.
   unlink_chunk_from_alloclist(chunk, prev, lists);
   
-  // Combine with adjecent.
-  chunk = combine_adjecent(lists, chunk);
-  
-  // Insert it.
+  // Insert it to freelist.
   insert_chunk_to_freelist(lists, chunk);
 }
 
@@ -253,9 +254,11 @@ Chunk combine_adjecent(Lists lists, Chunk chunk) {
   
   Chunk cursor = memory_freelist(lists);
   Chunk prev = NULL;
+  Chunk next = NULL;
   Chunk tmp;
   
   while (cursor) {
+    next = cursor->next;
     if (before && after)
       // We found two adjecent cunks, no need to keep looking.
       break;
@@ -271,7 +274,7 @@ Chunk combine_adjecent(Lists lists, Chunk chunk) {
       chunk->start = cursor->start;
       
       tmp = cursor;
-      cursor = cursor->next;
+      cursor = next;
       free(tmp);
     }
     else if (chunk->start + chunk->size == cursor->start) {
@@ -290,7 +293,7 @@ Chunk combine_adjecent(Lists lists, Chunk chunk) {
     }
     else {
       prev = cursor;
-      cursor = cursor->next;
+      cursor = next;
     }
   }
   
@@ -305,6 +308,8 @@ void unlink_chunk_from_freelist(Chunk chunk, Chunk prev, Lists lists) {
     lists->freelist = chunk->next;
   else
     prev->next = chunk->next;
+  
+  chunk->next = NULL;
 }
 
 /*
@@ -315,4 +320,6 @@ void unlink_chunk_from_alloclist(Chunk chunk, Chunk prev, Lists lists) {
     lists->alloclist = chunk->next;
   else
     prev->next = chunk->next;
+  
+  chunk->next = NULL;
 }

@@ -8,33 +8,32 @@
  * of memory manager and allows fine-tunes some options.
  */
 Memory priv_imalloc(chunk_size memsiz, unsigned int flags) {
+  Priv_mem new_mem = malloc(sizeof(priv_mem));
+  new_mem->as = malloc(sizeof(addressspace));
+  new_mem->as->start = malloc(memsiz);
+  new_mem->as->end = new_mem->as->start + memsiz - 1;
+  
   // MANUAL
   if (flags < 13) {
-    Priv_mem new_mem = malloc(sizeof(priv_mem));
-    new_mem->start = malloc(memsiz);
-    new_mem->end = (void*) ((char*) (new_mem->start) + memsiz - 1);
     new_mem->functions.manual.alloc        = &manual_alloc;
     new_mem->functions.manual.avail        = &avail;
     new_mem->functions.manual.free         = &priv_free;
-    new_mem->lists = lists_based_on_flags(flags, 9, 10, 12, new_mem->start, memsiz);
+    new_mem->lists = lists_based_on_flags(flags, 9, 10, 12, new_mem->as->start, memsiz);
     return priv_to_style((Priv_mem) new_mem);
   } else {
-    Priv_mem new_mem = malloc(sizeof(priv_mem));
-    new_mem->start = malloc(memsiz);
-    new_mem->end = (void*) ((char*) (new_mem->start) + memsiz - 1);
     new_mem->functions.managed.alloc = &managed_alloc;
     // MANAGED + REFCOUNT
     if (flags < 21) {
       set_priv_mem_managed_functions(new_mem, &retain, &release, &count, NULL, NULL);
-      new_mem->lists = lists_based_on_flags(flags, 17, 18, 20, new_mem->start, memsiz);
+      new_mem->lists = lists_based_on_flags(flags, 17, 18, 20, new_mem->as->start, memsiz);
   // MANAGED + GCD
     } else if (flags < 37) {
       set_priv_mem_managed_functions(new_mem, NULL, NULL, NULL, &typed_alloc, &collect);
-      new_mem->lists = lists_based_on_flags(flags, 33, 34, 36, new_mem->start, memsiz);
+      new_mem->lists = lists_based_on_flags(flags, 33, 34, 36, new_mem->as->start, memsiz);
   // MANAGED + REFCOUNT + GCD
     } else {
       set_priv_mem_managed_functions(new_mem, &retain, &release, &count, &typed_alloc, &collect);
-      new_mem->lists = lists_based_on_flags(flags, 49, 50, 52, new_mem->start, memsiz);
+      new_mem->lists = lists_based_on_flags(flags, 49, 50, 52, new_mem->as->start, memsiz);
     }
     return priv_to_style((Priv_mem) new_mem);
   }
@@ -158,14 +157,14 @@ unsigned int avail(Memory mem) {
  * Converts a priv_mem pointer to a style pointer.
  */
 Memory priv_to_style(Priv_mem mem) {
-  return (Memory) ((void**) mem + 3);
+  return (Memory) ((void**) mem + 2);
 }
 
 /*
  * Converts a style style pointer to a priv_mem pointer.
  */
 Priv_mem style_to_priv(Memory mem) {
-  return (Priv_mem) ((void**) mem - 3);
+  return (Priv_mem) ((void**) mem - 2);
 }
 
 /*
@@ -186,12 +185,21 @@ Chunk alloclist(Priv_mem mem) {
  * Returns pointer to the start of the allocated address space of memory mem
  */
 void* as_start(Priv_mem mem) {
-    return mem->start;
+    return mem->as->start;
 }
 
 /*
  * Returns pointer to the end of the allocated address space of memory mem
  */
 void* as_end(Priv_mem mem) {
-    return mem->end;
+    return mem->as->end;
 }
+
+void zero_stack_above(void) {
+  int memory[100];
+  
+  for (int i = 0; i < 100; i++) {
+    memory[i] = 0;
+  }
+}
+

@@ -22,7 +22,7 @@ void test_release(void) {
   CU_ASSERT(search_memory(t, alloclist(new_mem), FALSE) == NULL);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 
@@ -39,7 +39,7 @@ void test_count(void) {
   CU_ASSERT(count(t) == 3);
 
   free_lists(new_mem->lists);
-  free(new_mem->start);
+  free(new_mem->as->start);
   free(new_mem);
 }
 

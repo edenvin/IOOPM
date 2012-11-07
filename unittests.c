@@ -5,8 +5,10 @@
 #include "CUnit/Basic.h"
 #include "Tests/memory_tests.h"
 #include "Tests/format_tests.h"
+#include "Tests/gc_tests.h"
 #include "Tests/refcount_tests.h"
 #include "Tests/priv_imalloc_tests.h"
+
 int init_suite(void)
 {
   return 0;
@@ -18,7 +20,9 @@ int clean_suite(void)
 }
 
 int main()
-{ 
+{
+  SET_STACK_BOTTOM
+  
   /* initialize the CUnit test registry */
   if (CUE_SUCCESS != CU_initialize_registry())
     return CU_get_error();
@@ -31,10 +35,13 @@ int main()
   error = format_tests(&init_suite, &clean_suite);
   if (error)
     return error;
-  error = refcount_tests(&init_suite, &clean_suite);
+  error = priv_imalloc_tests(&init_suite, &clean_suite);
   if (error)
     return error;
-  error = priv_imalloc_tests(&init_suite, &clean_suite);
+  error = gc_tests(&init_suite, &clean_suite);
+  if (error)
+    return error;
+  error = refcount_tests(&init_suite, &clean_suite);
   if (error)
     return error;
   
