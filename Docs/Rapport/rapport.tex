@@ -324,6 +324,8 @@ Vår lösning är fullt fungerande förutom enhetstester som använder sig av fu
 
 I ett verkligt scenario är detta inte ett problem då skräpet förr eller senare skrivs över på stacken och försvinner, men det gör det svårt att tillverka enhetstester med förutbestämt beteende. Vi testade att precis innan collect() anropas rensa stacken ovanför \$sp, vilket rensade ut nästan allt skräp.
 
+En skräppekare återstod dock i vanlig körning, men försvann mystiskt när koden stegades igenom i debuggern. En tanke är att denna pekare ligger kvar i något register som inte nollställs.
+
 % *************************************************************************
 % *************************************************************************
 % *************************************************************************
