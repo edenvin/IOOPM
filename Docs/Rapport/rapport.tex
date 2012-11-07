@@ -299,6 +299,9 @@ Då vi har försökt arbeta enligt test driven development är det svårt att r�
 % *************************************************************************
 \section{Brister}
 
+Vår lösning är fullt fungerande förutom enhetstester som använder sig av funktionen collect(). Alla underfunktioner till allokeringen sparar temporär data på stacken, bland annat pekare till vår adressrymd på heapen. När dessa funktioner returnerar flyttas stackpointern ner och de stackframes som innehåller den temporära datan ligger utanför den allokerade delen av stacken. Problemet uppstår när traverseStack() ligger djupare i anropsledet, vilket betyder att vi återanvänder nämnda stackframes. I vissa fall kommer data i dessa stackframes inte att skrivas över, och vi har på så sätt fått skräpdata på den aktiva stacken som leder till att objekten som datan pekar till markeras som levande när de egentligen är skräp.
+
+I ett verkligt scenario är detta inte ett problem då skräpet förr eller senare skrivs över på stacken och försvinner, men det gör det svårt att tillverka enhetstester med förutbestämt beteende. Vi testade att precis innan collect() anropas rensa stacken ovanför \$sp, vilket rensade ut nästan allt skräp.
 
 % *************************************************************************
 % *************************************************************************
