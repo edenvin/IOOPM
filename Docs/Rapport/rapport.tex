@@ -201,7 +201,7 @@ Skrev fler tester för priv\_imalloc samt spenderade mycket tid på att debugga 
 Under dagen arbetade vi en del med koddokumentation men gick sedan över till att bygga upp de dokument vi skall lämna in i Latex. Vi har lagt in dagboken, arbetat på diverse stapeldiagram för att visa tidsfördelningen och under processen även lärt oss hur man arbetar i latex!
 
 {\bf Daniel och Elias}
-I väntan på att Åke och Jakob ska bli färdig med priv\_imalloc så har vi börjat skriva på den övergripande designdokumentationen. Vi har haft problem med att förstå vad man ska få med och hur, men vi har skrivit det så bra vi kan utifrån vår tolkning. Efter det kom vi igång med rc:s test igen och satt med det resten av dagen.
+I väntan på att Åke och Jakob ska bli färdig med priv\_imalloc så har vi börjat skriva på den övergripande designdokumentationen. Vi har haft problem med att förstå vad man ska få med och hur, men vi har skrivit det så bra vi kan utifrån vår tolkning. Efter det kom vi igång med gc:s test igen och satt med det resten av dagen.
 
 {\bf Jakob och Åke}
 Skrev klart sista delarna av priv\_imalloc inkl tester. Fortfarande massor av buggar. 32-bitars minnesadresser i traverse\_heap på 64-bitarsmaskiner, varifrån kommer dem?
@@ -230,17 +230,38 @@ Debuggade gc-delen. Skrev om stora delar av traverse\_heap. Olika problem på ol
 
 {\bf Jakob och Åke} Fortsätter med debugging men kommer inte riktigt någonstans. Hittade ett sätt att skriva ut hela stacken i gdb men hjälpte inte så mycket. Nya tag på Måndag!
 
+\subsection{Söndag 4 November}
+{\bf Åke} Listade ut var våra "spökpekare" kommer ifrån. De ligger kvar på stacken från tidigare stackframes som återanvänds utan att all data i stackframen skrivs över.
+
 \subsection{Måndag 5 November}
+{\bf Andreas och Niclas} Vi har arbetat på koddokumentationen på gränssnittsnivå och mer eller mindre skrivit klart reflektionen. Tillsammans med övriga har vi varit uppe och pratat med Elias Castegren och Justin Pears beträffande de sista problemen vi haft med vår kod.
+
+{\bf Daniel och Elias} Idag har Elias fokuserat främst på att skriva dokumentation och börjar bli klar med de första utkasten nu och ska sedan börja finslipa på allt. Daniel har arbetat med buggarna i GC samt skrivit lite mer på gränsnitten mellan modulerna.
+
+{\bf Åke} Lyckades ta bort många av spökpekarna genom att innan collect anropas rensa stacken ovanför från pekare. En spökpekare återstod dock vid normal körning, men denna försvinner mystiskt när programmet stegas igenom gdb.Detta leder oss till att tro att det kan vara en pekare som ligger i ett register som inte töms. Exprimentering med jmp_buf ledde dock ingen vart. Vi bestämde oss för att anse att problemet inte är så viktigt då pekarna i ett verkligt scenario skulle skrivas över förr eller senare och på så sätt tas bort som skräp. Det är ju bara enhetstesterna som strular på vissa platformar, inte själva koden.
+
+{\bf Jakob} Var bollplank åt Åke.
 
 \subsection{Tisdag 6 November}
+{\bf Daniel} Skrev på gränsnitten mellan modulerna.
 
+{\bf Andreas} Arbetade med koddokumentation på gränssnittsnivå och reflektion. Vi pratade även med Tobias efter föreläsningen om vårt problem betr. skräp på stacken. 
+
+{\bf Jakob} Sjuk.
+
+{\bf Niclas} Arbetat på koddokumentationen på gränssnittsnivå.
+
+{\bf Åke} Skrev på reflektion & dokumentation.
+
+{\bf Elias} Skrivit reflektion.
+
+\subsection{Onsdag 7 November}
 
 % *************************************************************************
 % *************************************************************************
 % *************************************************************************
 % *************************************************************************
 \section{Parrotationer}
-
 Den första dagen jobbade vi allihopa tillsammans. Vi gick igenom instruktionerna och diskuterade uppgiften. Vi valde att inte dela upp oss i par innan vi var säkra på hur vi ville dela upp uppgiften och hade koll på strukturen.
 
 \subsection{Vecka 1}
