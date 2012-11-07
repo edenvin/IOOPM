@@ -108,53 +108,78 @@ Memory with a size of sizeOf(int)*10, a freelist sorted after adress and refcoun
 iMalloc(sizeOf(int)*10, ADRESS+GCD+REFCOUNT)
 
 
-\section{Functions}
-\subsection{SYNOPSIS}
+\section{Structs}
+\subsection{Synopsis}
 \begin{verbatim}
+typedef struct {
   TypedAllocator alloc;
-  unsigned int collect(Memory mem){
+  Global         collect;
+} GC;
 \end{verbatim}
 \subsection*{Description}
-alloc is used to allocate memory within the adress space created by the iMalloc function.
-collect starts a garbage-collecting process according to the mark- and sweep algorithm.
+alloc is a pointer to a function used to allocate memory within the adress space created by the iMalloc function.
+collect is a pointer to a function used to start a garbage-collecting process according to the mark- and sweep algorithm.
 
-\subsection{SYNOPSIS}
+\subsection{Synopsis}
 \begin{verbatim}
-  unsigned int retain(void *object);
-  unsigned int release(Memory mem, void *object);
-  unsigned int count(void *object);
+typedef struct {
+  Local       retain;
+  Manipulator release;
+  Local       count;
+} Refcount;
 \end{verbatim}
 \subsection*{Description}
-If a memory object is using refcount;
-  retain is used to increment the refcount
-  release is used to decrease the refcount
-  count returns the current refcount value
+This struct is used if a memory object is using refcount.
+retain is used to increment the refcount
+release is used to decrease the refcount
+count returns the current refcount value
 
-\subsection{SYNOPSIS}
+\subsection{Synopsis}
 \begin{verbatim}
+typedef struct {
   RawAllocator alloc;
-  unsigned int avail(Memory mem);
+  Global       avail;
   Manipulator  free;
+} manual, *Manual; 
 \end{verbatim}
 \subsection*{Description}
+This struct is used if using manual memory manager.
+alloc is a pointer to a function used to allocate memory within the adress space created by the iMalloc function.
+avail returns the total size of the free space in the address space.
+free frees an object in memory mem and returns the amount of memory freed.
 
 
-
-\subsection{SYNOPSIS}
+\subsection{Synopsis}
 \begin{verbatim}
+typedef struct {
   RawAllocator alloc;
   Refcount     rc;
   GC           gc;
+} managed, *Managed;
 \end{verbatim}
 \subsection*{Description}
-
-
-
-
+This struct is used if using managed memory manager.
+alloc is a pointer to a function used to allocate memory within the adress space created by the iMalloc function.
+rc is set when using refcount and/or gc is set when using refcount
 
 \begin{verbatim}
-  typedef struct style *Memory;
+typedef union {
+  manual  manual;
+  managed managed;
+} style;
 \end{verbatim}
-\subsection*{Description} 
+\subsection*{Description}
+DESCRIPTION HÄR!!!!!
+
+
+\section{Typedefs} 
+\begin{verbatim}
+typedef struct style *Memory;
+typedef void *(*RawAllocator)(Memory mem, chunk_size size);
+typedef void *(*TypedAllocator)(Memory mem, char* typeDesc);
+typedef unsigned int(*Manipulator)(Memory mem, void *ptr);
+typedef unsigned int(*Global)(Memory mem);
+typedef unsigned int(*Local)(void *ptr);
+\end{verbatim}
 
 \end{document}
