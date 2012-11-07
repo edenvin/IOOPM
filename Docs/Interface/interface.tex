@@ -1,0 +1,97 @@
+\documentclass{article}
+
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenc}
+
+% Swedish grammar
+\usepackage[swedish]{babel}
+
+\usepackage[a4paper]{geometry}
+
+% Space between paragraphs instead of indentation.
+\usepackage{parskip}
+
+\usepackage{listings}
+
+\usepackage{fancyvrb}
+\DefineShortVerb{\|}
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif, .png}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\usepackage{float}
+
+\pdfpxdimen=1in
+\divide\pdfpxdimen by 300
+
+\title{
+  Projekt iMalloc \\
+  Gränssnitten mellan modulerna
+}
+\author{
+  Niclas Edenvin \\
+  Åke Lagercrantz \\
+  Andreas Lelli \\
+  Daniel Lindgren \\
+  Elias Lundeqvist \\
+  Jakob Sennerby
+}
+
+\date{2012-11-09}
+
+
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\section{Strukter som används i våra privata funktioner}
+\begin{description} \parskip0pt
+  \item[Lists] - Innehåller två pekare till chunks
+    \begin{description} \parskip0pt
+      \item[alloclist] - En lista av chunks som svarar mot objekt allokerade på heapen
+      \item[freelist] - En lista med chunks som svarar mot det lediga utrymmet på heapen
+    \end{description}
+
+  \item[Chunk] - Innehåller pekarna start och next, storleken chunk_size samt mark-biten
+    \begin{description} \parskip0pt
+      \item[start] - Pekar till starten på objektet (som svarar mot chunken) som allokerats på heapen eller det fria utrymmet på heapen.
+      \item[chunk_size] - Storleken på chunken
+      \item[next] - Pekare till nästa chunk i listan.
+      \item[mark-bit] - TRUE eller FALSE, beroende på om det finns ett program som använder chunken.
+    \end{description}
+
+  \item[priv_mem] - Innehåller addressrymden as, listorna lists samt funktionspekare
+    \begin{description} \parskip0pt
+      \item[AddressSpace] - En strukt som hör till rootset. Den håller koll på starten och slutet på det utrymme som allokerats med hjälp av imalloc.
+      \item[lists]- Innehåller en pekare till strukten lists som i sin tur innehåller pekare till alloclistan och freelistan.
+      \item[Funktionspekare] - 
+    \end{description}
+
+  \item[AddressSpace] - Innehåller två stycken char-pekare
+    \begin{description} \parskip0pt
+      \item[start] - En pekare till starten på det allokerade minnet.
+      \item[end] - En pekare till slutet på det allokerade minnet.
+    \end{description}
+
+\end{description}
+
+\section{imalloc}
+
+
+\end{document}
