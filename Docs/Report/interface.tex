@@ -1,67 +1,6 @@
-\documentclass{article}
-
-
-% This is now the recommended way for checking for PDFLaTeX:
-\usepackage{ifpdf}
-
-% Use utf-8 encoding for foreign characters
-\usepackage[utf8]{inputenc}
-
-% Swedish grammar
-\usepackage[swedish]{babel}
-
-\usepackage[a4paper]{geometry}
-
-% Space between paragraphs instead of indentation.
-\usepackage{parskip}
-
-\usepackage{listings}
-
-\usepackage{fancyvrb}
-\DefineShortVerb{\|}
-
-\ifpdf
-\usepackage[pdftex]{graphicx}
-\else
-\usepackage{graphicx}
-\fi
-
-\ifpdf
-\DeclareGraphicsExtensions{.pdf, .jpg, .tif, .png}
-\else
-\DeclareGraphicsExtensions{.eps, .jpg}
-\fi
-
-\usepackage{float}
-
-\pdfpxdimen=1in
-\divide\pdfpxdimen by 300
-
-\title{
-  Projekt iMalloc \\
-  Gränssnitten mellan modulerna
-}
-\author{
-  Niclas Edenvin \\
-  Åke Lagercrantz \\
-  Andreas Lelli \\
-  Daniel Lindgren \\
-  Elias Lundeqvist \\
-  Jakob Sennerby
-}
-
-\date{2012-11-09}
-
-
-
-\begin{document}
-
-\maketitle
-
-\newpage
 
 %Structures in private functions
-\section{Strukter som används i våra privata funktioner}
+\subsection{Strukter som används i våra privata funktioner}
 \begin{description} \parskip5pt
   \item[Lists] - Innehåller två pekare till chunks
     \begin{description} \parskip0pt
@@ -92,8 +31,8 @@
 
 \end{description}
 
-%imalloc section
-\section{imalloc}
+%imalloc subsection
+\subsection{imalloc}
 iMalloc är den enda funktionen som slutanvändaren kommer att se. Med hjälp av olika flaggor vid anropet så kan användaren välja olika typer av sortering på freelistan, skräpsamling etc.
 \begin{description} \parskip5pt
   \item[imalloc.c]\
@@ -106,8 +45,8 @@ iMalloc är den enda funktionen som slutanvändaren kommer att se. Med hjälp av
     \end{description}
 \end{description}
 
-%refcount section
-\section{refcount}
+%refcount subsection
+\subsection{refcount}
 Refcount är modulen som referensräknar alla allokerade utrymmen på heapen. Referensräkning används vid manuell minneshantering där varje objekt på heapen har en referensräknare som svarar mot hur många pekare som pekar på objektet. När referensräknaren är noll så tas objektet bort.
 \begin{description} \parskip5pt
   \item[refcount.h]\
@@ -136,8 +75,8 @@ Refcount är modulen som referensräknar alla allokerade utrymmen på heapen. Re
 \end{description}
 
 
-%gc section
-\section{gc}
+%gc subsection
+\subsection{gc}
 \label{sec:gc}
 Gc är den automatiska skräpsamlaren. Den traverserar heapen och stacken och letar efter pekare som pekar på det allokerade utrymmet på heapen. Om den hittar några objekt på heapen som inte används (dvs objektet saknar pekare från både stacken och heapen) så flyttas dess chunk alloclistan till freelistan.
 \begin{description} \parskip5pt
@@ -180,12 +119,12 @@ Gc är den automatiska skräpsamlaren. Den traverserar heapen och stacken och le
     \end{description}
 \end{description}
 
-%utilities section
-\section{utilities}
+%utilities subsection
+\subsection{utilities}
 Definierar en booleansk typ som används genom hela programmet
 
-%memory section
-\section{memory}
+%memory subsection
+\subsection{memory}
 Memory är modulen som sköter allt som har med freelist och alloclist att göra. I princip alla funktioner som har med information och hantering av chunks i freelistan eller alloclistan finns i denna modul.
 \begin{description} \parskip5pt
   \item[memory.h]\
@@ -216,8 +155,8 @@ Memory är modulen som sköter allt som har med freelist och alloclist att göra
 \end{description}
 
 
-%priv_imalloc section
-\section{priv\_imalloc}
+%priv_imalloc subsection
+\subsection{priv\_imalloc}
 Den riktiga implementationen av imalloc som döljs för användaren. Detta är “navet” i projektet som länkar ihop alla moduler.
 \begin{description} \parskip5pt
   \item[priv\_imalloc.h]\
@@ -271,8 +210,8 @@ Den riktiga implementationen av imalloc som döljs för användaren. Detta är �
     \end{description}
 \end{description}
 
-%format section
-\section{format}
+%format subsection
+\subsection{format}
 Format omvandlar en valid textsträng till en chunk\_size, vilket bara är en unsigned int. För att göra denna omvandling så krävs några av de inbyggda c-biblioteken. Dessa är string.h och ctype.h men format har inga beroenden från våra funktioner.
 \begin{description} \parskip5pt
   \item[format.h]\
@@ -292,7 +231,4 @@ Format omvandlar en valid textsträng till en chunk\_size, vilket bara är en un
         \end{description}
     \end{description}
 \end{description}
-
-
-\end{document}
 

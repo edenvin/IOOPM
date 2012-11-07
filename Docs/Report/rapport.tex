@@ -137,7 +137,7 @@ Vi delade slumpvis in oss i par och tilldelade paren varsin del av programmet oc
 
 
 \begin{figure}[H]
-  \includegraphics[width=\columnwidth]{../bilder/design_whiteboard.jpg}
+  \includegraphics[width=\columnwidth]{images/design_whiteboard.jpg}
   \caption{Våran ursprungliga design och indelning.}
   \label{fig:design}
 \end{figure}
@@ -231,14 +231,14 @@ Debuggade gc-delen. Skrev om stora delar av traverse\_heap. Olika problem på ol
 {\bf Jakob och Åke} Fortsätter med debugging men kommer inte riktigt någonstans. Hittade ett sätt att skriva ut hela stacken i gdb men hjälpte inte så mycket. Nya tag på Måndag!
 
 \subsection{Söndag 4 November}
-{\bf Åke} Listade ut var våra "spökpekare" kommer ifrån. De ligger kvar på stacken från tidigare stackframes som återanvänds utan att all data i stackframen skrivs över.
+{\bf Åke} Listade ut var våra \"spökpekare\" kommer ifrån. De ligger kvar på stacken från tidigare stackframes som återanvänds utan att all data i stackframen skrivs över.
 
 \subsection{Måndag 5 November}
 {\bf Andreas och Niclas} Vi har arbetat på koddokumentationen på gränssnittsnivå och mer eller mindre skrivit klart reflektionen. Tillsammans med övriga har vi varit uppe och pratat med Elias Castegren och Justin Pears beträffande de sista problemen vi haft med vår kod.
 
 {\bf Daniel och Elias} Idag har Elias fokuserat främst på att skriva dokumentation och börjar bli klar med de första utkasten nu och ska sedan börja finslipa på allt. Daniel har arbetat med buggarna i GC samt skrivit lite mer på gränsnitten mellan modulerna.
 
-{\bf Åke} Lyckades ta bort många av spökpekarna genom att innan collect anropas rensa stacken ovanför från pekare. En spökpekare återstod dock vid normal körning, men denna försvinner mystiskt när programmet stegas igenom gdb.Detta leder oss till att tro att det kan vara en pekare som ligger i ett register som inte töms. Exprimentering med jmp_buf ledde dock ingen vart. Vi bestämde oss för att anse att problemet inte är så viktigt då pekarna i ett verkligt scenario skulle skrivas över förr eller senare och på så sätt tas bort som skräp. Det är ju bara enhetstesterna som strular på vissa platformar, inte själva koden.
+{\bf Åke} Lyckades ta bort många av spökpekarna genom att innan collect anropas rensa stacken ovanför från pekare. En spökpekare återstod dock vid normal körning, men denna försvinner mystiskt när programmet stegas igenom gdb. Detta leder oss till att tro att det kan vara en pekare som ligger i ett register som inte töms. Exprimentering med jmp\_buf ledde dock ingen vart. Vi bestämde oss för att anse att problemet inte är så viktigt då pekarna i ett verkligt scenario skulle skrivas över förr eller senare och på så sätt tas bort som skräp. Det är ju bara enhetstesterna som strular på vissa platformar, inte själva koden.
 
 {\bf Jakob} Var bollplank åt Åke.
 
@@ -251,7 +251,7 @@ Debuggade gc-delen. Skrev om stora delar av traverse\_heap. Olika problem på ol
 
 {\bf Niclas} Arbetat på koddokumentationen på gränssnittsnivå.
 
-{\bf Åke} Skrev på reflektion & dokumentation.
+{\bf Åke} Skrev på reflektion \& dokumentation.
 
 {\bf Elias} Skrivit reflektion.
 
@@ -273,7 +273,7 @@ Dag två delade in oss i par baserat på den övergripande designen vi hade gjor
   \item[Andreas och Daniel] garbage collection
 \end{description}
 
-Detaljerade beskrivningar av koddelarna finns under \ref{sec:design}.
+Detaljerade beskrivningar av koddelarna finns under appendix \ref{appendix:design}.
 
 \subsection{Vecka 2}
 Vi räknade med att arbetsfördelningen skulle variera under andra veckan då vi var klara med de flesta stora delar. Däremot roterade vi paren slumpmässigt, precis som första veckan. Vi slumpade även vilka som skulle sitta kvar med samma uppgift som tidigare. Gruppindelningen vecka två såg ut så här:
@@ -301,14 +301,14 @@ Vi har totalt arbetat 230 timmar med projektet varav 6 timmar på möten, x timm
 Då vi har försökt arbeta enligt test driven development är det svårt att räkna ut hur mycket tid som gick specifikt till testerna utan vi ser det som en del av implementationen. Nedan följer två diagram där arbets- och tidsfördelningen är tydlig.
 
 \begin{figure}[H]
-  \includegraphics[width=\columnwidth]{../bilder/chart_parts.png}
+  \includegraphics[width=\columnwidth]{images/chart_parts.png}
   \caption{Tidsfördelningen över projektets olika delar 
     samt vem som arbetat på vad.}
   \label{fig:chart_parts}
 \end{figure}
 
 \begin{figure}[H]
-  \includegraphics[width=\columnwidth]{../bilder/chart_people.png}
+  \includegraphics[width=\columnwidth]{images/chart_people.png}
   \caption{Personlig tidsfördelning över de olika delarna av projektet.}
   \label{fig:chart_people}
 \end{figure}
@@ -333,10 +333,17 @@ En skräppekare återstod dock i vanlig körning, men försvann mystiskt när ko
 \section{Bilagor}
 \appendix
 \section{Övergripande designdokument}
-\label{sec:design}
+\label{appendix:design}
+\input{design}
 \section{Koddokumentation på gränssnittsnivå}
+\label{appendix:code}
+\input{code}
 \section{Gränssnitten mellan modulerna}
+\label{appendix:interface}
+\input{interface}
 \section{Reflektion}
+\label{appendix:reflection}
+\input{reflection}
 
 
 
