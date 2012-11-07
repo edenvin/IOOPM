@@ -2,3 +2,6 @@
 *.o
 *.dSYM
 unittests
+*.fdb_latexmk
+*.log
+*.synctex.gz

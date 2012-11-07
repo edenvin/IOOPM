@@ -174,7 +174,10 @@ typedef union {
 \end{verbatim}
 \subsection*{Description}
 The style union is used as the return value from iMalloc(). This is to allow a return value of either a manual or managed memory manager, without using up unnecessary memory.
-After calling iMalloc, you should immediately cast this to either a manual or managed.
+After calling iMalloc, you should immediately cast the return value to either a Manual or Managed pointer, like this.
+\begin{verbatim}
+Manual mem = (Manual) iMalloc(1 Mb, MANUAL + ASCENDING_SIZE);
+\end{verbatim}
 
 \section{Typedefs} 
 \begin{verbatim}
