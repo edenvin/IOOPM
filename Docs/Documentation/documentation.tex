@@ -62,13 +62,13 @@
 
 \section{iMalloc}
 
-\subsection*(SYNOPSIS)
+\subsection*{Synopsis}
 \begin{verbatim}
 #include imalloc.h
 struct style *iMalloc(chunk_size memsiz, unsigned int flags);
 \end{verbatim}
 
-\subsection*{DESCRIPTION}
+\subsection*{Description}
 
 iMalloc returns a pointer to a struct with memsiz reserved memory. 
 iMalloc behaves differently depending on which flags has been chosen, 
@@ -83,78 +83,110 @@ the way the memory is behaving and which functions to use.
 |1Kb| - Reserves 1 kilobyte of memory \\*
 |10| - Reserves 10 bytes of memory \\*
 |sizeof(int)*10| - Reserves enough memory to store 10 integers
-\subsection*{Flags}
+\subsubsection*{flags}
 Flags are entered separated by a plus sign. Eg. ASCENDING\_SIZE+GCD
 The possible flags to choose from is listed below:
 
-First; Choose how the freelist should be sorted:
-ASCENDING\_SIZE - Sort the list with small objects first, large objects in the end
-DESCENDING\_SIZE - Large objects first, small objects in the end
-ADDRESS - Sort the list depending on their adress, low adresses first, higher towards the end
 
-Second; Choose which kind of memory manager to use (Note: only REFCOUNT and GCD can be combined)
-MANUAL -  Memory allocation using alloc and free
-REFCOUNT - Managed memory allocation using reference counter
-GCD - Managed memory allocation using the mark and sweep algorithm for garbage collection
+{\bf First} Choose how the freelist should be sorted
+
+|ASCENDING_SIZE| - Sort the list with small objects first, large objects in the end \\*
+|DESCENDING_SIZE| - Large objects first, small objects in the end \\*
+|ADDRESS| - Sort the list depending on their adress, low adresses first, higher towards the end
+
+
+{\bf Second} Choose which kind of memory manager to use (Note: only REFCOUNT and GCD can be combined)
+
+|MANUAL| - Memory allocation using alloc and free \\*
+|REFCOUNT| - Managed memory allocation using reference counter \\*
+|GCD| - Managed memory allocation using the mark and sweep algorithm for garbage collection
 
 Any other combinations will produce unspecified results and we cannot guaranty functionality
 in those cases.
 
 Usage examples:
 Memory with a size of 2Mb, a freelist sorted after descending size and with garbage collection;
-iMalloc(2Mb, ASCENDING\_SIZE+GCD)
+|iMalloc(2Mb, ASCENDING_SIZE+GCD)|
 
-Memory with a size of sizeOf(int)*10, a freelist sorted after adress and refcount combined with GCD;
-iMalloc(sizeOf(int)*10, ADRESS+GCD+REFCOUNT)
+Memory with a size of |sizeOf(int)*10|, a freelist sorted after adress and refcount combined with GCD;
+|iMalloc(sizeOf(int)*10, ADRESS+GCD+REFCOUNT)|
 
 
-\section{Functions}
-\subsection{SYNOPSIS}
+\section{Structs}
+\subsection*{Synopsis}
 \begin{verbatim}
+typedef struct {
   TypedAllocator alloc;
-  unsigned int collect(Memory mem){
+  Global         collect;
+} GC;
 \end{verbatim}
 \subsection*{Description}
-alloc is used to allocate memory within the adress space created by the iMalloc function.
-collect starts a garbage-collecting process according to the mark- and sweep algorithm.
+alloc is a pointer to a function used to allocate memory within the adress space created by the iMalloc function.
+collect is a pointer to a function used to start a garbage-collecting process according to the mark- and sweep algorithm.
 
-\subsection{SYNOPSIS}
+\subsection*{Synopsis}
 \begin{verbatim}
-  unsigned int retain(void *object);
-  unsigned int release(Memory mem, void *object);
-  unsigned int count(void *object);
+typedef struct {
+  Local       retain;
+  Manipulator release;
+  Local       count;
+} Refcount;
 \end{verbatim}
 \subsection*{Description}
-If a memory object is using refcount;
-  retain is used to increment the refcount
-  release is used to decrease the refcount
-  count returns the current refcount value
+This struct is used if a memory object is using refcount.
+retain is used to increment the refcount
+release is used to decrease the refcount
+count returns the current refcount value
 
-\subsection{SYNOPSIS}
+\subsection*{Synopsis}
 \begin{verbatim}
+typedef struct {
   RawAllocator alloc;
-  unsigned int avail(Memory mem);
+  Global       avail;
   Manipulator  free;
+} manual, *Manual; 
 \end{verbatim}
 \subsection*{Description}
+This struct is used if using manual memory manager.
+alloc is a pointer to a function used to allocate memory within the adress space created by the iMalloc function.
+avail returns the total size of the free space in the address space.
+free frees an object in memory mem and returns the amount of memory freed.
 
-
-
-\subsection{SYNOPSIS}
+\subsection*{Synopsis}
 \begin{verbatim}
+typedef struct {
   RawAllocator alloc;
   Refcount     rc;
   GC           gc;
+} managed, *Managed;
 \end{verbatim}
 \subsection*{Description}
+This struct is used if using managed memory manager.
+alloc is a pointer to a function used to allocate memory within the adress space created by the iMalloc function.
+rc is set when using refcount and/or gc is set when using refcount
 
-
-
-
-
+\subsection*{Synopsis}
 \begin{verbatim}
-  typedef struct style *Memory;
+typedef union {
+  manual  manual;
+  managed managed;
+} style;
 \end{verbatim}
-\subsection*{Description} 
+\subsection*{Description}
+The style union is used as the return value from iMalloc(). This is to allow a return value of either a manual or managed memory manager, without using up unnecessary memory.
+After calling iMalloc, you should immediately cast the return value to either a Manual or Managed pointer, like this.
+\begin{verbatim}
+Manual mem = (Manual) iMalloc(1 Mb, MANUAL + ASCENDING_SIZE);
+\end{verbatim}
+
+\section{Typedefs} 
+\begin{verbatim}
+typedef struct style *Memory;
+typedef void *(*RawAllocator)(Memory mem, chunk_size size);
+typedef void *(*TypedAllocator)(Memory mem, char* typeDesc);
+typedef unsigned int(*Manipulator)(Memory mem, void *ptr);
+typedef unsigned int(*Global)(Memory mem);
+typedef unsigned int(*Local)(void *ptr);
+\end{verbatim}
 
 \end{document}
