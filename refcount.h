@@ -11,7 +11,6 @@
 
  #include "imalloc.h"
  #include "utilities.h"
- #include <stdlib.h>
 
 /*
  * Increment adress's refcount by 1
