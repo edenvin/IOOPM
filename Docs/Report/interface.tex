@@ -1,0 +1,234 @@
+
+%Structures in private functions
+\subsection{Strukter som används i våra privata funktioner}
+\begin{description} \parskip5pt
+  \item[Lists] - Innehåller två pekare till chunks
+    \begin{description} \parskip0pt
+      \item[alloclist] - En lista av chunks som svarar mot objekt allokerade på heapen
+      \item[freelist] - En lista med chunks som svarar mot det lediga utrymmet på heapen
+    \end{description}
+
+  \item[Chunk] - Innehåller pekarna start och next, storleken chunk\_size samt mark-biten
+    \begin{description} \parskip0pt
+      \item[start] - Pekar till starten på objektet (som svarar mot chunken) som allokerats på heapen eller det fria utrymmet på heapen.
+      \item[chunk\_size] - Storleken på chunken
+      \item[next] - Pekare till nästa chunk i listan.
+      \item[mark-bit] - TRUE eller FALSE, beroende på om det finns ett program som använder chunken.
+    \end{description}
+
+  \item[priv\_mem] - Innehåller addressrymden as, listorna lists samt funktionspekare
+    \begin{description} \parskip0pt
+      \item[AddressSpace] - En strukt som hör till rootset. Den håller koll på starten och slutet på det utrymme som allokerats med hjälp av imalloc.
+      \item[lists]- Innehåller en pekare till strukten lists som i sin tur innehåller pekare till alloclistan och freelistan.
+      \item[Funktionspekare] - Pekare till minneshanterarens publika funktioner.
+    \end{description}
+
+  \item[AddressSpace] - Innehåller två stycken char-pekare
+    \begin{description} \parskip0pt
+      \item[start] - En pekare till starten på det allokerade minnet.
+      \item[end] - En pekare till slutet på det allokerade minnet.
+    \end{description}
+
+\end{description}
+
+%imalloc subsection
+\subsection{imalloc}
+iMalloc är den enda funktionen som slutanvändaren kommer att se. Med hjälp av olika flaggor vid anropet så kan användaren välja olika typer av sortering på freelistan, skräpsamling etc.
+\begin{description} \parskip5pt
+  \item[imalloc.c]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[imalloc.h]\
+          \item[priv\_imalloc.h]
+        \end{description}
+    \end{description}
+\end{description}
+
+%refcount subsection
+\subsection{refcount}
+Refcount är modulen som referensräknar alla allokerade utrymmen på heapen. Referensräkning används vid manuell minneshantering där varje objekt på heapen har en referensräknare som svarar mot hur många pekare som pekar på objektet. När referensräknaren är noll så tas objektet bort.
+\begin{description} \parskip5pt
+  \item[refcount.h]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[imalloc.h]\
+          \item[utilities.h]
+        \end{description}
+    \end{description}
+  \item[refcount.c]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[refcount.h]\
+          \item[priv\_imalloc.h]
+        \end{description}
+      \item[Publika funktioner som används]\
+        \begin{description} \parskip5pt
+          \item[i priv\_imalloc]\
+          \begin{description} \parskip0pt
+            \item[priv\_free] - Används för att fria ett objekt då refcount sätts till 0. Flyttar chunken från alloclistan till freelistan, hanterar även ev sammanslagning närliggande chunks i freelistan
+          \end{description}
+        \end{description}
+    \end{description}
+\end{description}
+
+
+%gc subsection
+\subsection{gc}
+\label{sec:gc}
+Gc är den automatiska skräpsamlaren. Den traverserar heapen och stacken och letar efter pekare som pekar på det allokerade utrymmet på heapen. Om den hittar några objekt på heapen som inte används (dvs objektet saknar pekare från både stacken och heapen) så flyttas dess chunk alloclistan till freelistan.
+\begin{description} \parskip5pt
+  \item[gc.h]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[imalloc.h]\
+          \item[utilities.h]\
+          \item[rootset/rootset.h]
+        \end{description}
+    \end{description}
+  \item[gc.c]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[gc.h]\
+          \item[priv\_imalloc.h]
+        \end{description}
+      \item[Publika funktioner som används]\
+        \begin{description} \parskip5pt
+          \item[i priv\_imalloc]\
+          \begin{description} \parskip0pt
+            \item[as\_start] - returnerar en pekare till starten av det allokerade minnesutrymmet.
+            \item[as\_end] - returnerar en pekare till den sista byten som tillhör det allokerade minnesutrymmet.
+            \item[style\_to\_priv] - konverterar en style-pekare till en priv\_mem-pekare.
+            \item[priv\_to\_style] - konverterar en priv\_mem-pekare till en style-pekare.
+            \item[priv\_free] - Används för att fria ett objekt vid skräpsamling. Flyttar chunken från alloclistan till freelistan, hanterar även ev sammanslagning närliggande chunks i freelistan.
+          \end{description}
+          \item[i memory]\
+          \begin{description} \parskip0pt
+            \item[set\_memory\_mark] - markerar ett minne som att det används eller som skräp.
+            \item[next\_chunk] - returnerar nästa chunk i antingen free- eller alloclistan.
+            \item[memory\_alloclist] - returnerar en pekare till första chunken i alloclist.
+            \item[memory\_start] - returnerar en pekare till starten av listan i vilken chunken som användes som argument ligger i.
+            \item[memory\_is\_marked] - huruvida ett objekt är markerat som skräp eller ej.
+            \item[search\_memory] - används för att söka igenom en lista av chunks (oftast alloclistan) efter en chunk som har en startadress som är samma som needle (om strict-argumentet = TRUE). Är stritct-argumentet satt till FALSE så returneras chunken även om needle inte pekar på startadressen. Den kan alltså peka en bit in i en chunk.
+          \end{description}
+        \end{description}
+    \end{description}
+\end{description}
+
+%utilities subsection
+\subsection{utilities}
+Definierar en booleansk typ som används genom hela programmet
+
+%memory subsection
+\subsection{memory}
+Memory är modulen som sköter allt som har med freelist och alloclist att göra. I princip alla funktioner som har med information och hantering av chunks i freelistan eller alloclistan finns i denna modul.
+\begin{description} \parskip5pt
+  \item[memory.h]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[imalloc.h]\
+          \item[utilities.h]\
+          \item[stdlib.h]
+        \end{description}
+    \end{description}
+  \item[memory\_priv.h]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[imalloc.h]\
+          \item[memory.h]\
+        \end{description}
+    \end{description}
+  \item[memory.c]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[memory.h]\
+          \item[memory\_priv.h]
+        \end{description}
+    \end{description}
+\end{description}
+
+
+%priv_imalloc subsection
+\subsection{priv\_imalloc}
+Den riktiga implementationen av imalloc som döljs för användaren. Detta är “navet” i projektet som länkar ihop alla moduler.
+\begin{description} \parskip5pt
+  \item[priv\_imalloc.h]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[imalloc.h]\
+          \item[format.h]\
+          \item[memory.h]\
+          \item[gc.h]\
+          \item[refcount.h]\
+          \item[rootset/rootset.h]
+        \end{description}
+    \end{description}
+  \item[priv\_imalloc.c]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[stdlib.h]\
+          \item[priv\_imalloc.h]
+        \end{description}
+      \item[Publika funktioner som används]\
+        \begin{description} \parskip5pt
+          \item[i gc]\
+          \begin{description} \parskip0pt
+            \item[collect] - den automatiska skräpsamlingen som följer mark \& sweep-algoritmen.
+          \end{description}
+          \item[i refcount]\
+          \begin{description} \parskip0pt
+            \item[retain] - ökar referensärknaren för objektet med 1.
+            \item[release] - minskar referensräknaren för objektet med 1, och friar det i fall räknaren når 0.
+            \item[count] - returnerar referensräknaren för objektet.
+            \item[refcount\_to\_object] - ändrar pekaren från en refcount-pekare till en objekt-pekare.
+          \end{description}
+          \item[i memory]\
+          \begin{description} \parskip0pt
+            \item[create\_lists] - skapar en ny list-strukt med en alloclista och en freelista.
+            \item[alloclist] - returnerar alloclistan från stukten lists.
+            \item[search\_memory] - se beskrivning under sektion~\ref{sec:gc}.
+            \item[memory\_size] - returnerar storleken på en chunk.
+            \item[claim\_memory] - serverar en bit av minnet. Hittar en lämplig chunk i freelistan, delar på den och sätter in chunken i alloclistan. Håller fortfarande free-listan sorterad.
+            \item[memory\_start] - returnerar en pekare till starten av listan i vilken chunken som användes som argument ligger i.
+            \item[memory\_freelist] - returnerar freelistan från strukten lists.
+            \item[memory\_alloclist] - returnerar alloclistan från strukten lists.
+          \end{description}
+          \item[i gc]\
+          \begin{description} \parskip0pt
+            \item[format\_string\_to\_size] - omvandlar en validformatsträng till en chunk\_size.
+          \end{description}
+        \end{description}
+    \end{description}
+\end{description}
+
+%format subsection
+\subsection{format}
+Format omvandlar en valid textsträng till en chunk\_size, vilket bara är en unsigned int. För att göra denna omvandling så krävs några av de inbyggda c-biblioteken. Dessa är string.h och ctype.h men format har inga beroenden från våra funktioner.
+\begin{description} \parskip5pt
+  \item[format.h]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[imalloc.h]\
+        \end{description}
+    \end{description}
+  \item[format.c]\
+    \begin{description} \parskip5pt
+      \item[Inkluderar]\
+        \begin{description} \parskip0pt
+          \item[format.h]\
+          \item[string.h]\
+          \item[ctype.h]
+        \end{description}
+    \end{description}
+\end{description}
+

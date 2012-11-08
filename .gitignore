@@ -3,3 +3,6 @@
 *.dSYM
 unittests
 ._*
+*.fdb_latexmk
+*.log
+*.synctex.gz
