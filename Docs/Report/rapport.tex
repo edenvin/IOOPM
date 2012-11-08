@@ -109,17 +109,18 @@
 Vi träffades hemma hos Niclas för att gemensamt gå igenom instruktionerna och förbereda oss för första projektveckan. Vi bestämde även att vi skulle använda oss av olika applikationer, tjänster och versionshanteringssystem som gör det enklare för oss att arbeta tillsammans samt hålla koll på hur vårt arbetsflöde fungerar. Vi valde att använda oss av
 
 \begin{description} \parskip0pt
-  \item[Git och github] versionshanteringssystem
+  \item[Git och github] versionshanteringssystem (ett privat repository)
   \item[Trello] strukturering av uppgifter och vem som gör vad
   \item[Tickspot] tidsrapportering
   \item[Hipchat] kommunikation och forum
   \item[Google Drive] utkast av projektdagbok och övriga dokument
+  \item[\LaTeX] rapportskrivning
 \end{description}
 Vi började även skissa på en övergripande design för systemet för att hitta en lämplig uppdelning.
 
 \subsection{Måndag 22 Oktober}
 
-Vi gjorde klart den övergripande designen. Se Figur \ref{fig:design}. Sedan bestämde vi oss för en gemensam kodstandard enligt följande:
+Vi gjorde klart den övergripande designen, se Figur \ref{fig:design}. Sedan bestämde vi oss för en gemensam kodstandard baserad på GNU coding standards\footnote{http://www.gnu.org/prep/standards/standards.html} enligt följande:
 
 \begin{description} \parskip0pt
   \item[Tab size] 2 med soft tabs
@@ -138,7 +139,7 @@ Vi delade slumpvis in oss i par och tilldelade paren varsin del av programmet oc
 
 \begin{figure}[H]
   \includegraphics[width=\columnwidth]{images/design_whiteboard.jpg}
-  \caption{Våran ursprungliga design och indelning.}
+  \caption{Den ursprungliga designen och indelningen.}
   \label{fig:design}
 \end{figure}
 
@@ -171,7 +172,7 @@ Vi blev klara med formatstring och alla tester till denna innan samtliga i grupp
 
 \subsection{Fredag 26 Oktober}
 
-\paragraph*{Andreas och Daniel} Vi har först och främst gjort klart GC, vi har implementerat funktionerna för att traversera stacken och allting kompilerar som det sig borde. Vi måste dock fixa våra testfall då dessa inte längre fungerar på grund av att vi har ändrat hur minnet beter sig. Dessutom kräver testerna (för att kunna testa vettiga saker) att iMalloc är mer eller mindre klar, detta eftersom att gc ska “städa undan” data genererad av användaren. Vi har kollat på olika program för koddokumentation och de bäst lämpade tycks vara Doxygen som vi började arbeta med då det kan generera latexkod. Vi har även hunnit göra två stycken “flow charts” för hur de olika modulerna kommunicerar med varandra.
+\paragraph*{Andreas och Daniel} Vi har först och främst gjort klart GC, vi har implementerat funktionerna för att traversera stacken och allting kompilerar som det sig borde. Vi måste dock fixa våra testfall då dessa inte längre fungerar på grund av att vi har ändrat hur minnet beter sig. Dessutom kräver testerna (för att kunna testa vettiga saker) att iMalloc är mer eller mindre klar, detta eftersom att gc ska “städa undan” data genererad av användaren. Vi har kollat på olika program för koddokumentation och de bäst lämpade tycks vara Doxygen som vi började arbeta med då det kan generera \LaTeX-kod. Vi har även hunnit göra två stycken “flow charts” för hur de olika modulerna kommunicerar med varandra.
 
 \paragraph*{Jakob och Elias} Precis som igår arbetade vi idag med priv\_imalloc, vi skrev klart alla funktioner samt skrev tester som vi tidigare inte kunnat skriva pga. de okompletta memory-funktionerna. Nu återstår bara en del småfix och felsökning.
 
@@ -198,7 +199,7 @@ Skrev fler tester för priv\_imalloc samt spenderade mycket tid på att debugga 
 \subsection{Tisdag 30 Oktober}
 
 \paragraph*{Andreas och Niclas}
-Under dagen arbetade vi en del med koddokumentation men gick sedan över till att bygga upp de dokument vi skall lämna in i Latex. Vi har lagt in dagboken, arbetat på diverse stapeldiagram för att visa tidsfördelningen och under processen även lärt oss hur man arbetar i latex!
+Under dagen arbetade vi en del med koddokumentation men gick sedan över till att bygga upp de dokument vi skall lämna in i \LaTeX. Vi har lagt in dagboken, arbetat på diverse stapeldiagram för att visa tidsfördelningen och under processen även lärt oss hur man arbetar i \LaTeX!
 
 \paragraph*{Daniel och Elias}
 I väntan på att Åke och Jakob ska bli färdig med priv\_imalloc så har vi börjat skriva på den övergripande designdokumentationen. Vi har haft problem med att förstå vad man ska få med och hur, men vi har skrivit det så bra vi kan utifrån vår tolkning. Efter det kom vi igång med gc:s test igen och satt med det resten av dagen.
@@ -208,7 +209,7 @@ Skrev klart sista delarna av priv\_imalloc inkl tester. Fortfarande massor av bu
 
 \subsection{Onsdag 31 Oktober}
 \paragraph*{Andreas och Niclas}
-Under dagen arbetade vi med de dokument vi skall lämna in, vi har fortsatt formatera allt i Latex, ordnat med graferna och gjort klart den övergripande designen. Vi felsökte också GC tillsammans med de andra grupperna.
+Under dagen arbetade vi med de dokument vi skall lämna in, vi har fortsatt formatera allt i \LaTeX, ordnat med graferna och gjort klart den övergripande designen. Vi felsökte också GC tillsammans med de andra grupperna.
 
 \paragraph*{Daniel och Elias}
 Idag har vi ägnat all tid åt felsökning av GC. Vi har problem när vårt test för GC:n har skräp att samla.
