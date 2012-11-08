@@ -15,6 +15,8 @@
 
 \usepackage[a4paper]{geometry}
 
+\usepackage[toc]{appendix}
+
 % Space between paragraphs instead of indentation.
 \usepackage{parskip}
 
@@ -67,11 +69,11 @@
   { 
   \parskip5pt
 
-  \noindent Vi fick i uppgift att, i programmeringsspråket c, konstruera ett eget bibliotek för minneshantering.
+  \noindent Det här är en rapport om en uppgift i programmeringsspråket c, i att konstruera ett eget bibliotek för minneshantering.
 
-  \noindent  Genom att dela upp uppgiften i mindre block och följa projektspecifikationen skapade vi en minneshanterare med flera alternativ för hur man vill behandla minnet.
+  \noindent Genom att dela upp uppgiften i mindre block och följa projektspecifikationen skapades en minneshanterarere med flera alternativ för hur en användare vill behandla minnet.
 
-  \noindent  Problemet löstes enligt specifikationerna och resultatet blev som väntat en effektiv minnesallokerare som med fördel kan användas av program som vill kunna bestämma själv på vilket sätt minnet ska användas.
+  \noindent Problemet löstes enligt specifikationerna och resultatet blev som väntat en effektiv minnesallokerare som används av program som vill kunna bestämma själv på vilket sätt minnet ska användas.
   }
 
   \end{minipage}
@@ -263,10 +265,11 @@ Debuggade gc-delen. Skrev om stora delar av traverse\_heap. Olika problem på ol
 % *************************************************************************
 % *************************************************************************
 \section{Parrotationer}
-Den första dagen jobbade vi allihopa tillsammans. Vi gick igenom instruktionerna och diskuterade uppgiften. Vi valde att inte dela upp oss i par innan vi var säkra på hur vi ville dela upp uppgiften och hade koll på strukturen.
+Den första dagen jobbade alla tillsammans, gick igenom instruktionerna och diskuterade uppgiften. Innan någon form av uppdelning i par kunde göras så krävdes en tydlig struktur på uppgiften med en logisk uppdelning av arbetsuppgifter. Därför ägnades hela första dagen åt planering.
 
 \subsection{Vecka 1}
-Dag två delade in oss i par baserat på den övergripande designen vi hade gjort. Vi använde oss av en slumpgenerator för att ta fram paren samt även vilket par som skulle jobba med vad. Under första veckan jobbade vi så här:
+Dag två började med uppdelning av par baserat på den övergripande designen som gjorts under första dagen. En slumpgenerator användes för att dela upp gruppen i par om två samt vilken arbetsuppgift varje par skulle ansvara för.
+Parindelningen för vecka 1 såg ut så här:
 
 \begin{description} \parskip0pt
   \item[Niclas och Åke] memory
@@ -274,10 +277,11 @@ Dag två delade in oss i par baserat på den övergripande designen vi hade gjor
   \item[Andreas och Daniel] garbage collection
 \end{description}
 
-Detaljerade beskrivningar av koddelarna finns under appendix \ref{appendix:design}.
+Mer detaljerade beskrivningar av koddelarna finns i bilaga \ref{appendix:design}.
 
 \subsection{Vecka 2}
-Vi räknade med att arbetsfördelningen skulle variera under andra veckan då vi var klara med de flesta stora delar. Däremot roterade vi paren slumpmässigt, precis som första veckan. Vi slumpade även vilka som skulle sitta kvar med samma uppgift som tidigare. Gruppindelningen vecka två såg ut så här:
+Alla räknade med att arbetsfördelningen skulle variera under andra veckan då flera av de stora delarna skulle vara klara. Rotation av parindelning skedde precis som under första veckan med hjälp av slumpgenerator. Det slumpades även om vilka som skulle sitta kvar med samma uppgift som tidigare. 
+Parindelning vecka 2 såg ut så här:
 
 \begin{description} \parskip0pt
   \item[Andreas och Niclas] dokumentation
@@ -286,8 +290,7 @@ Vi räknade med att arbetsfördelningen skulle variera under andra veckan då vi
 \end{description}
 
 \subsection{Vecka 3}
-När vi började vecka 3 var vi i princip klara med all kodskrivning. Därför valde vi att inte jobba i bestämda par, utan vi jobbade mer flytande.
-
+När vecka 3 drog igång var all kodskrivning i princip klar. Därför blev vecka 3 utan bestämda par och det jobbades mer flytande.
 
 % *************************************************************************
 % *************************************************************************
@@ -295,11 +298,11 @@ När vi började vecka 3 var vi i princip klara med all kodskrivning. Därför v
 % *************************************************************************
 \section{Tidsåtgång}
 
-Under projektets gång har vi arbetat med ett program för “Time Tracking” som heter Tick. Efter varje arbetsdag rapporterade alla in hur många timmar dem hade arbetat samt hur många timmar dem har lagt på diverse delar av projektet.
+Under projektets gång har alla arbetat med ett program för “time tracking” som heter Tickspot. Efter varje arbetsdag rapporterade alla in hur många timmar vardera person hade arbetat samt vilken del som det jobbats på.
 
-Vi har totalt arbetat 230 timmar med projektet varav 6 timmar på möten, x timmar på dokumentation, x timmar på planering samt x timmar på implementation och testning.
+Totalta arbetstiden för projektet är 230, varav 6 timmar på möten, x timmar på dokumentation, x timmar på planering samt x timmar på implementation och testning.
 
-Då vi har försökt arbeta enligt test driven development är det svårt att räkna ut hur mycket tid som gick specifikt till testerna utan vi ser det som en del av implementationen. Nedan följer två diagram där arbets- och tidsfördelningen är tydlig.
+Då alla har försökt jobba enligt TDD (Test Driven Development) har det varit svårt att räkna ut hur mycket tid som gick specifikt till testerna utan vi ser det som en del av implementationen. Nedan följer två diagram där arbets- och tidsfördelningen är tydlig.
 
 \begin{figure}[H]
   \includegraphics[width=\columnwidth]{images/chart_parts.png}
