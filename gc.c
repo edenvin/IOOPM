@@ -62,11 +62,12 @@ void traverse_heap(void *ptr, void *mem) {
         }
       }
     }
-    else {
+    else { /*
       if (in_address_space(ptr, mem))
         printf("HEAP: %p found at %p resulted in chunk with start at %p, but this chunk has already been traversed!\n", heap_ptr, ptr, chunk->start);
       else
         printf("STACK: %p found at %p resulted in chunk with start at %p, but this chunk has already been traversed!\n", heap_ptr, ptr, chunk->start);
+        */
     }
   }
 }
