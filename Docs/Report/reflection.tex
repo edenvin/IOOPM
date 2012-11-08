@@ -24,3 +24,9 @@ Något vi har lagt mycket vikt på under hela projektet men framför allt mot sl
 Diagrammen stämmer inte helt och hållet på grund av vårt sätt att jobba. Eftersom vi satt tillsammans så var ofta alla med och diskuterade fram lösningar på de problem som dök upp. De små avvikelserna tog vi inte hänsyn till när vi valde kategori att tidsrapportera till.
 
 Tidsrapporteringen stämmer inte fullt ut då vi inte har räknat med den tid vi indirekt har arbetat med de olika programdelarna, tex. när man har hjälpt varandra, istället har vi bara i slutet av dagen rapporterat det man har arbetat med i stora drag.
+
+Vi anser att lösningen är näst intill fullständig då den klarar av att sköta minneshanteringen och städa undan objekt som inte längre används.  Programmet uppfyller kraven utifrån projektspecifikationen och det enda problem som återstår är att vi inte kan skriva enhetstester för gc som är plattformsoberoende. Det funkar helt utan problem på 64-bitars x86 men inte på t.ex. SPARC, där viss data som egentligen är skräp inte tas bort. Dessa objekt kommer förr eller senare att städas bort då gammal data på stacken skrivs över, men på grund av det oberäkneliga beteendet går det inte att skriva enhetstester som passerar.
+
+Vi började att felsöka enhetstesterna för gc redan 7 dagar in i projektet och åtgärdade många buggar men efter en och en halv vecka så hade vi fortfarande inte lyckats lösa alla problem, trots att 3 personer lagt mer eller mindre all sin tid på felsökning. Vi anser ändå att lösningen är fullgod då det bara är enhetstestningen som strular, inte själva minneshanteringen.
+
+Vi skulle kunna lägga ännu mer tid på att felsöka detta problem, men slutprodukten skulle inte skilja sig tillräckligt mycket från det resultat vi har idag för att motivera arbetsinsatsen.
