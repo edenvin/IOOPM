@@ -27,7 +27,7 @@ int format_tests(int (*init_suite)(void), int (*clean_suite)(void)) {
   
   // Add tests
   if (
-    (NULL == CU_add_test(format_suite, "test of test()", test_format_string_to_size))
+    (NULL == CU_add_test(format_suite, "test of format_string_to_size()", test_format_string_to_size))
     ) {
     CU_cleanup_registry();
     return CU_get_error();
