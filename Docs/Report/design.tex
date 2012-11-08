@@ -1,59 +1,4 @@
-\documentclass{article}
 
-
-% This is now the recommended way for checking for PDFLaTeX:
-\usepackage{ifpdf}
-
-% Use utf-8 encoding for foreign characters
-\usepackage[utf8]{inputenc}
-
-% Swedish grammar
-\usepackage[swedish]{babel}
-
-\usepackage[a4paper]{geometry}
-
-% Space between paragraphs instead of indentation.
-\usepackage{parskip}
-
-\ifpdf
-\usepackage[pdftex]{graphicx}
-\else
-\usepackage{graphicx}
-\fi
-
-\ifpdf
-\DeclareGraphicsExtensions{.pdf, .jpg, .tif, .png}
-\else
-\DeclareGraphicsExtensions{.eps, .jpg}
-\fi
-
-\usepackage{float}
-
-\pdfpxdimen=1in
-\divide\pdfpxdimen by 300
-
-\title{
-  Projekt iMalloc \\
-  Övergripande design
-}
-\author{
-  Niclas Edenvin \\
-  Åke Lagercrantz \\
-  Andreas Lelli \\
-  Daniel Lindgren \\
-  Elias Lundeqvist \\
-  Jakob Sennerby
-}
-
-\date{2012-11-09}
-
-
-
-\begin{document}
-
-\maketitle
-
-\newpage
 
 % *********************
 % Infoga bild
@@ -84,9 +29,9 @@ I början tyckte vi att den “indelning” som stog i projektspecifikationen k�
 
 
 \begin{figure}[H]
-  \includegraphics[width=\columnwidth]{../bilder/design_overview.png}
+  \includegraphics[width=\columnwidth]{images/design_overview.png}
   \caption{Den övergripande designen för programmet.}
-  \label{fig:stable}
+  \label{fig:design_overview}
 \end{figure}
 
 
@@ -99,14 +44,8 @@ Samtliga “special Allocs” använder sig av den universala iAlloc.
 
 
 \begin{figure}[H]
-  \includegraphics[width=\columnwidth]{../bilder/design_depth.png}
+  \includegraphics[width=\columnwidth]{images/design_depth.png}
   \caption{En mer djupgående beskrivning av vår design.}
-  \label{fig:stable}
+  \label{fig:design_depth}
 \end{figure}
-
-
-
-
-
-\end{document}
 
